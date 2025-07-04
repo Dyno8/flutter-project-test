@@ -9,6 +9,8 @@ import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/phone_verification_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
+import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -21,6 +23,7 @@ class AppRouter {
   static const String serviceSelection = '/services';
   static const String booking = '/booking';
   static const String profile = '/profile';
+  static const String editProfile = '/profile/edit';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -64,7 +67,7 @@ class AppRouter {
           ),
           GoRoute(
             path: 'profile',
-            builder: (context, state) => const ClientProfileScreen(),
+            builder: (context, state) => const ProfileScreen(),
           ),
         ],
       ),
@@ -76,7 +79,7 @@ class AppRouter {
         routes: [
           GoRoute(
             path: 'profile',
-            builder: (context, state) => const PartnerProfileScreen(),
+            builder: (context, state) => const ProfileScreen(),
           ),
         ],
       ),

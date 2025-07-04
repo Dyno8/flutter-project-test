@@ -30,3 +30,7 @@ class LocationFailure extends Failure {
 class PaymentFailure extends Failure {
   const PaymentFailure(super.message);
 }
+
+class DataFailure extends Failure {
+  const DataFailure(super.message);
+}

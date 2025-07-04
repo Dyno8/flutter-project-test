@@ -11,6 +11,14 @@ import '../../features/auth/domain/usecases/verify_phone_number.dart';
 import '../../features/auth/domain/usecases/sign_out.dart';
 import '../../features/auth/domain/usecases/get_current_user.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/profile/data/datasources/user_profile_datasource.dart';
+import '../../features/profile/data/repositories/user_profile_repository_impl.dart';
+import '../../features/profile/domain/repositories/user_profile_repository.dart';
+import '../../features/profile/domain/usecases/get_user_profile.dart';
+import '../../features/profile/domain/usecases/create_user_profile.dart';
+import '../../features/profile/domain/usecases/update_user_profile.dart';
+import '../../features/profile/domain/usecases/update_profile_avatar.dart';
+import '../../features/profile/presentation/bloc/profile_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -30,6 +38,18 @@ Future<void> init() async {
     ),
   );
 
+  //! Features - Profile
+  // Bloc
+  sl.registerFactory(
+    () => ProfileBloc(
+      getUserProfile: sl(),
+      createUserProfile: sl(),
+      updateUserProfile: sl(),
+      updateProfileAvatar: sl(),
+      repository: sl(),
+    ),
+  );
+
   // Use cases
   sl.registerLazySingleton(() => SignInWithEmail(sl()));
   sl.registerLazySingleton(() => SignUpWithEmail(sl()));
@@ -38,14 +58,30 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SignOut(sl()));
   sl.registerLazySingleton(() => GetCurrentUser(sl()));
 
+  // Profile use cases
+  sl.registerLazySingleton(() => GetUserProfile(sl()));
+  sl.registerLazySingleton(() => CreateUserProfile(sl()));
+  sl.registerLazySingleton(() => UpdateUserProfile(sl()));
+  sl.registerLazySingleton(() => UpdateProfileAvatar(sl()));
+
   // Repository
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(dataSource: sl()),
   );
 
+  // Profile repository
+  sl.registerLazySingleton<UserProfileRepository>(
+    () => UserProfileRepositoryImpl(dataSource: sl()),
+  );
+
   // Data sources
   sl.registerLazySingleton<FirebaseAuthDataSource>(
     () => FirebaseAuthDataSourceImpl(firebaseAuth: sl()),
+  );
+
+  // Profile data source
+  sl.registerLazySingleton<UserProfileDataSource>(
+    () => FirebaseUserProfileDataSource(),
   );
 
   //! External

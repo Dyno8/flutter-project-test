@@ -8,6 +8,7 @@ import 'core/di/injection_container.dart' as di;
 import 'shared/theme/app_theme.dart';
 import 'shared/services/firebase_service.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/profile/presentation/bloc/profile_bloc.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -38,6 +39,9 @@ class CareNowApp extends StatelessWidget {
         return MultiBlocProvider(
           providers: [
             BlocProvider<AuthBloc>(create: (context) => di.sl<AuthBloc>()),
+            BlocProvider<ProfileBloc>(
+              create: (context) => di.sl<ProfileBloc>(),
+            ),
           ],
           child: MaterialApp.router(
             title: 'CareNow',
