@@ -19,6 +19,22 @@ import '../../features/profile/domain/usecases/create_user_profile.dart';
 import '../../features/profile/domain/usecases/update_user_profile.dart';
 import '../../features/profile/domain/usecases/update_profile_avatar.dart';
 import '../../features/profile/presentation/bloc/profile_bloc.dart';
+import '../../features/booking/data/datasources/booking_remote_datasource.dart';
+import '../../features/booking/data/datasources/service_remote_datasource.dart';
+import '../../features/booking/data/datasources/partner_remote_datasource.dart';
+import '../../features/booking/data/repositories/booking_repository_impl.dart';
+import '../../features/booking/data/repositories/service_repository_impl.dart';
+import '../../features/booking/data/repositories/partner_repository_impl.dart';
+import '../../features/booking/domain/repositories/booking_repository.dart';
+import '../../features/booking/domain/repositories/service_repository.dart';
+import '../../features/booking/domain/repositories/partner_repository.dart';
+import '../../features/booking/domain/usecases/create_booking.dart';
+import '../../features/booking/domain/usecases/get_user_bookings.dart';
+import '../../features/booking/domain/usecases/get_available_services.dart';
+import '../../features/booking/domain/usecases/get_available_partners.dart';
+import '../../features/booking/domain/usecases/cancel_booking.dart';
+import '../../features/booking/presentation/bloc/booking_bloc.dart';
+import '../../shared/services/firebase_service.dart';
 
 final sl = GetIt.instance;
 
@@ -50,6 +66,18 @@ Future<void> init() async {
     ),
   );
 
+  //! Features - Booking
+  // Bloc
+  sl.registerFactory(
+    () => BookingBloc(
+      createBooking: sl(),
+      getUserBookings: sl(),
+      getAvailableServices: sl(),
+      getAvailablePartners: sl(),
+      cancelBooking: sl(),
+    ),
+  );
+
   // Use cases
   sl.registerLazySingleton(() => SignInWithEmail(sl()));
   sl.registerLazySingleton(() => SignUpWithEmail(sl()));
@@ -64,6 +92,13 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateUserProfile(sl()));
   sl.registerLazySingleton(() => UpdateProfileAvatar(sl()));
 
+  // Booking use cases
+  sl.registerLazySingleton(() => CreateBooking(sl()));
+  sl.registerLazySingleton(() => GetUserBookings(sl()));
+  sl.registerLazySingleton(() => GetAvailableServices(sl()));
+  sl.registerLazySingleton(() => GetAvailablePartners(sl()));
+  sl.registerLazySingleton(() => CancelBooking(sl()));
+
   // Repository
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(dataSource: sl()),
@@ -72,6 +107,17 @@ Future<void> init() async {
   // Profile repository
   sl.registerLazySingleton<UserProfileRepository>(
     () => UserProfileRepositoryImpl(dataSource: sl()),
+  );
+
+  // Booking repositories
+  sl.registerLazySingleton<BookingRepository>(
+    () => BookingRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton<ServiceRepository>(
+    () => ServiceRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton<PartnerRepository>(
+    () => PartnerRepositoryImpl(remoteDataSource: sl()),
   );
 
   // Data sources
@@ -84,6 +130,18 @@ Future<void> init() async {
     () => FirebaseUserProfileDataSource(),
   );
 
+  // Booking data sources
+  sl.registerLazySingleton<BookingRemoteDataSource>(
+    () => BookingRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<ServiceRemoteDataSource>(
+    () => ServiceRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<PartnerRemoteDataSource>(
+    () => PartnerRemoteDataSourceImpl(sl()),
+  );
+
   //! External
   sl.registerLazySingleton(() => FirebaseAuth.instance);
+  sl.registerLazySingleton(() => FirebaseService());
 }

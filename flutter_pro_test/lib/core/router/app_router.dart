@@ -11,6 +11,10 @@ import '../../features/auth/presentation/screens/phone_verification_screen.dart'
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
+import '../../features/booking/presentation/screens/service_selection_screen.dart';
+import '../../features/booking/presentation/screens/datetime_selection_screen.dart';
+import '../../features/booking/presentation/screens/partner_selection_screen.dart';
+import '../../features/booking/presentation/screens/booking_confirmation_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -63,7 +67,21 @@ class AppRouter {
           ),
           GoRoute(
             path: 'booking',
-            builder: (context, state) => const BookingScreen(),
+            builder: (context, state) => const ServiceSelectionScreen(),
+            routes: [
+              GoRoute(
+                path: 'datetime',
+                builder: (context, state) => const DateTimeSelectionScreen(),
+              ),
+              GoRoute(
+                path: 'partners',
+                builder: (context, state) => const PartnerSelectionScreen(),
+              ),
+              GoRoute(
+                path: 'confirmation',
+                builder: (context, state) => const BookingConfirmationScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: 'profile',
@@ -193,30 +211,6 @@ class PartnerHomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('CareNow - Đối tác')),
       body: const Center(child: Text('Partner Home - Coming Soon')),
-    );
-  }
-}
-
-class ServiceSelectionScreen extends StatelessWidget {
-  const ServiceSelectionScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Chọn dịch vụ')),
-      body: const Center(child: Text('Service Selection - Coming Soon')),
-    );
-  }
-}
-
-class BookingScreen extends StatelessWidget {
-  const BookingScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Đặt lịch')),
-      body: const Center(child: Text('Booking Screen - Coming Soon')),
     );
   }
 }

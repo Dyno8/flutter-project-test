@@ -9,6 +9,7 @@ import 'shared/theme/app_theme.dart';
 import 'shared/services/firebase_service.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/profile/presentation/bloc/profile_bloc.dart';
+import 'features/booking/presentation/bloc/booking_bloc.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -41,6 +42,9 @@ class CareNowApp extends StatelessWidget {
             BlocProvider<AuthBloc>(create: (context) => di.sl<AuthBloc>()),
             BlocProvider<ProfileBloc>(
               create: (context) => di.sl<ProfileBloc>(),
+            ),
+            BlocProvider<BookingBloc>(
+              create: (context) => di.sl<BookingBloc>(),
             ),
           ],
           child: MaterialApp.router(
