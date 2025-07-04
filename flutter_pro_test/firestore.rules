@@ -1,0 +1,66 @@
+rules_version='2'
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isValidRole(role) {
+      return role in ['client', 'partner'];
+    }
+
+    // Users collection - clients and basic user data
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() &&
+                   isOwner(userId) &&
+                   isValidRole(resource.data.role);
+      allow update: if isAuthenticated() && isOwner(userId);
+      allow delete: if isAuthenticated() && isOwner(userId);
+    }
+
+    // Partners collection - partner-specific data
+    match /partners/{partnerId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() &&
+                   isOwner(partnerId) &&
+                   resource.data.role == 'partner';
+      allow update: if isAuthenticated() && isOwner(partnerId);
+      allow delete: if isAuthenticated() && isOwner(partnerId);
+    }
+
+    // Services collection - read-only for all authenticated users
+    match /services/{serviceId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin can modify services
+    }
+
+    // Bookings collection
+    match /bookings/{bookingId} {
+      allow read: if isAuthenticated() &&
+                 (isOwner(resource.data.userId) ||
+                  isOwner(resource.data.partnerId));
+      allow create: if isAuthenticated() &&
+                   isOwner(resource.data.userId);
+      allow update: if isAuthenticated() &&
+                   (isOwner(resource.data.userId) ||
+                    isOwner(resource.data.partnerId));
+      allow delete: if isAuthenticated() && isOwner(resource.data.userId);
+    }
+
+    // Reviews collection
+    match /reviews/{reviewId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() &&
+                   isOwner(resource.data.userId);
+      allow update: if isAuthenticated() && isOwner(resource.data.userId);
+      allow delete: if isAuthenticated() && isOwner(resource.data.userId);
+    }
+  }
+}
