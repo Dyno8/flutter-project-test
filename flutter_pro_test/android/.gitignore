@@ -12,4 +12,9 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
-Requirements.md
+
+# ignores all .md files
+.md
+
+# does not ignore the README.md file
+!README.md

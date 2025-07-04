@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/auth/presentation/bloc/auth_state.dart';
+import '../../features/auth/presentation/bloc/auth_event.dart';
+import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/auth/presentation/screens/phone_verification_screen.dart';
+import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
   static const String login = '/login';
   static const String register = '/register';
+  static const String verifyPhone = '/verify-phone';
+  static const String forgotPassword = '/forgot-password';
   static const String clientHome = '/client';
   static const String partnerHome = '/partner';
   static const String serviceSelection = '/services';
@@ -15,21 +26,29 @@ class AppRouter {
     initialLocation: splash,
     routes: [
       // Splash Screen
-      GoRoute(
-        path: splash,
-        builder: (context, state) => const SplashScreen(),
-      ),
-      
+      GoRoute(path: splash, builder: (context, state) => const SplashScreen()),
+
       // Authentication Routes
-      GoRoute(
-        path: login,
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: login, builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: register,
         builder: (context, state) => const RegisterScreen(),
       ),
-      
+      GoRoute(
+        path: verifyPhone,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return PhoneVerificationScreen(
+            verificationId: extra?['verificationId'] ?? '',
+            phoneNumber: extra?['phoneNumber'] ?? '',
+          );
+        },
+      ),
+      GoRoute(
+        path: forgotPassword,
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+
       // Client Routes
       GoRoute(
         path: clientHome,
@@ -49,7 +68,7 @@ class AppRouter {
           ),
         ],
       ),
-      
+
       // Partner Routes
       GoRoute(
         path: partnerHome,
@@ -65,52 +84,91 @@ class AppRouter {
   );
 }
 
-// Placeholder screens - will be implemented later
-class SplashScreen extends StatelessWidget {
+// Splash screen with authentication state handling
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthStatus();
+  }
+
+  void _checkAuthStatus() async {
+    // Add a small delay for splash screen effect
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (mounted) {
+      // Check authentication status and navigate accordingly
+      // This will be handled by the AuthBloc in the main app
+      context.read<AuthBloc>().add(const AuthStatusRequested());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.favorite, size: 64, color: Colors.blue),
-            SizedBox(height: 16),
-            Text('CareNow', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('Chăm sóc tận tâm, phục vụ tận nhà'),
-          ],
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthAuthenticated) {
+          // Navigate to appropriate home screen based on user role
+          // For now, default to client home
+          context.go(AppRouter.clientHome);
+        } else if (state is AuthUnauthenticated) {
+          context.go(AppRouter.login);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.favorite,
+                size: 64,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'CareNow',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Chăm sóc tận tâm, phục vụ tận nhà',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onPrimary.withOpacity(0.8),
+                ),
+              ),
+              const SizedBox(height: 32),
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Đăng nhập')),
-      body: const Center(child: Text('Login Screen - Coming Soon')),
-    );
-  }
-}
-
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Đăng ký')),
-      body: const Center(child: Text('Register Screen - Coming Soon')),
-    );
-  }
-}
+// Placeholder screens are now replaced by actual authentication screens
+// LoginScreen, RegisterScreen, PhoneVerificationScreen, and ForgotPasswordScreen
+// are imported from their respective files
 
 class ClientHomeScreen extends StatelessWidget {
   const ClientHomeScreen({super.key});
