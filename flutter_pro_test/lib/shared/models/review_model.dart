@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class ReviewModel {
+class ReviewModel extends Equatable {
   final String id;
   final String bookingId;
   final String userId;
@@ -41,8 +42,8 @@ class ReviewModel {
       tags: List<String>.from(data['tags'] ?? []),
       isAnonymous: data['isAnonymous'] ?? false,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: data['updatedAt'] != null 
-          ? (data['updatedAt'] as Timestamp).toDate() 
+      updatedAt: data['updatedAt'] != null
+          ? (data['updatedAt'] as Timestamp).toDate()
           : null,
     );
   }
@@ -59,13 +60,13 @@ class ReviewModel {
       comment: map['comment'] ?? '',
       tags: List<String>.from(map['tags'] ?? []),
       isAnonymous: map['isAnonymous'] ?? false,
-      createdAt: map['createdAt'] is Timestamp 
+      createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.parse(map['createdAt']),
       updatedAt: map['updatedAt'] != null
-          ? (map['updatedAt'] is Timestamp 
-              ? (map['updatedAt'] as Timestamp).toDate()
-              : DateTime.parse(map['updatedAt']))
+          ? (map['updatedAt'] is Timestamp
+                ? (map['updatedAt'] as Timestamp).toDate()
+                : DateTime.parse(map['updatedAt']))
           : null,
     );
   }
@@ -149,42 +150,56 @@ class ReviewModel {
 
   // Helper methods
   String get displayRating => rating.toStringAsFixed(1);
-  String get formattedDate => '${createdAt.day}/${createdAt.month}/${createdAt.year}';
-  
+  String get formattedDate =>
+      '${createdAt.day}/${createdAt.month}/${createdAt.year}';
+
   bool get isExcellent => rating >= 4.5;
   bool get isGood => rating >= 3.5 && rating < 4.5;
   bool get isAverage => rating >= 2.5 && rating < 3.5;
   bool get isPoor => rating < 2.5;
-  
+
   String get ratingDescription {
     if (isExcellent) return 'Xuất sắc';
     if (isGood) return 'Tốt';
     if (isAverage) return 'Trung bình';
     return 'Kém';
   }
-  
+
   // Get star representation
   String get starRepresentation {
     final fullStars = rating.floor();
     final hasHalfStar = (rating - fullStars) >= 0.5;
     final emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-    
-    return '★' * fullStars + 
-           (hasHalfStar ? '☆' : '') + 
-           '☆' * emptyStars;
+
+    return '★' * fullStars + (hasHalfStar ? '☆' : '') + '☆' * emptyStars;
   }
-  
+
   // Check if review can be edited (within 24 hours)
   bool get canBeEdited {
     final now = DateTime.now();
     return now.difference(createdAt).inHours < 24;
   }
-  
+
   // Get truncated comment for display
   String getTruncatedComment(int maxLength) {
     if (comment.length <= maxLength) return comment;
     return '${comment.substring(0, maxLength)}...';
   }
+
+  @override
+  List<Object?> get props => [
+    id,
+    bookingId,
+    userId,
+    partnerId,
+    serviceId,
+    rating,
+    comment,
+    tags,
+    isAnonymous,
+    createdAt,
+    updatedAt,
+  ];
 }
 
 // Predefined review tags
@@ -199,7 +214,7 @@ class ReviewTags {
   static const String communicative = 'communicative';
   static const String efficient = 'efficient';
   static const String respectful = 'respectful';
-  
+
   static const Map<String, String> tagNames = {
     professional: 'Chuyên nghiệp',
     punctual: 'Đúng giờ',
@@ -212,15 +227,15 @@ class ReviewTags {
     efficient: 'Hiệu quả',
     respectful: 'Lịch sự',
   };
-  
+
   static String getTagName(String tag) {
     return tagNames[tag] ?? tag;
   }
-  
+
   static List<String> getAllTags() {
     return tagNames.keys.toList();
   }
-  
+
   static List<String> getPositiveTags() {
     return getAllTags();
   }

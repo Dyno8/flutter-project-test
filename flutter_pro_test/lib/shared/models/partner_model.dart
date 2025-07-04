@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class PartnerModel {
+class PartnerModel extends Equatable {
   final String uid;
   final String name;
   final String phone;
@@ -74,8 +75,8 @@ class PartnerModel {
       isAvailable: data['isAvailable'] ?? true,
       isVerified: data['isVerified'] ?? false,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: data['updatedAt'] != null 
-          ? (data['updatedAt'] as Timestamp).toDate() 
+      updatedAt: data['updatedAt'] != null
+          ? (data['updatedAt'] as Timestamp).toDate()
           : null,
       fcmToken: data['fcmToken'],
     );
@@ -97,8 +98,8 @@ class PartnerModel {
       ),
       rating: (map['rating'] ?? 0.0).toDouble(),
       totalReviews: map['totalReviews'] ?? 0,
-      location: map['location'] is GeoPoint 
-          ? map['location'] 
+      location: map['location'] is GeoPoint
+          ? map['location']
           : const GeoPoint(0, 0),
       address: map['address'] ?? '',
       bio: map['bio'] ?? '',
@@ -108,13 +109,13 @@ class PartnerModel {
       pricePerHour: (map['pricePerHour'] ?? 0.0).toDouble(),
       isAvailable: map['isAvailable'] ?? true,
       isVerified: map['isVerified'] ?? false,
-      createdAt: map['createdAt'] is Timestamp 
+      createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.parse(map['createdAt']),
       updatedAt: map['updatedAt'] != null
-          ? (map['updatedAt'] is Timestamp 
-              ? (map['updatedAt'] as Timestamp).toDate()
-              : DateTime.parse(map['updatedAt']))
+          ? (map['updatedAt'] is Timestamp
+                ? (map['updatedAt'] as Timestamp).toDate()
+                : DateTime.parse(map['updatedAt']))
           : null,
       fcmToken: map['fcmToken'],
     );
@@ -227,13 +228,29 @@ class PartnerModel {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is PartnerModel && other.uid == uid;
-  }
-
-  @override
-  int get hashCode => uid.hashCode;
+  List<Object?> get props => [
+    uid,
+    name,
+    phone,
+    email,
+    gender,
+    services,
+    workingHours,
+    rating,
+    totalReviews,
+    location,
+    address,
+    bio,
+    profileImageUrl,
+    certifications,
+    experienceYears,
+    pricePerHour,
+    isAvailable,
+    isVerified,
+    createdAt,
+    updatedAt,
+    fcmToken,
+  ];
 
   @override
   String toString() {
@@ -244,16 +261,54 @@ class PartnerModel {
   bool get hasHighRating => rating >= 4.0;
   bool get isExperienced => experienceYears >= 2;
   String get displayRating => rating.toStringAsFixed(1);
-  
+
   // Check if partner is available on specific day and time
   bool isAvailableAt(String day, String timeSlot) {
     if (!isAvailable) return false;
     final dayHours = workingHours[day.toLowerCase()];
     return dayHours?.contains(timeSlot) ?? false;
   }
-  
+
   // Get all available time slots for a day
   List<String> getAvailableTimeSlotsForDay(String day) {
     return workingHours[day.toLowerCase()] ?? [];
+  }
+
+  /// Get formatted rating string
+  String get formattedRating {
+    if (totalReviews == 0) return 'Chưa có đánh giá';
+    return '${rating.toStringAsFixed(1)} ⭐ ($totalReviews đánh giá)';
+  }
+
+  /// Get formatted price string
+  String get formattedPrice {
+    return '${pricePerHour.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}đ/giờ';
+  }
+
+  /// Get experience level description
+  String get experienceLevel {
+    if (experienceYears < 1) return 'Mới bắt đầu';
+    if (experienceYears < 3) return 'Có kinh nghiệm';
+    if (experienceYears < 5) return 'Giàu kinh nghiệm';
+    return 'Chuyên gia';
+  }
+
+  /// Check if partner provides a specific service
+  bool providesService(String serviceId) {
+    return services.contains(serviceId);
+  }
+
+  /// Get total working hours per week
+  int get totalWorkingHoursPerWeek {
+    int total = 0;
+    for (final daySlots in workingHours.values) {
+      total += daySlots.length;
+    }
+    return total;
+  }
+
+  /// Check if partner is premium (high rating + verified + experienced)
+  bool get isPremium {
+    return isVerified && hasHighRating && isExperienced;
   }
 }

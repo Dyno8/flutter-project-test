@@ -1,6 +1,88 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class BookingModel {
+/// Enum for booking status
+enum BookingStatus {
+  pending,
+  confirmed,
+  inProgress,
+  completed,
+  cancelled,
+  rejected;
+
+  String get displayName {
+    switch (this) {
+      case BookingStatus.pending:
+        return 'Chờ xác nhận';
+      case BookingStatus.confirmed:
+        return 'Đã xác nhận';
+      case BookingStatus.inProgress:
+        return 'Đang thực hiện';
+      case BookingStatus.completed:
+        return 'Hoàn thành';
+      case BookingStatus.cancelled:
+        return 'Đã hủy';
+      case BookingStatus.rejected:
+        return 'Bị từ chối';
+    }
+  }
+
+  static BookingStatus fromString(String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return BookingStatus.pending;
+      case 'confirmed':
+        return BookingStatus.confirmed;
+      case 'in-progress':
+      case 'inprogress':
+        return BookingStatus.inProgress;
+      case 'completed':
+        return BookingStatus.completed;
+      case 'cancelled':
+        return BookingStatus.cancelled;
+      case 'rejected':
+        return BookingStatus.rejected;
+      default:
+        return BookingStatus.pending;
+    }
+  }
+}
+
+/// Enum for payment status
+enum PaymentStatus {
+  unpaid,
+  paid,
+  refunded,
+  failed;
+
+  String get displayName {
+    switch (this) {
+      case PaymentStatus.unpaid:
+        return 'Chưa thanh toán';
+      case PaymentStatus.paid:
+        return 'Đã thanh toán';
+      case PaymentStatus.refunded:
+        return 'Đã hoàn tiền';
+      case PaymentStatus.failed:
+        return 'Thanh toán thất bại';
+    }
+  }
+
+  static PaymentStatus fromString(String status) {
+    switch (status.toLowerCase()) {
+      case 'paid':
+        return PaymentStatus.paid;
+      case 'refunded':
+        return PaymentStatus.refunded;
+      case 'failed':
+        return PaymentStatus.failed;
+      default:
+        return PaymentStatus.unpaid;
+    }
+  }
+}
+
+class BookingModel extends Equatable {
   final String id;
   final String userId;
   final String partnerId;
@@ -68,15 +150,15 @@ class BookingModel {
       clientLocation: data['clientLocation'] ?? const GeoPoint(0, 0),
       specialInstructions: data['specialInstructions'],
       cancellationReason: data['cancellationReason'],
-      completedAt: data['completedAt'] != null 
-          ? (data['completedAt'] as Timestamp).toDate() 
+      completedAt: data['completedAt'] != null
+          ? (data['completedAt'] as Timestamp).toDate()
           : null,
-      cancelledAt: data['cancelledAt'] != null 
-          ? (data['cancelledAt'] as Timestamp).toDate() 
+      cancelledAt: data['cancelledAt'] != null
+          ? (data['cancelledAt'] as Timestamp).toDate()
           : null,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: data['updatedAt'] != null 
-          ? (data['updatedAt'] as Timestamp).toDate() 
+      updatedAt: data['updatedAt'] != null
+          ? (data['updatedAt'] as Timestamp).toDate()
           : null,
     );
   }
@@ -89,7 +171,7 @@ class BookingModel {
       partnerId: map['partnerId'] ?? '',
       serviceId: map['serviceId'] ?? '',
       serviceName: map['serviceName'] ?? '',
-      scheduledDate: map['scheduledDate'] is Timestamp 
+      scheduledDate: map['scheduledDate'] is Timestamp
           ? (map['scheduledDate'] as Timestamp).toDate()
           : DateTime.parse(map['scheduledDate']),
       timeSlot: map['timeSlot'] ?? '',
@@ -100,28 +182,28 @@ class BookingModel {
       paymentMethod: map['paymentMethod'],
       paymentTransactionId: map['paymentTransactionId'],
       clientAddress: map['clientAddress'] ?? '',
-      clientLocation: map['clientLocation'] is GeoPoint 
-          ? map['clientLocation'] 
+      clientLocation: map['clientLocation'] is GeoPoint
+          ? map['clientLocation']
           : const GeoPoint(0, 0),
       specialInstructions: map['specialInstructions'],
       cancellationReason: map['cancellationReason'],
       completedAt: map['completedAt'] != null
-          ? (map['completedAt'] is Timestamp 
-              ? (map['completedAt'] as Timestamp).toDate()
-              : DateTime.parse(map['completedAt']))
+          ? (map['completedAt'] is Timestamp
+                ? (map['completedAt'] as Timestamp).toDate()
+                : DateTime.parse(map['completedAt']))
           : null,
       cancelledAt: map['cancelledAt'] != null
-          ? (map['cancelledAt'] is Timestamp 
-              ? (map['cancelledAt'] as Timestamp).toDate()
-              : DateTime.parse(map['cancelledAt']))
+          ? (map['cancelledAt'] is Timestamp
+                ? (map['cancelledAt'] as Timestamp).toDate()
+                : DateTime.parse(map['cancelledAt']))
           : null,
-      createdAt: map['createdAt'] is Timestamp 
+      createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.parse(map['createdAt']),
       updatedAt: map['updatedAt'] != null
-          ? (map['updatedAt'] is Timestamp 
-              ? (map['updatedAt'] as Timestamp).toDate()
-              : DateTime.parse(map['updatedAt']))
+          ? (map['updatedAt'] is Timestamp
+                ? (map['updatedAt'] as Timestamp).toDate()
+                : DateTime.parse(map['updatedAt']))
           : null,
     );
   }
@@ -146,8 +228,12 @@ class BookingModel {
       'clientLocation': clientLocation,
       'specialInstructions': specialInstructions,
       'cancellationReason': cancellationReason,
-      'completedAt': completedAt != null ? Timestamp.fromDate(completedAt!) : null,
-      'cancelledAt': cancelledAt != null ? Timestamp.fromDate(cancelledAt!) : null,
+      'completedAt': completedAt != null
+          ? Timestamp.fromDate(completedAt!)
+          : null,
+      'cancelledAt': cancelledAt != null
+          ? Timestamp.fromDate(cancelledAt!)
+          : null,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
     };
@@ -252,14 +338,15 @@ class BookingModel {
   bool get isInProgress => status == 'in-progress';
   bool get isCompleted => status == 'completed';
   bool get isCancelled => status == 'cancelled';
-  
+
   bool get isPaid => paymentStatus == 'paid';
   bool get isUnpaid => paymentStatus == 'unpaid';
-  
+
   String get formattedPrice => '${totalPrice.toStringAsFixed(0)}k VND';
-  String get formattedDate => '${scheduledDate.day}/${scheduledDate.month}/${scheduledDate.year}';
+  String get formattedDate =>
+      '${scheduledDate.day}/${scheduledDate.month}/${scheduledDate.year}';
   String get formattedDateTime => '$formattedDate - $timeSlot';
-  
+
   // Check if booking can be cancelled
   bool get canBeCancelled {
     if (isCancelled || isCompleted) return false;
@@ -274,7 +361,7 @@ class BookingModel {
     // Can cancel if booking is more than 2 hours away
     return bookingDateTime.difference(now).inHours > 2;
   }
-  
+
   // Get status display text
   String get statusDisplayText {
     switch (status) {
@@ -292,7 +379,7 @@ class BookingModel {
         return status;
     }
   }
-  
+
   // Get payment status display text
   String get paymentStatusDisplayText {
     switch (paymentStatus) {
@@ -304,4 +391,29 @@ class BookingModel {
         return paymentStatus;
     }
   }
+
+  @override
+  List<Object?> get props => [
+    id,
+    userId,
+    partnerId,
+    serviceId,
+    serviceName,
+    scheduledDate,
+    timeSlot,
+    hours,
+    totalPrice,
+    status,
+    paymentStatus,
+    paymentMethod,
+    paymentTransactionId,
+    clientAddress,
+    clientLocation,
+    specialInstructions,
+    cancellationReason,
+    completedAt,
+    cancelledAt,
+    createdAt,
+    updatedAt,
+  ];
 }

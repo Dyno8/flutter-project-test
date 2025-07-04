@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class ServiceModel {
+class ServiceModel extends Equatable {
   final String id;
   final String name;
   final String description;
@@ -47,8 +48,8 @@ class ServiceModel {
       isActive: data['isActive'] ?? true,
       sortOrder: data['sortOrder'] ?? 0,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: data['updatedAt'] != null 
-          ? (data['updatedAt'] as Timestamp).toDate() 
+      updatedAt: data['updatedAt'] != null
+          ? (data['updatedAt'] as Timestamp).toDate()
           : null,
     );
   }
@@ -67,13 +68,13 @@ class ServiceModel {
       benefits: List<String>.from(map['benefits'] ?? []),
       isActive: map['isActive'] ?? true,
       sortOrder: map['sortOrder'] ?? 0,
-      createdAt: map['createdAt'] is Timestamp 
+      createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.parse(map['createdAt']),
       updatedAt: map['updatedAt'] != null
-          ? (map['updatedAt'] is Timestamp 
-              ? (map['updatedAt'] as Timestamp).toDate()
-              : DateTime.parse(map['updatedAt']))
+          ? (map['updatedAt'] is Timestamp
+                ? (map['updatedAt'] as Timestamp).toDate()
+                : DateTime.parse(map['updatedAt']))
           : null,
     );
   }
@@ -150,13 +151,21 @@ class ServiceModel {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is ServiceModel && other.id == id;
-  }
-
-  @override
-  int get hashCode => id.hashCode;
+  List<Object?> get props => [
+    id,
+    name,
+    description,
+    category,
+    iconUrl,
+    basePrice,
+    durationMinutes,
+    requirements,
+    benefits,
+    isActive,
+    sortOrder,
+    createdAt,
+    updatedAt,
+  ];
 
   @override
   String toString() {
@@ -165,13 +174,13 @@ class ServiceModel {
 
   // Helper methods
   String get formattedPrice => '${basePrice.toStringAsFixed(0)}k VND/giờ';
-  String get formattedDuration => '${durationMinutes} phút';
-  
+  String get formattedDuration => '$durationMinutes phút';
+
   // Calculate total price for given hours
   double calculatePrice(double hours) {
     return basePrice * hours;
   }
-  
+
   // Get formatted total price
   String getFormattedTotalPrice(double hours) {
     final total = calculatePrice(hours);
@@ -185,18 +194,18 @@ class ServiceCategory {
   static const String petCare = 'pet_care';
   static const String childCare = 'child_care';
   static const String housekeeping = 'housekeeping';
-  
+
   static const Map<String, String> categoryNames = {
     elderCare: 'Chăm sóc người cao tuổi',
     petCare: 'Chăm sóc thú cưng',
     childCare: 'Chăm sóc trẻ em',
     housekeeping: 'Dọn dẹp nhà cửa',
   };
-  
+
   static String getCategoryName(String category) {
     return categoryNames[category] ?? category;
   }
-  
+
   static List<String> getAllCategories() {
     return categoryNames.keys.toList();
   }
