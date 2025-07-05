@@ -192,33 +192,150 @@ class NotificationService {
   void _navigateBasedOnNotification(Map<String, dynamic> data) {
     final type = data['type'] as String?;
     final bookingId = data['bookingId'] as String?;
+    final jobId = data['jobId'] as String?;
 
     switch (type) {
       case 'new_booking':
-        // Navigate to partner booking details
-        print('Navigate to booking details: $bookingId');
+      case 'new_job':
+        // Navigate to partner job details
+        print('Navigate to job details: ${jobId ?? bookingId}');
         break;
       case 'booking_confirmed':
-        // Navigate to client booking details
-        print('Navigate to booking details: $bookingId');
+      case 'job_accepted':
+        // Navigate to job details
+        print('Navigate to job details: ${jobId ?? bookingId}');
         break;
       case 'booking_started':
-        // Navigate to booking tracking
-        print('Navigate to booking tracking: $bookingId');
+      case 'job_started':
+        // Navigate to job tracking
+        print('Navigate to job tracking: ${jobId ?? bookingId}');
         break;
       case 'booking_completed':
-        // Navigate to review screen
-        print('Navigate to review screen: $bookingId');
+      case 'job_completed':
+        // Navigate to earnings or review screen
+        print('Navigate to earnings screen');
         break;
       case 'booking_cancelled':
-        // Navigate to booking history
-        print('Navigate to booking history');
+      case 'job_cancelled':
+        // Navigate to job history
+        print('Navigate to job history');
+        break;
+      case 'earnings_update':
+        // Navigate to earnings screen
+        print('Navigate to earnings screen');
+        break;
+      case 'rating_received':
+        // Navigate to profile/ratings
+        print('Navigate to profile ratings');
         break;
       default:
-        // Navigate to home
-        print('Navigate to home');
+        // Navigate to partner dashboard
+        print('Navigate to partner dashboard');
         break;
     }
+  }
+
+  // Partner-specific notification methods
+
+  /// Subscribe to partner notifications
+  Future<void> subscribeToPartnerNotifications(String partnerId) async {
+    await subscribeToTopic('partner_$partnerId');
+    await subscribeToTopic('partner_general');
+    print('Subscribed to partner notifications: $partnerId');
+  }
+
+  /// Unsubscribe from partner notifications
+  Future<void> unsubscribeFromPartnerNotifications(String partnerId) async {
+    await unsubscribeFromTopic('partner_$partnerId');
+    await unsubscribeFromTopic('partner_general');
+    print('Unsubscribed from partner notifications: $partnerId');
+  }
+
+  /// Send new job notification to partner
+  Future<void> sendNewJobNotification({
+    required String partnerId,
+    required String jobId,
+    required String serviceName,
+    required String clientName,
+    required String earnings,
+  }) async {
+    await _showLocalNotification(
+      title: 'New Job Available!',
+      body: '$serviceName for $clientName - Earn $earnings',
+      data: {'type': 'new_job', 'jobId': jobId, 'partnerId': partnerId},
+    );
+  }
+
+  /// Send job status update notification
+  Future<void> sendJobStatusNotification({
+    required String partnerId,
+    required String jobId,
+    required String status,
+    required String serviceName,
+  }) async {
+    String title;
+    String body;
+
+    switch (status) {
+      case 'accepted':
+        title = 'Job Accepted';
+        body = 'You have accepted the $serviceName job';
+        break;
+      case 'started':
+        title = 'Job Started';
+        body = 'You have started the $serviceName job';
+        break;
+      case 'completed':
+        title = 'Job Completed';
+        body = 'You have completed the $serviceName job';
+        break;
+      case 'cancelled':
+        title = 'Job Cancelled';
+        body = 'The $serviceName job has been cancelled';
+        break;
+      default:
+        title = 'Job Update';
+        body = 'Your $serviceName job status has been updated';
+    }
+
+    await _showLocalNotification(
+      title: title,
+      body: body,
+      data: {'type': 'job_$status', 'jobId': jobId, 'partnerId': partnerId},
+    );
+  }
+
+  /// Send earnings update notification
+  Future<void> sendEarningsNotification({
+    required String partnerId,
+    required String amount,
+    required String period,
+  }) async {
+    await _showLocalNotification(
+      title: 'Earnings Update',
+      body: 'You earned $amount $period',
+      data: {'type': 'earnings_update', 'partnerId': partnerId},
+    );
+  }
+
+  /// Send rating received notification
+  Future<void> sendRatingNotification({
+    required String partnerId,
+    required String jobId,
+    required double rating,
+    required String? review,
+  }) async {
+    await _showLocalNotification(
+      title: 'New Rating Received',
+      body:
+          'You received a ${rating.toStringAsFixed(1)} star rating${review != null ? ' with review' : ''}',
+      data: {
+        'type': 'rating_received',
+        'jobId': jobId,
+        'partnerId': partnerId,
+        'rating': rating.toString(),
+      },
+    );
   }
 
   // Schedule local notification

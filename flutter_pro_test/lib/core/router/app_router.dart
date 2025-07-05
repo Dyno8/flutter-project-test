@@ -15,6 +15,7 @@ import '../../features/booking/presentation/screens/service_selection_screen.dar
 import '../../features/booking/presentation/screens/datetime_selection_screen.dart';
 import '../../features/booking/presentation/screens/partner_selection_screen.dart';
 import '../../features/booking/presentation/screens/booking_confirmation_screen.dart';
+import '../../features/partner/presentation/screens/partner_dashboard_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -28,6 +29,13 @@ class AppRouter {
   static const String booking = '/booking';
   static const String profile = '/profile';
   static const String editProfile = '/profile/edit';
+
+  // Partner routes
+  static const String partnerDashboard = '/partner/dashboard';
+  static const String partnerJobDetails = '/partner/job-details';
+  static const String partnerJobHistory = '/partner/job-history';
+  static const String partnerEarnings = '/partner/earnings';
+  static const String partnerSettings = '/partner/settings';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -95,6 +103,41 @@ class AppRouter {
         path: partnerHome,
         builder: (context, state) => const PartnerHomeScreen(),
         routes: [
+          GoRoute(
+            path: 'dashboard',
+            builder: (context, state) {
+              final partnerId =
+                  state.pathParameters['partnerId'] ??
+                  state.uri.queryParameters['partnerId'] ??
+                  '';
+              return PartnerDashboardScreen(partnerId: partnerId);
+            },
+          ),
+          GoRoute(
+            path: 'job-details/:jobId',
+            builder: (context, state) {
+              final jobId = state.pathParameters['jobId']!;
+              return JobDetailsScreen(jobId: jobId);
+            },
+          ),
+          GoRoute(
+            path: 'job-history',
+            builder: (context, state) {
+              final partnerId = state.uri.queryParameters['partnerId'] ?? '';
+              return JobHistoryScreen(partnerId: partnerId);
+            },
+          ),
+          GoRoute(
+            path: 'earnings',
+            builder: (context, state) {
+              final partnerId = state.uri.queryParameters['partnerId'] ?? '';
+              return EarningsScreen(partnerId: partnerId);
+            },
+          ),
+          GoRoute(
+            path: 'settings',
+            builder: (context, state) => const PartnerSettingsScreen(),
+          ),
           GoRoute(
             path: 'profile',
             builder: (context, state) => const ProfileScreen(),
@@ -208,9 +251,15 @@ class PartnerHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // For now, redirect to dashboard with a placeholder partner ID
+    // In a real app, you would get the partner ID from authentication
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.go('/partner/dashboard?partnerId=demo-partner-id');
+    });
+
     return Scaffold(
       appBar: AppBar(title: const Text('CareNow - Đối tác')),
-      body: const Center(child: Text('Partner Home - Coming Soon')),
+      body: const Center(child: CircularProgressIndicator()),
     );
   }
 }
@@ -235,6 +284,62 @@ class PartnerProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Hồ sơ đối tác')),
       body: const Center(child: Text('Partner Profile - Coming Soon')),
+    );
+  }
+}
+
+// Partner Dashboard Screens (Placeholders for missing screens)
+
+class JobDetailsScreen extends StatelessWidget {
+  final String jobId;
+
+  const JobDetailsScreen({super.key, required this.jobId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Job Details')),
+      body: Center(child: Text('Job Details for: $jobId')),
+    );
+  }
+}
+
+class JobHistoryScreen extends StatelessWidget {
+  final String partnerId;
+
+  const JobHistoryScreen({super.key, required this.partnerId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Job History')),
+      body: Center(child: Text('Job History for partner: $partnerId')),
+    );
+  }
+}
+
+class EarningsScreen extends StatelessWidget {
+  final String partnerId;
+
+  const EarningsScreen({super.key, required this.partnerId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Earnings')),
+      body: Center(child: Text('Earnings for partner: $partnerId')),
+    );
+  }
+}
+
+class PartnerSettingsScreen extends StatelessWidget {
+  const PartnerSettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings')),
+      body: const Center(child: Text('Partner Settings - Coming Soon')),
     );
   }
 }
