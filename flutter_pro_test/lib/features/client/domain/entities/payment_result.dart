@@ -12,7 +12,7 @@ class PaymentResult extends Equatable {
   final Map<String, dynamic>? metadata;
   final DateTime timestamp;
 
-  const PaymentResult({
+  PaymentResult({
     required this.success,
     this.transactionId,
     this.amount,
@@ -22,9 +22,7 @@ class PaymentResult extends Equatable {
     this.errorCode,
     this.metadata,
     DateTime? timestamp,
-  }) : timestamp = timestamp ?? const PaymentResult._defaultTimestamp();
-
-  const PaymentResult._defaultTimestamp() : timestamp = null;
+  }) : timestamp = timestamp ?? DateTime.now();
 
   /// Create a successful payment result
   factory PaymentResult.success({
@@ -90,16 +88,16 @@ class PaymentResult extends Equatable {
 
   @override
   List<Object?> get props => [
-        success,
-        transactionId,
-        amount,
-        currency,
-        status,
-        errorMessage,
-        errorCode,
-        metadata,
-        timestamp,
-      ];
+    success,
+    transactionId,
+    amount,
+    currency,
+    status,
+    errorMessage,
+    errorCode,
+    metadata,
+    timestamp,
+  ];
 
   PaymentResult copyWith({
     bool? success,
