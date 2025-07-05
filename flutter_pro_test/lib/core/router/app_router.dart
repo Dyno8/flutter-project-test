@@ -16,6 +16,8 @@ import '../../features/booking/presentation/screens/datetime_selection_screen.da
 import '../../features/booking/presentation/screens/partner_selection_screen.dart';
 import '../../features/booking/presentation/screens/booking_confirmation_screen.dart';
 import '../../features/partner/presentation/screens/partner_dashboard_screen.dart';
+import '../../features/client/presentation/screens/payment_method_selection_screen.dart';
+import '../../features/client/presentation/screens/payment_processing_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -88,6 +90,32 @@ class AppRouter {
               GoRoute(
                 path: 'confirmation',
                 builder: (context, state) => const BookingConfirmationScreen(),
+              ),
+              GoRoute(
+                path: 'payment-method',
+                builder: (context, state) {
+                  final extra = state.extra as Map<String, dynamic>?;
+                  return PaymentMethodSelectionScreen(
+                    service: extra?['service'],
+                    hours: extra?['hours'] ?? 0.0,
+                    totalPrice: extra?['totalPrice'] ?? 0.0,
+                    isUrgent: extra?['isUrgent'] ?? false,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'payment-processing',
+                builder: (context, state) {
+                  final extra = state.extra as Map<String, dynamic>?;
+                  return PaymentProcessingScreen(
+                    service: extra?['service'],
+                    hours: extra?['hours'] ?? 0.0,
+                    totalPrice: extra?['totalPrice'] ?? 0.0,
+                    paymentMethod: extra?['paymentMethod'],
+                    isUrgent: extra?['isUrgent'] ?? false,
+                    bookingId: extra?['bookingId'],
+                  );
+                },
               ),
             ],
           ),

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import '../../../../core/errors/exceptions.dart';
 import '../../../../shared/services/firebase_service.dart';
 import '../../domain/entities/payment_request.dart';
@@ -125,15 +126,45 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
     String transactionId,
   ) async {
     try {
-      // TODO: Implement actual Stripe integration
-      // For now, return mock success
+      // Convert VND to smallest currency unit (for Stripe, VND doesn't have subunits)
+      final amountInCents = (request.amount).round();
+
+      // Create payment intent
+      final paymentIntent = await _createStripePaymentIntent(
+        amount: amountInCents,
+        currency: request.currency.toLowerCase(),
+        metadata: {
+          'booking_id': request.bookingId,
+          'transaction_id': transactionId,
+        },
+      );
+
+      if (paymentIntent == null) {
+        return PaymentResultModel.failure(
+          errorMessage: 'Failed to create payment intent',
+          errorCode: 'STRIPE_PAYMENT_INTENT_ERROR',
+        );
+      }
+
+      // For now, simulate successful payment
+      // In a real app, you would present the payment sheet to the user
+      // and handle the payment confirmation
       await Future.delayed(const Duration(seconds: 3));
 
       return PaymentResultModel.success(
-        transactionId: transactionId,
+        transactionId: paymentIntent['id'] ?? transactionId,
         amount: request.amount,
         currency: request.currency,
-        metadata: {'paymentMethod': 'stripe', 'bookingId': request.bookingId},
+        metadata: {
+          'paymentMethod': 'stripe',
+          'bookingId': request.bookingId,
+          'stripePaymentIntentId': paymentIntent['id'],
+        },
+      );
+    } on stripe.StripeException catch (e) {
+      return PaymentResultModel.failure(
+        errorMessage: 'Stripe payment failed: ${e.error.localizedMessage}',
+        errorCode: e.error.code.name,
       );
     } catch (e) {
       return PaymentResultModel.failure(
@@ -290,6 +321,38 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
           .toList();
     } catch (e) {
       throw ServerException('Failed to get payment history: $e');
+    }
+  }
+
+  /// Create Stripe payment intent
+  /// In a real implementation, this would call your backend API
+  /// which would create the payment intent using Stripe's server-side SDK
+  Future<Map<String, dynamic>?> _createStripePaymentIntent({
+    required int amount,
+    required String currency,
+    Map<String, String>? metadata,
+  }) async {
+    try {
+      // TODO: Replace with actual backend API call
+      // This is a mock implementation for demonstration
+      // In production, you should NEVER create payment intents on the client side
+
+      // Simulate API call delay
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Mock payment intent response
+      return {
+        'id': 'pi_mock_${DateTime.now().millisecondsSinceEpoch}',
+        'amount': amount,
+        'currency': currency,
+        'status': 'requires_payment_method',
+        'client_secret':
+            'pi_mock_secret_${DateTime.now().millisecondsSinceEpoch}',
+        'metadata': metadata ?? {},
+      };
+    } catch (e) {
+      print('Failed to create payment intent: $e');
+      return null;
     }
   }
 }

@@ -15,7 +15,8 @@ class BookingConfirmationScreen extends StatefulWidget {
   const BookingConfirmationScreen({super.key});
 
   @override
-  State<BookingConfirmationScreen> createState() => _BookingConfirmationScreenState();
+  State<BookingConfirmationScreen> createState() =>
+      _BookingConfirmationScreenState();
 }
 
 class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
@@ -53,30 +54,31 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
           }
         },
         builder: (context, state) {
-          if (state is! PartnerSelected && state is! BookingReadyForConfirmation) {
+          if (state is! PartnerSelected &&
+              state is! BookingReadyForConfirmation) {
             return const Center(
               child: Text('Vui lòng hoàn tất các bước trước'),
             );
           }
 
-          final selectedService = state is PartnerSelected 
-              ? state.selectedService 
+          final selectedService = state is PartnerSelected
+              ? state.selectedService
               : (state as BookingReadyForConfirmation).selectedService;
 
-          final selectedDate = state is PartnerSelected 
-              ? state.selectedDate 
+          final selectedDate = state is PartnerSelected
+              ? state.selectedDate
               : (state as BookingReadyForConfirmation).selectedDate;
 
-          final selectedTimeSlot = state is PartnerSelected 
-              ? state.selectedTimeSlot 
+          final selectedTimeSlot = state is PartnerSelected
+              ? state.selectedTimeSlot
               : (state as BookingReadyForConfirmation).selectedTimeSlot;
 
-          final selectedHours = state is PartnerSelected 
-              ? state.selectedHours 
+          final selectedHours = state is PartnerSelected
+              ? state.selectedHours
               : (state as BookingReadyForConfirmation).selectedHours;
 
-          final selectedPartner = state is PartnerSelected 
-              ? state.selectedPartner 
+          final selectedPartner = state is PartnerSelected
+              ? state.selectedPartner
               : (state as BookingReadyForConfirmation).selectedPartner;
 
           final totalPrice = selectedService.calculatePrice(selectedHours);
@@ -136,7 +138,8 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                   controller: _instructionsController,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    hintText: 'Nhập ghi chú cho người chăm sóc (không bắt buộc)',
+                    hintText:
+                        'Nhập ghi chú cho người chăm sóc (không bắt buộc)',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
@@ -156,7 +159,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                   height: 48.h,
                   child: ElevatedButton(
                     onPressed: _hasSetAddress && state is! BookingCreating
-                        ? () => _confirmBooking(context)
+                        ? () => _proceedToPayment(context, state)
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -171,11 +174,13 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                             height: 20.h,
                             child: const CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           )
                         : Text(
-                            'Xác nhận đặt lịch',
+                            'Tiếp tục thanh toán',
                             style: TextStyle(
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
@@ -188,10 +193,7 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
                 // Terms and Conditions
                 Text(
                   'Bằng cách đặt lịch, bạn đồng ý với điều khoản sử dụng và chính sách bảo mật của chúng tôi.',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -202,18 +204,31 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
     );
   }
 
-  void _confirmBooking(BuildContext context) {
+  void _proceedToPayment(BuildContext context, BookingState state) {
     final authState = context.read<AuthBloc>().state;
-    if (authState is AuthAuthenticated) {
-      context.read<BookingBloc>().add(
-        CreateBookingEvent(authState.user.uid),
-      );
-    } else {
+    if (authState is! AuthAuthenticated) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Vui lòng đăng nhập để đặt lịch'),
           backgroundColor: Colors.red,
         ),
+      );
+      return;
+    }
+
+    if (state is PartnerSelected) {
+      // Calculate total price
+      final totalPrice = state.selectedService.basePrice * state.selectedHours;
+
+      // Navigate to payment method selection
+      context.push(
+        '/client/booking/payment-method',
+        extra: {
+          'service': state.selectedService,
+          'hours': state.selectedHours,
+          'totalPrice': totalPrice,
+          'isUrgent': false, // You can add urgent booking logic here
+        },
       );
     }
   }
@@ -229,27 +244,17 @@ class _BookingConfirmationScreenState extends State<BookingConfirmationScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.check_circle,
-              size: 64.r,
-              color: Colors.green,
-            ),
+            Icon(Icons.check_circle, size: 64.r, color: Colors.green),
             SizedBox(height: 16.h),
             Text(
               'Đặt lịch thành công!',
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8.h),
             Text(
               'Chúng tôi sẽ liên hệ với bạn sớm nhất để xác nhận lịch hẹn.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
             ),
           ],
         ),
