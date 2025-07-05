@@ -87,24 +87,24 @@ class JobModel extends Equatable {
       clientLocation: data['clientLocation'] ?? const GeoPoint(0, 0),
       specialInstructions: data['specialInstructions'],
       rejectionReason: data['rejectionReason'],
-      acceptedAt: data['acceptedAt'] != null 
-          ? (data['acceptedAt'] as Timestamp).toDate() 
+      acceptedAt: data['acceptedAt'] != null
+          ? (data['acceptedAt'] as Timestamp).toDate()
           : null,
-      rejectedAt: data['rejectedAt'] != null 
-          ? (data['rejectedAt'] as Timestamp).toDate() 
+      rejectedAt: data['rejectedAt'] != null
+          ? (data['rejectedAt'] as Timestamp).toDate()
           : null,
-      startedAt: data['startedAt'] != null 
-          ? (data['startedAt'] as Timestamp).toDate() 
+      startedAt: data['startedAt'] != null
+          ? (data['startedAt'] as Timestamp).toDate()
           : null,
-      completedAt: data['completedAt'] != null 
-          ? (data['completedAt'] as Timestamp).toDate() 
+      completedAt: data['completedAt'] != null
+          ? (data['completedAt'] as Timestamp).toDate()
           : null,
-      cancelledAt: data['cancelledAt'] != null 
-          ? (data['cancelledAt'] as Timestamp).toDate() 
+      cancelledAt: data['cancelledAt'] != null
+          ? (data['cancelledAt'] as Timestamp).toDate()
           : null,
       createdAt: (data['createdAt'] as Timestamp).toDate(),
-      updatedAt: data['updatedAt'] != null 
-          ? (data['updatedAt'] as Timestamp).toDate() 
+      updatedAt: data['updatedAt'] != null
+          ? (data['updatedAt'] as Timestamp).toDate()
           : null,
       isUrgent: data['isUrgent'] ?? false,
       distanceFromPartner: data['distanceFromPartner']?.toDouble(),
@@ -142,36 +142,36 @@ class JobModel extends Equatable {
       rejectionReason: map['rejectionReason'],
       acceptedAt: map['acceptedAt'] != null
           ? (map['acceptedAt'] is Timestamp
-              ? (map['acceptedAt'] as Timestamp).toDate()
-              : DateTime.parse(map['acceptedAt']))
+                ? (map['acceptedAt'] as Timestamp).toDate()
+                : DateTime.parse(map['acceptedAt']))
           : null,
       rejectedAt: map['rejectedAt'] != null
           ? (map['rejectedAt'] is Timestamp
-              ? (map['rejectedAt'] as Timestamp).toDate()
-              : DateTime.parse(map['rejectedAt']))
+                ? (map['rejectedAt'] as Timestamp).toDate()
+                : DateTime.parse(map['rejectedAt']))
           : null,
       startedAt: map['startedAt'] != null
           ? (map['startedAt'] is Timestamp
-              ? (map['startedAt'] as Timestamp).toDate()
-              : DateTime.parse(map['startedAt']))
+                ? (map['startedAt'] as Timestamp).toDate()
+                : DateTime.parse(map['startedAt']))
           : null,
       completedAt: map['completedAt'] != null
           ? (map['completedAt'] is Timestamp
-              ? (map['completedAt'] as Timestamp).toDate()
-              : DateTime.parse(map['completedAt']))
+                ? (map['completedAt'] as Timestamp).toDate()
+                : DateTime.parse(map['completedAt']))
           : null,
       cancelledAt: map['cancelledAt'] != null
           ? (map['cancelledAt'] is Timestamp
-              ? (map['cancelledAt'] as Timestamp).toDate()
-              : DateTime.parse(map['cancelledAt']))
+                ? (map['cancelledAt'] as Timestamp).toDate()
+                : DateTime.parse(map['cancelledAt']))
           : null,
       createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.parse(map['createdAt']),
       updatedAt: map['updatedAt'] != null
           ? (map['updatedAt'] is Timestamp
-              ? (map['updatedAt'] as Timestamp).toDate()
-              : DateTime.parse(map['updatedAt']))
+                ? (map['updatedAt'] as Timestamp).toDate()
+                : DateTime.parse(map['updatedAt']))
           : null,
       isUrgent: map['isUrgent'] ?? false,
       distanceFromPartner: map['distanceFromPartner']?.toDouble(),
@@ -203,8 +203,12 @@ class JobModel extends Equatable {
       'acceptedAt': acceptedAt != null ? Timestamp.fromDate(acceptedAt!) : null,
       'rejectedAt': rejectedAt != null ? Timestamp.fromDate(rejectedAt!) : null,
       'startedAt': startedAt != null ? Timestamp.fromDate(startedAt!) : null,
-      'completedAt': completedAt != null ? Timestamp.fromDate(completedAt!) : null,
-      'cancelledAt': cancelledAt != null ? Timestamp.fromDate(cancelledAt!) : null,
+      'completedAt': completedAt != null
+          ? Timestamp.fromDate(completedAt!)
+          : null,
+      'cancelledAt': cancelledAt != null
+          ? Timestamp.fromDate(cancelledAt!)
+          : null,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : null,
       'isUrgent': isUrgent,
@@ -281,35 +285,98 @@ class JobModel extends Equatable {
     );
   }
 
+  /// Copy with method for creating modified instances
+  JobModel copyWith({
+    String? id,
+    String? bookingId,
+    String? partnerId,
+    String? userId,
+    String? clientName,
+    String? clientPhone,
+    String? serviceId,
+    String? serviceName,
+    DateTime? scheduledDate,
+    String? timeSlot,
+    double? hours,
+    double? totalPrice,
+    double? partnerEarnings,
+    String? status,
+    String? priority,
+    String? clientAddress,
+    GeoPoint? clientLocation,
+    String? specialInstructions,
+    String? rejectionReason,
+    DateTime? acceptedAt,
+    DateTime? rejectedAt,
+    DateTime? startedAt,
+    DateTime? completedAt,
+    DateTime? cancelledAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isUrgent,
+    double? distanceFromPartner,
+  }) {
+    return JobModel(
+      id: id ?? this.id,
+      bookingId: bookingId ?? this.bookingId,
+      partnerId: partnerId ?? this.partnerId,
+      userId: userId ?? this.userId,
+      clientName: clientName ?? this.clientName,
+      clientPhone: clientPhone ?? this.clientPhone,
+      serviceId: serviceId ?? this.serviceId,
+      serviceName: serviceName ?? this.serviceName,
+      scheduledDate: scheduledDate ?? this.scheduledDate,
+      timeSlot: timeSlot ?? this.timeSlot,
+      hours: hours ?? this.hours,
+      totalPrice: totalPrice ?? this.totalPrice,
+      partnerEarnings: partnerEarnings ?? this.partnerEarnings,
+      status: status ?? this.status,
+      priority: priority ?? this.priority,
+      clientAddress: clientAddress ?? this.clientAddress,
+      clientLocation: clientLocation ?? this.clientLocation,
+      specialInstructions: specialInstructions ?? this.specialInstructions,
+      rejectionReason: rejectionReason ?? this.rejectionReason,
+      acceptedAt: acceptedAt ?? this.acceptedAt,
+      rejectedAt: rejectedAt ?? this.rejectedAt,
+      startedAt: startedAt ?? this.startedAt,
+      completedAt: completedAt ?? this.completedAt,
+      cancelledAt: cancelledAt ?? this.cancelledAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isUrgent: isUrgent ?? this.isUrgent,
+      distanceFromPartner: distanceFromPartner ?? this.distanceFromPartner,
+    );
+  }
+
   @override
   List<Object?> get props => [
-        id,
-        bookingId,
-        partnerId,
-        userId,
-        clientName,
-        clientPhone,
-        serviceId,
-        serviceName,
-        scheduledDate,
-        timeSlot,
-        hours,
-        totalPrice,
-        partnerEarnings,
-        status,
-        priority,
-        clientAddress,
-        clientLocation,
-        specialInstructions,
-        rejectionReason,
-        acceptedAt,
-        rejectedAt,
-        startedAt,
-        completedAt,
-        cancelledAt,
-        createdAt,
-        updatedAt,
-        isUrgent,
-        distanceFromPartner,
-      ];
+    id,
+    bookingId,
+    partnerId,
+    userId,
+    clientName,
+    clientPhone,
+    serviceId,
+    serviceName,
+    scheduledDate,
+    timeSlot,
+    hours,
+    totalPrice,
+    partnerEarnings,
+    status,
+    priority,
+    clientAddress,
+    clientLocation,
+    specialInstructions,
+    rejectionReason,
+    acceptedAt,
+    rejectedAt,
+    startedAt,
+    completedAt,
+    cancelledAt,
+    createdAt,
+    updatedAt,
+    isUrgent,
+    distanceFromPartner,
+  ];
 }

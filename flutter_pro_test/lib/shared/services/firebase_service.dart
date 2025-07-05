@@ -19,20 +19,25 @@ class FirebaseService {
   FirebaseFirestore get firestore => _firestore;
   FirebaseMessaging get messaging => _messaging;
 
+  // Helper method to get collection reference
+  CollectionReference<Map<String, dynamic>> collection(String path) {
+    return _firestore.collection(path);
+  }
+
   // Collection references
-  CollectionReference get usersCollection => 
+  CollectionReference get usersCollection =>
       _firestore.collection(AppConstants.usersCollection);
-  
-  CollectionReference get partnersCollection => 
+
+  CollectionReference get partnersCollection =>
       _firestore.collection(AppConstants.partnersCollection);
-  
-  CollectionReference get servicesCollection => 
+
+  CollectionReference get servicesCollection =>
       _firestore.collection(AppConstants.servicesCollection);
-  
-  CollectionReference get bookingsCollection => 
+
+  CollectionReference get bookingsCollection =>
       _firestore.collection(AppConstants.bookingsCollection);
-  
-  CollectionReference get reviewsCollection => 
+
+  CollectionReference get reviewsCollection =>
       _firestore.collection(AppConstants.reviewsCollection);
 
   // Current user
@@ -46,7 +51,7 @@ class FirebaseService {
   Future<void> initialize() async {
     // Request notification permissions
     await _requestNotificationPermissions();
-    
+
     // Set up FCM token
     await _setupFCMToken();
   }
@@ -106,7 +111,7 @@ class FirebaseService {
     if (currentUser != null) {
       // Delete user data from Firestore
       await usersCollection.doc(currentUser!.uid).delete();
-      
+
       // Delete Firebase Auth account
       await currentUser!.delete();
     }
@@ -127,10 +132,7 @@ class FirebaseService {
     String collection,
     String documentId,
   ) {
-    return _firestore
-        .collection(collection)
-        .doc(documentId)
-        .snapshots();
+    return _firestore.collection(collection).doc(documentId).snapshots();
   }
 
   // Listen to collection changes
@@ -194,10 +196,7 @@ class FirebaseService {
   }
 
   // Delete document
-  Future<void> deleteDocument(
-    String collection,
-    String documentId,
-  ) {
+  Future<void> deleteDocument(String collection, String documentId) {
     return _firestore.collection(collection).doc(documentId).delete();
   }
 
@@ -205,10 +204,12 @@ class FirebaseService {
   FieldValue get serverTimestamp => FieldValue.serverTimestamp();
 
   // Array union
-  FieldValue arrayUnion(List<dynamic> elements) => FieldValue.arrayUnion(elements);
+  FieldValue arrayUnion(List<dynamic> elements) =>
+      FieldValue.arrayUnion(elements);
 
   // Array remove
-  FieldValue arrayRemove(List<dynamic> elements) => FieldValue.arrayRemove(elements);
+  FieldValue arrayRemove(List<dynamic> elements) =>
+      FieldValue.arrayRemove(elements);
 
   // Increment
   FieldValue increment(num value) => FieldValue.increment(value);

@@ -37,10 +37,13 @@ class PartnerEarnings extends Equatable {
   });
 
   // Helper methods
-  String get formattedTotalEarnings => '${totalEarnings.toStringAsFixed(0)}k VND';
-  String get formattedTodayEarnings => '${todayEarnings.toStringAsFixed(0)}k VND';
+  String get formattedTotalEarnings =>
+      '${totalEarnings.toStringAsFixed(0)}k VND';
+  String get formattedTodayEarnings =>
+      '${todayEarnings.toStringAsFixed(0)}k VND';
   String get formattedWeekEarnings => '${weekEarnings.toStringAsFixed(0)}k VND';
-  String get formattedMonthEarnings => '${monthEarnings.toStringAsFixed(0)}k VND';
+  String get formattedMonthEarnings =>
+      '${monthEarnings.toStringAsFixed(0)}k VND';
   String get formattedRating => averageRating.toStringAsFixed(1);
 
   double get averageEarningsPerJob {
@@ -48,15 +51,21 @@ class PartnerEarnings extends Equatable {
     return totalEarnings / totalJobs;
   }
 
-  String get formattedAveragePerJob => '${averageEarningsPerJob.toStringAsFixed(0)}k VND';
+  String get formattedAveragePerJob =>
+      '${averageEarningsPerJob.toStringAsFixed(0)}k VND';
 
   // Calculate earnings growth
   double get weeklyGrowth {
     if (dailyBreakdown.length < 14) return 0;
-    
-    final thisWeek = dailyBreakdown.take(7).fold(0.0, (sum, day) => sum + day.earnings);
-    final lastWeek = dailyBreakdown.skip(7).take(7).fold(0.0, (sum, day) => sum + day.earnings);
-    
+
+    final thisWeek = dailyBreakdown
+        .take(7)
+        .fold(0.0, (sum, day) => sum + day.earnings);
+    final lastWeek = dailyBreakdown
+        .skip(7)
+        .take(7)
+        .fold(0.0, (sum, day) => sum + day.earnings);
+
     if (lastWeek == 0) return 0;
     return ((thisWeek - lastWeek) / lastWeek) * 100;
   }
@@ -69,22 +78,22 @@ class PartnerEarnings extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        partnerId,
-        totalEarnings,
-        todayEarnings,
-        weekEarnings,
-        monthEarnings,
-        totalJobs,
-        todayJobs,
-        weekJobs,
-        monthJobs,
-        averageRating,
-        totalReviews,
-        platformFeeRate,
-        lastUpdated,
-        dailyBreakdown,
-      ];
+    id,
+    partnerId,
+    totalEarnings,
+    todayEarnings,
+    weekEarnings,
+    monthEarnings,
+    totalJobs,
+    todayJobs,
+    weekJobs,
+    monthJobs,
+    averageRating,
+    totalReviews,
+    platformFeeRate,
+    lastUpdated,
+    dailyBreakdown,
+  ];
 }
 
 /// Daily earnings breakdown
@@ -136,7 +145,8 @@ class PartnerAvailability extends Equatable {
   // Helper methods
   bool get isCurrentlyAvailable {
     if (!isAvailable) return false;
-    if (unavailableUntil != null && DateTime.now().isBefore(unavailableUntil!)) {
+    if (unavailableUntil != null &&
+        DateTime.now().isBefore(unavailableUntil!)) {
       return false;
     }
     return true;
@@ -145,7 +155,8 @@ class PartnerAvailability extends Equatable {
   String get availabilityStatus {
     if (!isAvailable) return 'Không khả dụng';
     if (!isOnline) return 'Ngoại tuyến';
-    if (unavailableUntil != null && DateTime.now().isBefore(unavailableUntil!)) {
+    if (unavailableUntil != null &&
+        DateTime.now().isBefore(unavailableUntil!)) {
       return 'Tạm nghỉ';
     }
     return 'Sẵn sàng';
@@ -154,10 +165,10 @@ class PartnerAvailability extends Equatable {
   String get lastSeenText {
     if (isOnline) return 'Đang online';
     if (lastSeen == null) return 'Chưa xác định';
-    
+
     final now = DateTime.now();
     final difference = now.difference(lastSeen!);
-    
+
     if (difference.inMinutes < 1) return 'Vừa xong';
     if (difference.inHours < 1) return '${difference.inMinutes} phút trước';
     if (difference.inDays < 1) return '${difference.inHours} giờ trước';
@@ -167,41 +178,76 @@ class PartnerAvailability extends Equatable {
   // Check if available on specific day and time
   bool isAvailableAt(DateTime dateTime) {
     if (!isCurrentlyAvailable) return false;
-    
-    final dateString = '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+
+    final dateString =
+        '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
     if (blockedDates.contains(dateString)) return false;
-    
+
     final dayOfWeek = _getDayOfWeek(dateTime.weekday);
     final daySchedule = workingHours[dayOfWeek];
     if (daySchedule == null || daySchedule.isEmpty) return false;
-    
-    final timeString = '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+
+    final timeString =
+        '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
     return daySchedule.any((slot) => slot.contains(timeString.split(':')[0]));
   }
 
   String _getDayOfWeek(int weekday) {
     switch (weekday) {
-      case 1: return 'monday';
-      case 2: return 'tuesday';
-      case 3: return 'wednesday';
-      case 4: return 'thursday';
-      case 5: return 'friday';
-      case 6: return 'saturday';
-      case 7: return 'sunday';
-      default: return 'monday';
+      case 1:
+        return 'monday';
+      case 2:
+        return 'tuesday';
+      case 3:
+        return 'wednesday';
+      case 4:
+        return 'thursday';
+      case 5:
+        return 'friday';
+      case 6:
+        return 'saturday';
+      case 7:
+        return 'sunday';
+      default:
+        return 'monday';
     }
+  }
+
+  /// Copy with method for creating modified instances
+  PartnerAvailability copyWith({
+    String? partnerId,
+    bool? isAvailable,
+    bool? isOnline,
+    DateTime? lastSeen,
+    String? unavailabilityReason,
+    DateTime? unavailableUntil,
+    Map<String, List<String>>? workingHours,
+    List<String>? blockedDates,
+    DateTime? lastUpdated,
+  }) {
+    return PartnerAvailability(
+      partnerId: partnerId ?? this.partnerId,
+      isAvailable: isAvailable ?? this.isAvailable,
+      isOnline: isOnline ?? this.isOnline,
+      lastSeen: lastSeen ?? this.lastSeen,
+      unavailabilityReason: unavailabilityReason ?? this.unavailabilityReason,
+      unavailableUntil: unavailableUntil ?? this.unavailableUntil,
+      workingHours: workingHours ?? this.workingHours,
+      blockedDates: blockedDates ?? this.blockedDates,
+      lastUpdated: lastUpdated ?? this.lastUpdated,
+    );
   }
 
   @override
   List<Object?> get props => [
-        partnerId,
-        isAvailable,
-        isOnline,
-        lastSeen,
-        unavailabilityReason,
-        unavailableUntil,
-        workingHours,
-        blockedDates,
-        lastUpdated,
-      ];
+    partnerId,
+    isAvailable,
+    isOnline,
+    lastSeen,
+    unavailabilityReason,
+    unavailableUntil,
+    workingHours,
+    blockedDates,
+    lastUpdated,
+  ];
 }
