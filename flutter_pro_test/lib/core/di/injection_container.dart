@@ -44,6 +44,20 @@ import '../../features/partner/domain/usecases/manage_job_status.dart';
 import '../../features/partner/domain/usecases/get_partner_earnings.dart';
 import '../../features/partner/domain/usecases/manage_availability.dart';
 import '../../features/partner/presentation/bloc/partner_dashboard_bloc.dart';
+import '../../features/client/data/datasources/client_service_remote_data_source.dart';
+import '../../features/client/data/datasources/payment_remote_data_source.dart';
+import '../../features/client/data/repositories/client_service_repository_impl.dart';
+import '../../features/client/data/repositories/payment_repository_impl.dart';
+import '../../features/client/domain/repositories/client_service_repository.dart';
+import '../../features/client/domain/repositories/payment_repository.dart';
+import '../../features/client/domain/usecases/get_available_services.dart'
+    as client_services;
+import '../../features/client/domain/usecases/search_available_partners.dart';
+import '../../features/client/domain/usecases/create_booking.dart'
+    as client_booking;
+import '../../features/client/domain/usecases/process_payment.dart';
+import '../../features/client/domain/usecases/get_client_bookings.dart';
+import '../../features/client/presentation/bloc/client_booking_bloc.dart';
 import '../../shared/services/firebase_service.dart';
 
 final sl = GetIt.instance;
@@ -107,6 +121,19 @@ Future<void> init() async {
     ),
   );
 
+  //! Features - Client Booking
+  // Bloc
+  sl.registerFactory(
+    () => ClientBookingBloc(
+      getAvailableServices: sl(),
+      searchAvailablePartners: sl(),
+      createBooking: sl(),
+      processPayment: sl(),
+      getAvailablePaymentMethods: sl(),
+      getClientBookings: sl(),
+    ),
+  );
+
   // Use cases
   sl.registerLazySingleton(() => SignInWithEmail(sl()));
   sl.registerLazySingleton(() => SignUpWithEmail(sl()));
@@ -141,6 +168,14 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateOnlineStatus(sl()));
   sl.registerLazySingleton(() => UpdateWorkingHours(sl()));
 
+  // Client booking use cases
+  sl.registerLazySingleton(() => client_services.GetAvailableServices(sl()));
+  sl.registerLazySingleton(() => SearchAvailablePartners(sl()));
+  sl.registerLazySingleton(() => client_booking.CreateBooking(sl()));
+  sl.registerLazySingleton(() => ProcessPayment(sl()));
+  sl.registerLazySingleton(() => GetAvailablePaymentMethods(sl()));
+  sl.registerLazySingleton(() => GetClientBookings(sl()));
+
   // Repository
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(dataSource: sl()),
@@ -167,6 +202,14 @@ Future<void> init() async {
     () => PartnerJobRepositoryImpl(remoteDataSource: sl()),
   );
 
+  // Client repositories
+  sl.registerLazySingleton<ClientServiceRepository>(
+    () => ClientServiceRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton<PaymentRepository>(
+    () => PaymentRepositoryImpl(remoteDataSource: sl()),
+  );
+
   // Data sources
   sl.registerLazySingleton<FirebaseAuthDataSource>(
     () => FirebaseAuthDataSourceImpl(firebaseAuth: sl()),
@@ -191,6 +234,14 @@ Future<void> init() async {
   // Partner dashboard data source
   sl.registerLazySingleton<PartnerJobRemoteDataSource>(
     () => PartnerJobRemoteDataSourceImpl(firebaseService: sl()),
+  );
+
+  // Client data sources
+  sl.registerLazySingleton<ClientServiceRemoteDataSource>(
+    () => ClientServiceRemoteDataSourceImpl(sl()),
+  );
+  sl.registerLazySingleton<PaymentRemoteDataSource>(
+    () => PaymentRemoteDataSourceImpl(sl()),
   );
 
   //! External

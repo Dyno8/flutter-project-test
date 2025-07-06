@@ -41,46 +41,133 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBUHzQXl7Wn41WZ2jpTei9PZMUXNKQk3n0',
-    appId: '1:133710469637:web:03e765bcb9d10180d09a6c',
-    messagingSenderId: '133710469637',
-    projectId: 'carenow-app-2024',
-    authDomain: 'carenow-app-2024.firebaseapp.com',
-    storageBucket: 'carenow-app-2024.firebasestorage.app',
+    apiKey: String.fromEnvironment(
+      'FIREBASE_WEB_API_KEY',
+      defaultValue: 'your-web-api-key-here',
+    ),
+    appId: String.fromEnvironment(
+      'FIREBASE_WEB_APP_ID',
+      defaultValue: '1:133710469637:web:03e765bcb9d10180d09a6c',
+    ),
+    messagingSenderId: String.fromEnvironment(
+      'FIREBASE_MESSAGING_SENDER_ID',
+      defaultValue: '133710469637',
+    ),
+    projectId: String.fromEnvironment(
+      'FIREBASE_PROJECT_ID',
+      defaultValue: 'carenow-app-2024',
+    ),
+    authDomain: String.fromEnvironment(
+      'FIREBASE_AUTH_DOMAIN',
+      defaultValue: 'carenow-app-2024.firebaseapp.com',
+    ),
+    storageBucket: String.fromEnvironment(
+      'FIREBASE_STORAGE_BUCKET',
+      defaultValue: 'carenow-app-2024.firebasestorage.app',
+    ),
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCJkIrc6ABuhHD6Wd5qQWUkanfNpdzTxTA',
-    appId: '1:133710469637:android:dd0fe5221aef0304d09a6c',
-    messagingSenderId: '133710469637',
-    projectId: 'carenow-app-2024',
-    storageBucket: 'carenow-app-2024.firebasestorage.app',
+    apiKey: String.fromEnvironment(
+      'FIREBASE_ANDROID_API_KEY',
+      defaultValue: 'your-android-api-key-here',
+    ),
+    appId: String.fromEnvironment(
+      'FIREBASE_ANDROID_APP_ID',
+      defaultValue: '1:133710469637:android:dd0fe5221aef0304d09a6c',
+    ),
+    messagingSenderId: String.fromEnvironment(
+      'FIREBASE_MESSAGING_SENDER_ID',
+      defaultValue: '133710469637',
+    ),
+    projectId: String.fromEnvironment(
+      'FIREBASE_PROJECT_ID',
+      defaultValue: 'carenow-app-2024',
+    ),
+    storageBucket: String.fromEnvironment(
+      'FIREBASE_STORAGE_BUCKET',
+      defaultValue: 'carenow-app-2024.firebasestorage.app',
+    ),
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBwrl-irmOO5OwTb6xH5NRzRis1kDi38XE',
-    appId: '1:133710469637:ios:cecb666ccd35c6edd09a6c',
-    messagingSenderId: '133710469637',
-    projectId: 'carenow-app-2024',
-    storageBucket: 'carenow-app-2024.firebasestorage.app',
-    iosBundleId: 'com.example.flutterProTest',
+    apiKey: String.fromEnvironment(
+      'FIREBASE_IOS_API_KEY',
+      defaultValue: 'your-ios-api-key-here',
+    ),
+    appId: String.fromEnvironment(
+      'FIREBASE_IOS_APP_ID',
+      defaultValue: '1:133710469637:ios:cecb666ccd35c6edd09a6c',
+    ),
+    messagingSenderId: String.fromEnvironment(
+      'FIREBASE_MESSAGING_SENDER_ID',
+      defaultValue: '133710469637',
+    ),
+    projectId: String.fromEnvironment(
+      'FIREBASE_PROJECT_ID',
+      defaultValue: 'carenow-app-2024',
+    ),
+    storageBucket: String.fromEnvironment(
+      'FIREBASE_STORAGE_BUCKET',
+      defaultValue: 'carenow-app-2024.firebasestorage.app',
+    ),
+    iosBundleId: String.fromEnvironment(
+      'FIREBASE_IOS_BUNDLE_ID',
+      defaultValue: 'com.example.flutterProTest',
+    ),
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBwrl-irmOO5OwTb6xH5NRzRis1kDi38XE',
-    appId: '1:133710469637:ios:cecb666ccd35c6edd09a6c',
-    messagingSenderId: '133710469637',
-    projectId: 'carenow-app-2024',
-    storageBucket: 'carenow-app-2024.firebasestorage.app',
-    iosBundleId: 'com.example.flutterProTest',
+    apiKey: String.fromEnvironment(
+      'FIREBASE_IOS_API_KEY',
+      defaultValue: 'your-ios-api-key-here',
+    ),
+    appId: String.fromEnvironment(
+      'FIREBASE_IOS_APP_ID',
+      defaultValue: '1:133710469637:ios:cecb666ccd35c6edd09a6c',
+    ),
+    messagingSenderId: String.fromEnvironment(
+      'FIREBASE_MESSAGING_SENDER_ID',
+      defaultValue: '133710469637',
+    ),
+    projectId: String.fromEnvironment(
+      'FIREBASE_PROJECT_ID',
+      defaultValue: 'carenow-app-2024',
+    ),
+    storageBucket: String.fromEnvironment(
+      'FIREBASE_STORAGE_BUCKET',
+      defaultValue: 'carenow-app-2024.firebasestorage.app',
+    ),
+    iosBundleId: String.fromEnvironment(
+      'FIREBASE_IOS_BUNDLE_ID',
+      defaultValue: 'com.example.flutterProTest',
+    ),
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBUHzQXl7Wn41WZ2jpTei9PZMUXNKQk3n0',
-    appId: '1:133710469637:web:dce0da2cf3cab9cad09a6c',
-    messagingSenderId: '133710469637',
-    projectId: 'carenow-app-2024',
-    authDomain: 'carenow-app-2024.firebaseapp.com',
-    storageBucket: 'carenow-app-2024.firebasestorage.app',
+    apiKey: String.fromEnvironment(
+      'FIREBASE_WEB_API_KEY',
+      defaultValue: 'your-web-api-key-here',
+    ),
+    appId: String.fromEnvironment(
+      'FIREBASE_WINDOWS_APP_ID',
+      defaultValue: '1:133710469637:web:dce0da2cf3cab9cad09a6c',
+    ),
+    messagingSenderId: String.fromEnvironment(
+      'FIREBASE_MESSAGING_SENDER_ID',
+      defaultValue: '133710469637',
+    ),
+    projectId: String.fromEnvironment(
+      'FIREBASE_PROJECT_ID',
+      defaultValue: 'carenow-app-2024',
+    ),
+    authDomain: String.fromEnvironment(
+      'FIREBASE_AUTH_DOMAIN',
+      defaultValue: 'carenow-app-2024.firebaseapp.com',
+    ),
+    storageBucket: String.fromEnvironment(
+      'FIREBASE_STORAGE_BUCKET',
+      defaultValue: 'carenow-app-2024.firebasestorage.app',
+    ),
   );
 }

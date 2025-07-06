@@ -47,3 +47,25 @@ app.*.map.json
 # ignores all .md files
 .md
 !README.md
+!PHASE_8_COMPLETION_REPORT.md
+
+# Firebase Configuration - Security
+# Environment variables containing sensitive API keys
+.env
+.env.local
+.env.production
+.env.staging
+
+# Firebase configuration files with real API keys
+# Keep the template files but ignore the real ones
+ios/Runner/GoogleService-Info.plist.real
+android/app/google-services.json.real
+
+# Backup files that might contain sensitive data
+*.backup
+*.bak
+firebase_options.dart.backup
+
+# IDE and editor files that might contain sensitive data
+.vscode/settings.json
+.idea/workspace.xml

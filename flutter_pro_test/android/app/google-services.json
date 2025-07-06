@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "133710469637",
-    "project_id": "carenow-app-2024",
-    "storage_bucket": "carenow-app-2024.firebasestorage.app"
+    "project_number": "YOUR_PROJECT_NUMBER_HERE",
+    "project_id": "YOUR_PROJECT_ID_HERE",
+    "storage_bucket": "YOUR_STORAGE_BUCKET_HERE"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:133710469637:android:dd0fe5221aef0304d09a6c",
+        "mobilesdk_app_id": "YOUR_ANDROID_APP_ID_HERE",
         "android_client_info": {
           "package_name": "com.example.flutter_pro_test"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCJkIrc6ABuhHD6Wd5qQWUkanfNpdzTxTA"
+          "current_key": "YOUR_ANDROID_API_KEY_HERE"
         }
       ],
       "services": {
