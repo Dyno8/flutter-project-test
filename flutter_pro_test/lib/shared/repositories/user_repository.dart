@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dartz/dartz.dart';
 import '../models/user_model.dart';
 import '../services/firebase_service.dart';
 import 'base_repository.dart';
@@ -28,7 +29,7 @@ class UserRepository extends BaseRepository<UserModel> {
         user.uid,
         user.toMap(),
       );
-      
+
       final doc = await FirebaseService().getDocument(collectionName, user.uid);
       final createdUser = fromFirestore(doc);
       return Right(createdUser);
@@ -43,12 +44,15 @@ class UserRepository extends BaseRepository<UserModel> {
       if (currentUser == null) {
         return const Right(null);
       }
-      
-      final doc = await FirebaseService().getDocument(collectionName, currentUser.uid);
+
+      final doc = await FirebaseService().getDocument(
+        collectionName,
+        currentUser.uid,
+      );
       if (!doc.exists) {
         return const Right(null);
       }
-      
+
       final user = fromFirestore(doc);
       return Right(user);
     } catch (e) {
@@ -65,7 +69,7 @@ class UserRepository extends BaseRepository<UserModel> {
         updateData,
         merge: true,
       );
-      
+
       final doc = await FirebaseService().getDocument(collectionName, user.uid);
       final updatedUser = fromFirestore(doc);
       return Right(updatedUser);
@@ -78,11 +82,11 @@ class UserRepository extends BaseRepository<UserModel> {
     try {
       final query = where('email', email);
       final snapshot = await query.get();
-      
+
       if (snapshot.docs.isEmpty) {
         return const Right(null);
       }
-      
+
       final user = fromFirestore(snapshot.docs.first);
       return Right(user);
     } catch (e) {
@@ -94,11 +98,11 @@ class UserRepository extends BaseRepository<UserModel> {
     try {
       final query = where('phone', phone);
       final snapshot = await query.get();
-      
+
       if (snapshot.docs.isEmpty) {
         return const Right(null);
       }
-      
+
       final user = fromFirestore(snapshot.docs.first);
       return Right(user);
     } catch (e) {
@@ -110,7 +114,7 @@ class UserRepository extends BaseRepository<UserModel> {
     try {
       final query = where('role', role);
       final snapshot = await query.get();
-      
+
       final users = snapshot.docs.map((doc) => fromFirestore(doc)).toList();
       return Right(users);
     } catch (e) {
@@ -118,7 +122,10 @@ class UserRepository extends BaseRepository<UserModel> {
     }
   }
 
-  Future<Either<Failure, void>> updateFCMToken(String userId, String token) async {
+  Future<Either<Failure, void>> updateFCMToken(
+    String userId,
+    String token,
+  ) async {
     try {
       await FirebaseService().updateDocument(collectionName, userId, {
         'fcmToken': token,
@@ -150,18 +157,20 @@ class UserRepository extends BaseRepository<UserModel> {
       if (currentUser == null) {
         return Stream.value(const Right(null));
       }
-      
+
       return FirebaseService()
           .listenToDocument(collectionName, currentUser.uid)
           .map((doc) {
-        if (!doc.exists) {
-          return const Right(null);
-        }
-        final user = fromFirestore(doc);
-        return Right(user);
-      });
+            if (!doc.exists) {
+              return const Right(null);
+            }
+            final user = fromFirestore(doc);
+            return Right(user);
+          });
     } catch (e) {
-      return Stream.value(Left(ServerFailure('Failed to listen to current user: $e')));
+      return Stream.value(
+        Left(ServerFailure('Failed to listen to current user: $e')),
+      );
     }
   }
 
@@ -171,11 +180,15 @@ class UserRepository extends BaseRepository<UserModel> {
       return FirebaseService()
           .listenToCollection(collectionName, query: query)
           .map((snapshot) {
-        final users = snapshot.docs.map((doc) => fromFirestore(doc)).toList();
-        return Right(users);
-      });
+            final users = snapshot.docs
+                .map((doc) => fromFirestore(doc))
+                .toList();
+            return Right(users);
+          });
     } catch (e) {
-      return Stream.value(Left(ServerFailure('Failed to listen to users by role: $e')));
+      return Stream.value(
+        Left(ServerFailure('Failed to listen to users by role: $e')),
+      );
     }
   }
 
@@ -200,8 +213,7 @@ class UserRepository extends BaseRepository<UserModel> {
     int limit = 20,
   }) async {
     try {
-      Query<Map<String, dynamic>> query = FirebaseService()
-          .firestore
+      Query<Map<String, dynamic>> query = FirebaseService().firestore
           .collection(collectionName);
 
       if (role != null) {

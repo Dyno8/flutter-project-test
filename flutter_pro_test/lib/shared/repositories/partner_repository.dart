@@ -1,4 +1,6 @@
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dartz/dartz.dart';
 import '../models/partner_model.dart';
 import '../services/firebase_service.dart';
 import 'base_repository.dart';
@@ -20,7 +22,9 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
   }
 
   // Partner-specific methods
-  Future<Either<Failure, PartnerModel>> createPartner(PartnerModel partner) async {
+  Future<Either<Failure, PartnerModel>> createPartner(
+    PartnerModel partner,
+  ) async {
     try {
       // Use the partner's UID as the document ID
       await FirebaseService().setDocument(
@@ -28,16 +32,23 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
         partner.uid,
         partner.toMap(),
       );
-      
-      final doc = await FirebaseService().getDocument(collectionName, partner.uid);
+
+      final doc = await FirebaseService().getDocument(
+        collectionName,
+        partner.uid,
+      );
       final createdPartner = fromFirestore(doc);
-      return Right(createdPartner);
+      return Right<Failure, PartnerModel>(createdPartner);
     } catch (e) {
-      return Left(ServerFailure('Failed to create partner: $e'));
+      return Left<Failure, PartnerModel>(
+        ServerFailure('Failed to create partner: $e'),
+      );
     }
   }
 
-  Future<Either<Failure, PartnerModel>> updatePartner(PartnerModel partner) async {
+  Future<Either<Failure, PartnerModel>> updatePartner(
+    PartnerModel partner,
+  ) async {
     try {
       final updateData = partner.copyWith(updatedAt: DateTime.now()).toMap();
       await FirebaseService().setDocument(
@@ -46,12 +57,17 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
         updateData,
         merge: true,
       );
-      
-      final doc = await FirebaseService().getDocument(collectionName, partner.uid);
+
+      final doc = await FirebaseService().getDocument(
+        collectionName,
+        partner.uid,
+      );
       final updatedPartner = fromFirestore(doc);
-      return Right(updatedPartner);
+      return Right<Failure, PartnerModel>(updatedPartner);
     } catch (e) {
-      return Left(ServerFailure('Failed to update partner: $e'));
+      return Left<Failure, PartnerModel>(
+        ServerFailure('Failed to update partner: $e'),
+      );
     }
   }
 
@@ -63,8 +79,7 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
     int limit = 20,
   }) async {
     try {
-      Query<Map<String, dynamic>> query = FirebaseService()
-          .firestore
+      Query<Map<String, dynamic>> query = FirebaseService().firestore
           .collection(collectionName);
 
       // Filter by availability
@@ -101,9 +116,11 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
         }).toList();
       }
 
-      return Right(partners);
+      return Right<Failure, List<PartnerModel>>(partners);
     } catch (e) {
-      return Left(ServerFailure('Failed to get available partners: $e'));
+      return Left<Failure, List<PartnerModel>>(
+        ServerFailure('Failed to get available partners: $e'),
+      );
     }
   }
 
@@ -112,16 +129,18 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
     int limit = 20,
   }) async {
     try {
-      final query = where('services', serviceType)
-          .where('isAvailable', true)
+      Query<Map<String, dynamic>> query = FirebaseService().firestore
+          .collection(collectionName)
+          .where('services', arrayContains: serviceType)
+          .where('isAvailable', isEqualTo: true)
           .orderBy('rating', descending: true)
           .limit(limit);
 
       final snapshot = await query.get();
       final partners = snapshot.docs.map((doc) => fromFirestore(doc)).toList();
-      return Right(partners);
+      return right(partners);
     } catch (e) {
-      return Left(ServerFailure('Failed to get partners by service: $e'));
+      return left(ServerFailure('Failed to get partners by service: $e'));
     }
   }
 
@@ -136,9 +155,9 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
 
       final snapshot = await query.get();
       final partners = snapshot.docs.map((doc) => fromFirestore(doc)).toList();
-      return Right(partners);
+      return right(partners);
     } catch (e) {
-      return Left(ServerFailure('Failed to get top rated partners: $e'));
+      return left(ServerFailure('Failed to get top rated partners: $e'));
     }
   }
 
@@ -151,9 +170,9 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
         'isAvailable': isAvailable,
         'updatedAt': FieldValue.serverTimestamp(),
       });
-      return const Right(null);
+      return right(null);
     } catch (e) {
-      return Left(ServerFailure('Failed to update partner availability: $e'));
+      return left(ServerFailure('Failed to update partner availability: $e'));
     }
   }
 
@@ -168,9 +187,9 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
         'totalReviews': newTotalReviews,
         'updatedAt': FieldValue.serverTimestamp(),
       });
-      return const Right(null);
+      return right(null);
     } catch (e) {
-      return Left(ServerFailure('Failed to update partner rating: $e'));
+      return left(ServerFailure('Failed to update partner rating: $e'));
     }
   }
 
@@ -185,9 +204,9 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
         'address': address,
         'updatedAt': FieldValue.serverTimestamp(),
       });
-      return const Right(null);
+      return right(null);
     } catch (e) {
-      return Left(ServerFailure('Failed to update partner location: $e'));
+      return left(ServerFailure('Failed to update partner location: $e'));
     }
   }
 
@@ -198,8 +217,7 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
     int limit = 20,
   }) async {
     try {
-      Query<Map<String, dynamic>> query = FirebaseService()
-          .firestore
+      Query<Map<String, dynamic>> query = FirebaseService().firestore
           .collection(collectionName);
 
       // Filter by services if provided
@@ -220,9 +238,9 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
 
       final snapshot = await query.get();
       final partners = snapshot.docs.map((doc) => fromFirestore(doc)).toList();
-      return Right(partners);
+      return right(partners);
     } catch (e) {
-      return Left(ServerFailure('Failed to search partners: $e'));
+      return left(ServerFailure('Failed to search partners: $e'));
     }
   }
 
@@ -232,8 +250,7 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
     int limit = 20,
   }) {
     try {
-      Query<Map<String, dynamic>> query = FirebaseService()
-          .firestore
+      Query<Map<String, dynamic>> query = FirebaseService().firestore
           .collection(collectionName);
 
       query = query.where('isAvailable', isEqualTo: true);
@@ -247,11 +264,15 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
       return FirebaseService()
           .listenToCollection(collectionName, query: query)
           .map((snapshot) {
-        final partners = snapshot.docs.map((doc) => fromFirestore(doc)).toList();
-        return Right(partners);
-      });
+            final partners = snapshot.docs
+                .map((doc) => fromFirestore(doc))
+                .toList();
+            return right(partners);
+          });
     } catch (e) {
-      return Stream.value(Left(ServerFailure('Failed to listen to available partners: $e')));
+      return Stream.value(
+        left(ServerFailure('Failed to listen to available partners: $e')),
+      );
     }
   }
 
@@ -263,17 +284,16 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
     double lon2,
   ) {
     const double earthRadius = 6371; // Earth's radius in kilometers
-    
+
     final double dLat = _degreesToRadians(lat2 - lat1);
     final double dLon = _degreesToRadians(lon2 - lon1);
-    
-    final double a = 
-        (dLat / 2).sin() * (dLat / 2).sin() +
-        lat1.cos() * lat2.cos() * 
-        (dLon / 2).sin() * (dLon / 2).sin();
-    
-    final double c = 2 * (a.sqrt()).asin();
-    
+
+    final double a =
+        sin(dLat / 2) * sin(dLat / 2) +
+        cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
+
+    final double c = 2 * asin(sqrt(a));
+
     return earthRadius * c;
   }
 
@@ -283,19 +303,28 @@ class PartnerRepository extends BaseRepository<PartnerModel> {
 
   // Validation methods
   bool isValidWorkingHours(Map<String, List<String>> workingHours) {
-    const validDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-    
+    const validDays = [
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+      'sunday',
+    ];
+
     for (final day in workingHours.keys) {
       if (!validDays.contains(day.toLowerCase())) {
         return false;
       }
     }
-    
+
     return true;
   }
 
   bool isValidPricePerHour(double price) {
-    return price > 0 && price <= 1000; // Reasonable price range in thousands VND
+    return price > 0 &&
+        price <= 1000; // Reasonable price range in thousands VND
   }
 
   bool isValidExperienceYears(int years) {

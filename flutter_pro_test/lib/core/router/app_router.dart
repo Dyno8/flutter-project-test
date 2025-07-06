@@ -18,6 +18,7 @@ import '../../features/booking/presentation/screens/booking_confirmation_screen.
 import '../../features/partner/presentation/screens/partner_dashboard_screen.dart';
 import '../../features/client/presentation/screens/payment_method_selection_screen.dart';
 import '../../features/client/presentation/screens/payment_processing_screen.dart';
+import '../../features/booking/presentation/screens/booking_tracking_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -29,6 +30,7 @@ class AppRouter {
   static const String partnerHome = '/partner';
   static const String serviceSelection = '/services';
   static const String booking = '/booking';
+  static const String bookingTracking = '/booking/tracking';
   static const String profile = '/profile';
   static const String editProfile = '/profile/edit';
 
@@ -120,6 +122,18 @@ class AppRouter {
             ],
           ),
           GoRoute(
+            path: 'booking-tracking/:bookingId',
+            builder: (context, state) {
+              final bookingId = state.pathParameters['bookingId']!;
+              final extra = state.extra as Map<String, dynamic>?;
+              return BookingTrackingScreen(
+                bookingId: bookingId,
+                booking: extra?['booking'],
+                isPartnerView: extra?['isPartnerView'] ?? false,
+              );
+            },
+          ),
+          GoRoute(
             path: 'profile',
             builder: (context, state) => const ProfileScreen(),
           ),
@@ -165,6 +179,18 @@ class AppRouter {
           GoRoute(
             path: 'settings',
             builder: (context, state) => const PartnerSettingsScreen(),
+          ),
+          GoRoute(
+            path: 'job-tracking/:bookingId',
+            builder: (context, state) {
+              final bookingId = state.pathParameters['bookingId']!;
+              final extra = state.extra as Map<String, dynamic>?;
+              return BookingTrackingScreen(
+                bookingId: bookingId,
+                booking: extra?['booking'],
+                isPartnerView: true,
+              );
+            },
           ),
           GoRoute(
             path: 'profile',

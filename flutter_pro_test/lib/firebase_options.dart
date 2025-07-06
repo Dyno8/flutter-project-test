@@ -65,6 +65,10 @@ class DefaultFirebaseOptions {
       'FIREBASE_STORAGE_BUCKET',
       defaultValue: 'carenow-app-2024.firebasestorage.app',
     ),
+    databaseURL: String.fromEnvironment(
+      'FIREBASE_DATABASE_URL',
+      defaultValue: 'https://carenow-app-2024-default-rtdb.firebaseio.com/',
+    ),
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -87,6 +91,10 @@ class DefaultFirebaseOptions {
     storageBucket: String.fromEnvironment(
       'FIREBASE_STORAGE_BUCKET',
       defaultValue: 'carenow-app-2024.firebasestorage.app',
+    ),
+    databaseURL: String.fromEnvironment(
+      'FIREBASE_DATABASE_URL',
+      defaultValue: 'https://carenow-app-2024-default-rtdb.firebaseio.com/',
     ),
   );
 
@@ -115,6 +123,10 @@ class DefaultFirebaseOptions {
       'FIREBASE_IOS_BUNDLE_ID',
       defaultValue: 'com.example.flutterProTest',
     ),
+    databaseURL: String.fromEnvironment(
+      'FIREBASE_DATABASE_URL',
+      defaultValue: 'https://carenow-app-2024-default-rtdb.firebaseio.com/',
+    ),
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -142,6 +154,10 @@ class DefaultFirebaseOptions {
       'FIREBASE_IOS_BUNDLE_ID',
       defaultValue: 'com.example.flutterProTest',
     ),
+    databaseURL: String.fromEnvironment(
+      'FIREBASE_DATABASE_URL',
+      defaultValue: 'https://carenow-app-2024-default-rtdb.firebaseio.com/',
+    ),
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
@@ -168,6 +184,10 @@ class DefaultFirebaseOptions {
     storageBucket: String.fromEnvironment(
       'FIREBASE_STORAGE_BUCKET',
       defaultValue: 'carenow-app-2024.firebasestorage.app',
+    ),
+    databaseURL: String.fromEnvironment(
+      'FIREBASE_DATABASE_URL',
+      defaultValue: 'https://carenow-app-2024-default-rtdb.firebaseio.com/',
     ),
   );
 }

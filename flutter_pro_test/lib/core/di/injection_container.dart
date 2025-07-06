@@ -59,6 +59,9 @@ import '../../features/client/domain/usecases/process_payment.dart';
 import '../../features/client/domain/usecases/get_client_bookings.dart';
 import '../../features/client/presentation/bloc/client_booking_bloc.dart';
 import '../../shared/services/firebase_service.dart';
+import '../../shared/services/notification_service.dart';
+import '../../shared/services/realtime_booking_service.dart';
+import '../../features/booking/presentation/bloc/realtime_booking_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -133,6 +136,10 @@ Future<void> init() async {
       getClientBookings: sl(),
     ),
   );
+
+  //! Features - Real-time Booking
+  // Bloc
+  sl.registerFactory(() => RealtimeBookingBloc(sl()));
 
   // Use cases
   sl.registerLazySingleton(() => SignInWithEmail(sl()));
@@ -243,6 +250,10 @@ Future<void> init() async {
   sl.registerLazySingleton<PaymentRemoteDataSource>(
     () => PaymentRemoteDataSourceImpl(sl()),
   );
+
+  //! Services
+  sl.registerLazySingleton(() => NotificationService());
+  sl.registerLazySingleton(() => RealtimeBookingService(sl(), sl()));
 
   //! External
   sl.registerLazySingleton(() => FirebaseAuth.instance);

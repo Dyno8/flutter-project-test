@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_database/firebase_database.dart' as rtdb;
 import '../../core/constants/app_constants.dart';
 
 class FirebaseService {
@@ -13,11 +14,14 @@ class FirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  final rtdb.FirebaseDatabase _realtimeDatabase =
+      rtdb.FirebaseDatabase.instance;
 
   // Getters
   FirebaseAuth get auth => _auth;
   FirebaseFirestore get firestore => _firestore;
   FirebaseMessaging get messaging => _messaging;
+  rtdb.FirebaseDatabase get realtimeDatabase => _realtimeDatabase;
 
   // Helper method to get collection reference
   CollectionReference<Map<String, dynamic>> collection(String path) {

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dartz/dartz.dart';
 import '../models/booking_model.dart';
 import '../services/firebase_service.dart';
 import 'base_repository.dart';
@@ -20,7 +21,9 @@ class BookingRepository extends BaseRepository<BookingModel> {
   }
 
   // Booking-specific methods
-  Future<Either<Failure, BookingModel>> createBooking(BookingModel booking) async {
+  Future<Either<Failure, BookingModel>> createBooking(
+    BookingModel booking,
+  ) async {
     try {
       final data = booking.toMap();
       final docRef = await FirebaseService().addDocument(collectionName, data);
@@ -80,9 +83,10 @@ class BookingRepository extends BaseRepository<BookingModel> {
     int limit = 50,
   }) async {
     try {
-      final query = where('status', AppConstants.statusPending)
-          .orderBy('createdAt', descending: false)
-          .limit(limit);
+      final query = where(
+        'status',
+        AppConstants.statusPending,
+      ).orderBy('createdAt', descending: false).limit(limit);
 
       final snapshot = await query.get();
       final bookings = snapshot.docs.map((doc) => fromFirestore(doc)).toList();
@@ -101,8 +105,14 @@ class BookingRepository extends BaseRepository<BookingModel> {
       final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59);
 
       final query = where('partnerId', partnerId)
-          .where('scheduledDate', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
-          .where('scheduledDate', isLessThanOrEqualTo: Timestamp.fromDate(endOfDay))
+          .where(
+            'scheduledDate',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay),
+          )
+          .where(
+            'scheduledDate',
+            isLessThanOrEqualTo: Timestamp.fromDate(endOfDay),
+          )
           .orderBy('scheduledDate');
 
       final snapshot = await query.get();
@@ -133,9 +143,16 @@ class BookingRepository extends BaseRepository<BookingModel> {
         }
       }
 
-      await FirebaseService().updateDocument(collectionName, bookingId, updateData);
-      
-      final doc = await FirebaseService().getDocument(collectionName, bookingId);
+      await FirebaseService().updateDocument(
+        collectionName,
+        bookingId,
+        updateData,
+      );
+
+      final doc = await FirebaseService().getDocument(
+        collectionName,
+        bookingId,
+      );
       final updatedBooking = fromFirestore(doc);
       return Right(updatedBooking);
     } catch (e) {
@@ -163,9 +180,16 @@ class BookingRepository extends BaseRepository<BookingModel> {
         updateData['paymentTransactionId'] = transactionId;
       }
 
-      await FirebaseService().updateDocument(collectionName, bookingId, updateData);
-      
-      final doc = await FirebaseService().getDocument(collectionName, bookingId);
+      await FirebaseService().updateDocument(
+        collectionName,
+        bookingId,
+        updateData,
+      );
+
+      final doc = await FirebaseService().getDocument(
+        collectionName,
+        bookingId,
+      );
       final updatedBooking = fromFirestore(doc);
       return Right(updatedBooking);
     } catch (e) {
@@ -182,8 +206,14 @@ class BookingRepository extends BaseRepository<BookingModel> {
     try {
       final field = isPartner ? 'partnerId' : 'userId';
       final query = where(field, userId)
-          .where('scheduledDate', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate))
-          .where('scheduledDate', isLessThanOrEqualTo: Timestamp.fromDate(endDate))
+          .where(
+            'scheduledDate',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(startDate),
+          )
+          .where(
+            'scheduledDate',
+            isLessThanOrEqualTo: Timestamp.fromDate(endDate),
+          )
           .orderBy('scheduledDate');
 
       final snapshot = await query.get();
@@ -200,18 +230,26 @@ class BookingRepository extends BaseRepository<BookingModel> {
     DateTime endDate,
   ) async {
     try {
-      final query = where('partnerId', partnerId)
-          .where('status', AppConstants.statusCompleted)
-          .where('paymentStatus', AppConstants.paymentPaid)
-          .where('completedAt', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate))
-          .where('completedAt', isLessThanOrEqualTo: Timestamp.fromDate(endDate));
+      Query<Map<String, dynamic>> query = FirebaseService().firestore
+          .collection(collectionName)
+          .where('partnerId', isEqualTo: partnerId)
+          .where('status', isEqualTo: AppConstants.statusCompleted)
+          .where('paymentStatus', isEqualTo: AppConstants.paymentPaid)
+          .where(
+            'completedAt',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(startDate),
+          )
+          .where(
+            'completedAt',
+            isLessThanOrEqualTo: Timestamp.fromDate(endDate),
+          );
 
       final snapshot = await query.get();
       final bookings = snapshot.docs.map((doc) => fromFirestore(doc)).toList();
-      
+
       final totalEarnings = bookings.fold<double>(
         0.0,
-        (sum, booking) => sum + booking.totalPrice,
+        (total, booking) => total + booking.totalPrice,
       );
 
       return Right(totalEarnings);
@@ -238,11 +276,15 @@ class BookingRepository extends BaseRepository<BookingModel> {
       return FirebaseService()
           .listenToCollection(collectionName, query: query)
           .map((snapshot) {
-        final bookings = snapshot.docs.map((doc) => fromFirestore(doc)).toList();
-        return Right(bookings);
-      });
+            final bookings = snapshot.docs
+                .map((doc) => fromFirestore(doc))
+                .toList();
+            return Right(bookings);
+          });
     } catch (e) {
-      return Stream.value(Left(ServerFailure('Failed to listen to user bookings: $e')));
+      return Stream.value(
+        Left(ServerFailure('Failed to listen to user bookings: $e')),
+      );
     }
   }
 
@@ -263,11 +305,15 @@ class BookingRepository extends BaseRepository<BookingModel> {
       return FirebaseService()
           .listenToCollection(collectionName, query: query)
           .map((snapshot) {
-        final bookings = snapshot.docs.map((doc) => fromFirestore(doc)).toList();
-        return Right(bookings);
-      });
+            final bookings = snapshot.docs
+                .map((doc) => fromFirestore(doc))
+                .toList();
+            return Right(bookings);
+          });
     } catch (e) {
-      return Stream.value(Left(ServerFailure('Failed to listen to partner bookings: $e')));
+      return Stream.value(
+        Left(ServerFailure('Failed to listen to partner bookings: $e')),
+      );
     }
   }
 
@@ -281,7 +327,7 @@ class BookingRepository extends BaseRepository<BookingModel> {
       int.parse(timeSlot.split(':')[0]),
       int.parse(timeSlot.split(':')[1]),
     );
-    
+
     // Booking must be at least 2 hours in the future
     return bookingDateTime.difference(now).inHours >= 2;
   }
@@ -291,6 +337,7 @@ class BookingRepository extends BaseRepository<BookingModel> {
   }
 
   bool isValidPrice(double price) {
-    return price > 0 && price <= 10000; // Reasonable price range in thousands VND
+    return price > 0 &&
+        price <= 10000; // Reasonable price range in thousands VND
   }
 }

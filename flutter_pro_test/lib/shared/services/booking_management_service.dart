@@ -1,22 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dartz/dartz.dart';
 import '../models/booking_model.dart';
 import '../models/partner_model.dart';
-import '../models/user_model.dart';
 import '../repositories/booking_repository.dart';
 import '../repositories/partner_repository.dart';
 import '../repositories/user_repository.dart';
 import '../services/validation_service.dart';
 import '../services/partner_matching_service.dart';
 import '../services/notification_service.dart';
-import '../../core/constants/app_constants.dart';
 import '../../core/errors/failures.dart';
+import '../../core/constants/app_constants.dart';
 
 class BookingManagementService {
   final BookingRepository _bookingRepository = BookingRepository();
   final PartnerRepository _partnerRepository = PartnerRepository();
   final UserRepository _userRepository = UserRepository();
   final ValidationService _validationService = ValidationService();
-  final PartnerMatchingService _partnerMatchingService = PartnerMatchingService();
+  final PartnerMatchingService _partnerMatchingService =
+      PartnerMatchingService();
   final NotificationService _notificationService = NotificationService();
 
   // Create a new booking with automatic partner matching
@@ -163,7 +164,9 @@ class BookingManagementService {
 
       // Validate partner can accept this booking
       if (booking.partnerId.isNotEmpty && booking.partnerId != partnerId) {
-        return Left(ValidationFailure('Booking đã được assign cho partner khác'));
+        return Left(
+          ValidationFailure('Booking đã được assign cho partner khác'),
+        );
       }
 
       if (booking.status != AppConstants.statusPending) {
@@ -275,7 +278,9 @@ class BookingManagementService {
 
       // Validate partner can complete this booking
       if (booking.partnerId != partnerId) {
-        return Left(ValidationFailure('Bạn không có quyền complete booking này'));
+        return Left(
+          ValidationFailure('Bạn không có quyền complete booking này'),
+        );
       }
 
       if (booking.status != AppConstants.statusInProgress) {
@@ -350,7 +355,9 @@ class BookingManagementService {
 
       // Send notification to partner if assigned
       if (booking.partnerId.isNotEmpty) {
-        final partnerResult = await _partnerRepository.getById(booking.partnerId);
+        final partnerResult = await _partnerRepository.getById(
+          booking.partnerId,
+        );
         if (partnerResult is Right) {
           final partner = (partnerResult as Right).value;
           await _notificationService.sendBookingNotification(
@@ -383,7 +390,7 @@ class BookingManagementService {
       );
 
       if (bookingsResult is Left) {
-        return bookingsResult;
+        return Left((bookingsResult as Left).value);
       }
 
       final bookings = (bookingsResult as Right).value;
@@ -394,11 +401,11 @@ class BookingManagementService {
         'cancelledBookings': bookings.where((b) => b.isCancelled).length,
         'totalEarnings': bookings
             .where((b) => b.isCompleted && b.isPaid)
-            .fold<double>(0.0, (sum, b) => sum + b.totalPrice),
+            .fold<double>(0.0, (total, b) => total + b.totalPrice),
         'averageRating': 0.0, // Will be calculated from reviews
         'totalHours': bookings
             .where((b) => b.isCompleted)
-            .fold<double>(0.0, (sum, b) => sum + b.hours),
+            .fold<double>(0.0, (total, b) => total + b.hours),
       };
 
       return Right(stats);

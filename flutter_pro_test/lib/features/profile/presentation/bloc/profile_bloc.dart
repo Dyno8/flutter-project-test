@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/usecases/get_user_profile.dart';
-import '../../domain/usecases/create_user_profile.dart';
-import '../../domain/usecases/update_user_profile.dart';
-import '../../domain/usecases/update_profile_avatar.dart';
+import '../../domain/usecases/create_user_profile.dart' as usecases;
+import '../../domain/usecases/update_user_profile.dart' as usecases;
+import '../../domain/usecases/update_profile_avatar.dart' as usecases;
 import '../../domain/repositories/user_profile_repository.dart';
 import 'profile_event.dart';
 import 'profile_state.dart';
@@ -12,25 +12,25 @@ import 'profile_state.dart';
 /// BLoC for managing user profile state
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetUserProfile _getUserProfile;
-  final CreateUserProfile _createUserProfile;
-  final UpdateUserProfile _updateUserProfile;
-  final UpdateProfileAvatar _updateProfileAvatar;
+  final usecases.CreateUserProfile _createUserProfile;
+  final usecases.UpdateUserProfile _updateUserProfile;
+  final usecases.UpdateProfileAvatar _updateProfileAvatar;
   final UserProfileRepository _repository;
 
   StreamSubscription? _profileSubscription;
 
   ProfileBloc({
     required GetUserProfile getUserProfile,
-    required CreateUserProfile createUserProfile,
-    required UpdateUserProfile updateUserProfile,
-    required UpdateProfileAvatar updateProfileAvatar,
+    required usecases.CreateUserProfile createUserProfile,
+    required usecases.UpdateUserProfile updateUserProfile,
+    required usecases.UpdateProfileAvatar updateProfileAvatar,
     required UserProfileRepository repository,
-  })  : _getUserProfile = getUserProfile,
-        _createUserProfile = createUserProfile,
-        _updateUserProfile = updateUserProfile,
-        _updateProfileAvatar = updateProfileAvatar,
-        _repository = repository,
-        super(const ProfileInitial()) {
+  }) : _getUserProfile = getUserProfile,
+       _createUserProfile = createUserProfile,
+       _updateUserProfile = updateUserProfile,
+       _updateProfileAvatar = updateProfileAvatar,
+       _repository = repository,
+       super(const ProfileInitial()) {
     // Register event handlers
     on<LoadUserProfile>(_onLoadUserProfile);
     on<CreateUserProfile>(_onCreateUserProfile);
@@ -75,7 +75,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(const ProfileOperationInProgress(message: 'Tạo hồ sơ...'));
 
     final result = await _createUserProfile(
-      CreateUserProfileParams(profile: event.profile),
+      usecases.CreateUserProfileParams(profile: event.profile),
     );
 
     result.fold(
@@ -92,7 +92,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(const ProfileOperationInProgress(message: 'Cập nhật hồ sơ...'));
 
     final result = await _updateUserProfile(
-      UpdateUserProfileParams(profile: event.profile),
+      usecases.UpdateUserProfileParams(profile: event.profile),
     );
 
     result.fold(
@@ -109,7 +109,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(const ProfileOperationInProgress(message: 'Cập nhật ảnh đại diện...'));
 
     final result = await _updateProfileAvatar(
-      UpdateProfileAvatarParams(
+      usecases.UpdateProfileAvatarParams(
         uid: event.uid,
         imagePath: event.imagePath,
       ),
@@ -163,7 +163,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     VerifyPhoneNumber event,
     Emitter<ProfileState> emit,
   ) async {
-    emit(const ProfileOperationInProgress(message: 'Xác thực số điện thoại...'));
+    emit(
+      const ProfileOperationInProgress(message: 'Xác thực số điện thoại...'),
+    );
 
     final result = await _repository.verifyPhoneNumber(event.uid);
 
@@ -216,15 +218,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     Emitter<ProfileState> emit,
   ) async {
     _profileSubscription?.cancel();
-    
-    _profileSubscription = _repository.watchUserProfile(event.uid).listen(
-      (result) {
-        result.fold(
-          (failure) => add(const ClearProfile()),
-          (profile) => emit(ProfileLoaded(profile: profile)),
-        );
-      },
-    );
+
+    _profileSubscription = _repository.watchUserProfile(event.uid).listen((
+      result,
+    ) {
+      result.fold(
+        (failure) => add(const ClearProfile()),
+        (profile) => emit(ProfileLoaded(profile: profile)),
+      );
+    });
   }
 
   /// Handle stop watching profile
