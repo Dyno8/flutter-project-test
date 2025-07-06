@@ -60,6 +60,7 @@ app.*.map.json
 # Keep the template files but ignore the real ones
 ios/Runner/GoogleService-Info.plist.real
 android/app/google-services.json.real
+macos/Runner/GoogleService-Info.plist.real
 
 # Backup files that might contain sensitive data
 *.backup
