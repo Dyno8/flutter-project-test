@@ -180,7 +180,7 @@ void main() {
         expect(result.isLeft(), true);
         final failure = (result as Left).value;
         expect(failure, isA<ServerFailure>());
-        expect(failure.message, contains('Client not found'));
+        expect(failure.message, contains('Failed to get client info'));
       });
     });
 

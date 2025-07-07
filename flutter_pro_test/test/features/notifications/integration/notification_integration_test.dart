@@ -131,9 +131,13 @@ void main() {
       await expectLater(
         bloc.stream,
         emits(
-          NotificationMarkedAsRead(
-            notification: testNotifications[0].markAsRead(),
-          ),
+          isA<NotificationMarkedAsRead>()
+              .having((state) => state.notification.id, 'notification id', '1')
+              .having(
+                (state) => state.notification.isRead,
+                'notification isRead',
+                true,
+              ),
         ),
       );
 

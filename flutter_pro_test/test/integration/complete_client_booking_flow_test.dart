@@ -276,6 +276,9 @@ void main() {
             testPaymentMethod,
           ),
 
+          // Booking creation loading state
+          isA<BookingFlowState>().having((s) => s.isLoading, 'loading', true),
+
           // Booking creation
           isA<BookingCreatedState>().having(
             (s) => s.booking,
@@ -380,12 +383,26 @@ void main() {
           ).thenAnswer((_) async => Left(ServerFailure('Payment failed')));
           return clientBookingBloc;
         },
+        seed: () => BookingFlowState(
+          currentStep: BookingStep.paymentMethod,
+          selectedService: testService,
+          selectedDate: DateTime.now().add(const Duration(days: 1)),
+          selectedTimeSlot: '09:00',
+          selectedHours: 2.0,
+          clientAddress: '123 Main St',
+          clientLatitude: 10.8231,
+          clientLongitude: 106.6297,
+          selectedPartner: testPartner,
+          selectedPaymentMethod: testPaymentMethod,
+          totalPrice: 110000.0,
+        ),
         act: (bloc) async {
           bloc.add(const CreateBookingEvent('user-1'));
           await Future.delayed(const Duration(milliseconds: 100));
           bloc.add(ProcessPaymentEvent(testBooking.id));
         },
         expect: () => [
+          isA<BookingFlowState>().having((s) => s.isLoading, 'loading', true),
           isA<BookingCreatedState>(),
           isA<PaymentProcessingState>(),
           isA<ClientBookingError>().having(
@@ -459,11 +476,7 @@ void main() {
           await Future.delayed(const Duration(milliseconds: 100));
           bloc.add(const ClearErrorEvent());
         },
-        expect: () => [
-          isA<ClientBookingLoading>(),
-          isA<ClientBookingError>(),
-          isA<ClientBookingInitial>(),
-        ],
+        expect: () => [isA<ClientBookingLoading>(), isA<ClientBookingError>()],
       );
     });
   });

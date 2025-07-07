@@ -8,6 +8,7 @@ import 'package:flutter_pro_test/features/partner/data/datasources/partner_job_r
 import 'package:flutter_pro_test/features/partner/data/models/job_model.dart';
 import 'package:flutter_pro_test/features/partner/data/models/partner_earnings_model.dart';
 import 'package:flutter_pro_test/features/partner/domain/entities/job.dart';
+import 'package:flutter_pro_test/features/partner/domain/entities/partner_earnings.dart';
 
 import 'package:flutter_pro_test/core/errors/exceptions.dart';
 import 'package:flutter_pro_test/core/errors/failures.dart';
@@ -89,7 +90,7 @@ void main() {
 
           // assert
           verify(mockRemoteDataSource.getPendingJobs(tPartnerId));
-          expect(result, equals(Right([tJob])));
+          expect(result, equals(Right<Failure, List<Job>>([tJob])));
         },
       );
 
@@ -108,7 +109,11 @@ void main() {
           verify(mockRemoteDataSource.getPendingJobs(tPartnerId));
           expect(
             result,
-            equals(const Left(ServerFailure('Failed to get pending jobs'))),
+            equals(
+              const Left<Failure, List<Job>>(
+                ServerFailure('Failed to get pending jobs'),
+              ),
+            ),
           );
         },
       );
@@ -169,7 +174,9 @@ void main() {
           verify(mockRemoteDataSource.acceptJob(tJobId, tPartnerId));
           expect(
             result,
-            equals(const Left(ServerFailure('Failed to accept job'))),
+            equals(
+              const Left<Failure, Job>(ServerFailure('Failed to accept job')),
+            ),
           );
         },
       );
@@ -238,7 +245,9 @@ void main() {
           );
           expect(
             result,
-            equals(const Left(ServerFailure('Failed to reject job'))),
+            equals(
+              const Left<Failure, Job>(ServerFailure('Failed to reject job')),
+            ),
           );
         },
       );
@@ -277,7 +286,11 @@ void main() {
           verify(mockRemoteDataSource.getPartnerEarnings(tPartnerId));
           expect(
             result,
-            equals(const Left(ServerFailure('Failed to get earnings'))),
+            equals(
+              const Left<Failure, PartnerEarnings>(
+                ServerFailure('Failed to get earnings'),
+              ),
+            ),
           );
         },
       );
@@ -296,7 +309,7 @@ void main() {
           final stream = repository.listenToPendingJobs(tPartnerId);
 
           // assert
-          expect(stream, emits(Right([tJob])));
+          expect(stream, emits(Right<Failure, List<Job>>([tJob])));
           verify(mockRemoteDataSource.listenToPendingJobs(tPartnerId));
         },
       );

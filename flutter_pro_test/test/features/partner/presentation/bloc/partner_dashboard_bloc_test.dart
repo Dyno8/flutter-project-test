@@ -146,33 +146,69 @@ void main() {
         'should emit [Loading, Loaded] when data is loaded successfully',
         build: () {
           when(mockGetPendingJobs(any)).thenAnswer((_) async => Right([tJob]));
-          when(mockRepository.getAcceptedJobs(any)).thenAnswer((_) async => const Right([]));
-          when(mockRepository.getJobHistory(any, limit: anyNamed('limit')))
-              .thenAnswer((_) async => const Right([]));
-          when(mockGetPartnerEarnings(any)).thenAnswer((_) async => Right(tEarnings));
-          when(mockGetPartnerAvailability(any)).thenAnswer((_) async => Right(tAvailability));
-          when(mockRepository.getUnreadNotificationsCount(any))
-              .thenAnswer((_) async => const Right(0));
+          when(
+            mockRepository.getAcceptedJobs(any),
+          ).thenAnswer((_) async => const Right([]));
+          when(
+            mockRepository.getJobHistory(any, limit: anyNamed('limit')),
+          ).thenAnswer((_) async => const Right([]));
+          when(
+            mockGetPartnerEarnings(any),
+          ).thenAnswer((_) async => Right(tEarnings));
+          when(
+            mockGetPartnerAvailability(any),
+          ).thenAnswer((_) async => Right(tAvailability));
+          when(
+            mockRepository.getUnreadNotificationsCount(any),
+          ).thenAnswer((_) async => const Right(0));
           return bloc;
         },
-        act: (bloc) => bloc.add(const LoadPartnerDashboard(partnerId: tPartnerId)),
+        act: (bloc) =>
+            bloc.add(const LoadPartnerDashboard(partnerId: tPartnerId)),
         expect: () => [
           PartnerDashboardLoading(),
           isA<PartnerDashboardLoaded>()
-              .having((state) => state.pendingJobs.length, 'pending jobs count', 1)
+              .having(
+                (state) => state.pendingJobs.length,
+                'pending jobs count',
+                1,
+              )
               .having((state) => state.earnings, 'earnings', tEarnings)
-              .having((state) => state.availability, 'availability', tAvailability),
+              .having(
+                (state) => state.availability,
+                'availability',
+                tAvailability,
+              ),
         ],
       );
 
       blocTest<PartnerDashboardBloc, PartnerDashboardState>(
         'should emit [Loading, Error] when data loading fails',
         build: () {
-          when(mockGetPendingJobs(any))
-              .thenAnswer((_) async => const Left(ServerFailure('Failed to load')));
+          when(mockGetPendingJobs(any)).thenAnswer(
+            (_) async => const Left(ServerFailure('Failed to load')),
+          );
+          when(mockRepository.getAcceptedJobs(any)).thenAnswer(
+            (_) async => const Left(ServerFailure('Failed to load')),
+          );
+          when(
+            mockRepository.getJobHistory(any, limit: anyNamed('limit')),
+          ).thenAnswer(
+            (_) async => const Left(ServerFailure('Failed to load')),
+          );
+          when(mockGetPartnerEarnings(any)).thenAnswer(
+            (_) async => const Left(ServerFailure('Failed to load')),
+          );
+          when(mockGetPartnerAvailability(any)).thenAnswer(
+            (_) async => const Left(ServerFailure('Failed to load')),
+          );
+          when(mockRepository.getUnreadNotificationsCount(any)).thenAnswer(
+            (_) async => const Left(ServerFailure('Failed to load')),
+          );
           return bloc;
         },
-        act: (bloc) => bloc.add(const LoadPartnerDashboard(partnerId: tPartnerId)),
+        act: (bloc) =>
+            bloc.add(const LoadPartnerDashboard(partnerId: tPartnerId)),
         expect: () => [
           PartnerDashboardLoading(),
           const PartnerDashboardError(message: 'Failed to load dashboard data'),
@@ -186,32 +222,52 @@ void main() {
         build: () {
           final acceptedJob = tJob.copyWith(status: JobStatus.accepted);
           when(mockAcceptJob(any)).thenAnswer((_) async => Right(acceptedJob));
+          // Add stubs for dashboard refresh after job acceptance
+          when(mockGetPendingJobs(any)).thenAnswer((_) async => Right([tJob]));
+          when(
+            mockRepository.getAcceptedJobs(any),
+          ).thenAnswer((_) async => Right([acceptedJob]));
+          when(
+            mockRepository.getJobHistory(any, limit: anyNamed('limit')),
+          ).thenAnswer((_) async => Right([tJob]));
+          when(
+            mockGetPartnerEarnings(any),
+          ).thenAnswer((_) async => Right(tEarnings));
+          when(
+            mockGetPartnerAvailability(any),
+          ).thenAnswer((_) async => Right(tAvailability));
+          when(
+            mockRepository.getUnreadNotificationsCount(any),
+          ).thenAnswer((_) async => const Right(0));
           return bloc;
         },
-        act: (bloc) => bloc.add(const AcceptJobEvent(
-          jobId: tJobId,
-          partnerId: tPartnerId,
-        )),
+        act: (bloc) => bloc.add(
+          const AcceptJobEvent(jobId: tJobId, partnerId: tPartnerId),
+        ),
         expect: () => [
           const JobOperationInProgress(jobId: tJobId, operation: 'accepting'),
           isA<JobOperationSuccess>()
               .having((state) => state.jobId, 'jobId', tJobId)
               .having((state) => state.operation, 'operation', 'accepting')
-              .having((state) => state.message, 'message', 'Job accepted successfully'),
+              .having(
+                (state) => state.message,
+                'message',
+                'Job accepted successfully',
+              ),
         ],
       );
 
       blocTest<PartnerDashboardBloc, PartnerDashboardState>(
         'should emit [JobOperationInProgress, JobOperationError] when job acceptance fails',
         build: () {
-          when(mockAcceptJob(any))
-              .thenAnswer((_) async => const Left(ServerFailure('Failed to accept job')));
+          when(mockAcceptJob(any)).thenAnswer(
+            (_) async => const Left(ServerFailure('Failed to accept job')),
+          );
           return bloc;
         },
-        act: (bloc) => bloc.add(const AcceptJobEvent(
-          jobId: tJobId,
-          partnerId: tPartnerId,
-        )),
+        act: (bloc) => bloc.add(
+          const AcceptJobEvent(jobId: tJobId, partnerId: tPartnerId),
+        ),
         expect: () => [
           const JobOperationInProgress(jobId: tJobId, operation: 'accepting'),
           const JobOperationError(
@@ -227,37 +283,51 @@ void main() {
       blocTest<PartnerDashboardBloc, PartnerDashboardState>(
         'should emit [AvailabilityUpdateInProgress, AvailabilityUpdateSuccess] when availability is updated successfully',
         build: () {
-          final updatedAvailability = tAvailability.copyWith(isAvailable: false);
-          when(mockUpdateAvailabilityStatus(any))
-              .thenAnswer((_) async => Right(updatedAvailability));
+          final updatedAvailability = tAvailability.copyWith(
+            isAvailable: false,
+          );
+          when(
+            mockUpdateAvailabilityStatus(any),
+          ).thenAnswer((_) async => Right(updatedAvailability));
           return bloc;
         },
-        act: (bloc) => bloc.add(const ToggleAvailabilityEvent(
-          partnerId: tPartnerId,
-          isAvailable: false,
-          reason: 'Taking a break',
-        )),
+        act: (bloc) => bloc.add(
+          const ToggleAvailabilityEvent(
+            partnerId: tPartnerId,
+            isAvailable: false,
+            reason: 'Taking a break',
+          ),
+        ),
         expect: () => [
           const AvailabilityUpdateInProgress(operation: 'toggling'),
-          isA<AvailabilityUpdateSuccess>()
-              .having((state) => state.message, 'message', 'You are now unavailable'),
+          isA<AvailabilityUpdateSuccess>().having(
+            (state) => state.message,
+            'message',
+            'You are now unavailable',
+          ),
         ],
       );
 
       blocTest<PartnerDashboardBloc, PartnerDashboardState>(
         'should emit [AvailabilityUpdateInProgress, AvailabilityUpdateError] when availability update fails',
         build: () {
-          when(mockUpdateAvailabilityStatus(any))
-              .thenAnswer((_) async => const Left(ServerFailure('Failed to update availability')));
+          when(mockUpdateAvailabilityStatus(any)).thenAnswer(
+            (_) async =>
+                const Left(ServerFailure('Failed to update availability')),
+          );
           return bloc;
         },
-        act: (bloc) => bloc.add(const ToggleAvailabilityEvent(
-          partnerId: tPartnerId,
-          isAvailable: false,
-        )),
+        act: (bloc) => bloc.add(
+          const ToggleAvailabilityEvent(
+            partnerId: tPartnerId,
+            isAvailable: false,
+          ),
+        ),
         expect: () => [
           const AvailabilityUpdateInProgress(operation: 'toggling'),
-          const AvailabilityUpdateError(message: 'Failed to update availability'),
+          const AvailabilityUpdateError(
+            message: 'Failed to update availability',
+          ),
         ],
       );
     });

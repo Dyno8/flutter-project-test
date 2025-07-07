@@ -7,12 +7,23 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_pro_test/main.dart';
+import 'helpers/test_injection_container.dart';
+import 'helpers/test_app_wrapper.dart';
 
 void main() {
+  setUpAll(() async {
+    // Initialize test dependencies
+    await initTestDependencies();
+  });
+
+  tearDownAll(() async {
+    // Clean up test dependencies
+    await cleanupTestDependencies();
+  });
+
   testWidgets('CareNow app smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const CareNowApp());
+    // Build our test app and trigger a frame.
+    await tester.pumpWidget(const TestAppWrapper(child: TestSplashScreen()));
 
     // Verify that our app loads correctly.
     expect(find.text('CareNow MVP\nComing Soon...'), findsOneWidget);

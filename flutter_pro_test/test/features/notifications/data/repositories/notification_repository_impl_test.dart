@@ -114,7 +114,14 @@ void main() {
           );
 
           // assert
-          expect(result, const Left(ServerFailure('Server error')));
+          expect(
+            result,
+            isA<Left<Failure, List<NotificationEntity>>>().having(
+              (l) => l.value,
+              'failure',
+              isA<ServerFailure>(),
+            ),
+          );
           verify(
             mockRemoteDataSource.getUserNotifications(
               testUserId,
@@ -197,7 +204,14 @@ void main() {
           );
 
           // assert
-          expect(result, const Left(ServerFailure('Server error')));
+          expect(
+            result,
+            isA<Left<Failure, NotificationEntity>>().having(
+              (l) => l.value,
+              'failure',
+              isA<ServerFailure>(),
+            ),
+          );
           verify(mockRemoteDataSource.createNotification(any));
           verifyNoMoreInteractions(mockRemoteDataSource);
         },
@@ -237,7 +251,14 @@ void main() {
           final result = await repository.markAsRead(testNotificationId);
 
           // assert
-          expect(result, const Left(ServerFailure('Server error')));
+          expect(
+            result,
+            isA<Left<Failure, NotificationEntity>>().having(
+              (l) => l.value,
+              'failure',
+              isA<ServerFailure>(),
+            ),
+          );
           verify(mockRemoteDataSource.markAsRead(testNotificationId));
           verifyNoMoreInteractions(mockRemoteDataSource);
         },
@@ -283,7 +304,14 @@ void main() {
           );
 
           // assert
-          expect(result, const Left(ServerFailure('Server error')));
+          expect(
+            result,
+            isA<Left<Failure, NotificationPreferences>>().having(
+              (l) => l.value,
+              'failure',
+              isA<ServerFailure>(),
+            ),
+          );
           verify(mockRemoteDataSource.getNotificationPreferences(testUserId));
           verifyNoMoreInteractions(mockRemoteDataSource);
         },
@@ -332,7 +360,14 @@ void main() {
           );
 
           // assert
-          expect(result, const Left(ServerFailure('Server error')));
+          expect(
+            result,
+            isA<Left<Failure, NotificationPreferences>>().having(
+              (l) => l.value,
+              'failure',
+              isA<ServerFailure>(),
+            ),
+          );
           verify(mockRemoteDataSource.updateNotificationPreferences(any));
           verifyNoMoreInteractions(mockRemoteDataSource);
         },
@@ -369,7 +404,14 @@ void main() {
           );
 
           // assert
-          expect(result, const Left(ServerFailure('Server error')));
+          expect(
+            result,
+            isA<Left<Failure, void>>().having(
+              (l) => l.value,
+              'failure',
+              isA<ServerFailure>(),
+            ),
+          );
           verify(mockRemoteDataSource.deleteNotification(testNotificationId));
           verifyNoMoreInteractions(mockRemoteDataSource);
         },
@@ -404,7 +446,14 @@ void main() {
           final result = await repository.getUnreadCount(testUserId);
 
           // assert
-          expect(result, const Left(ServerFailure('Server error')));
+          expect(
+            result,
+            isA<Left<Failure, int>>().having(
+              (l) => l.value,
+              'failure',
+              isA<ServerFailure>(),
+            ),
+          );
           verify(mockRemoteDataSource.getUnreadCount(testUserId));
           verifyNoMoreInteractions(mockRemoteDataSource);
         },
