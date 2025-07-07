@@ -11,8 +11,6 @@ import '../models/booking_request_model.dart';
 import '../../../booking/data/mappers/partner_mapper.dart';
 import '../../../booking/data/mappers/service_mapper.dart';
 import '../../../booking/data/mappers/booking_mapper.dart';
-import '../../../../shared/models/service_model.dart';
-import '../../../../shared/models/booking_model.dart';
 
 /// Implementation of ClientServiceRepository
 class ClientServiceRepositoryImpl implements ClientServiceRepository {

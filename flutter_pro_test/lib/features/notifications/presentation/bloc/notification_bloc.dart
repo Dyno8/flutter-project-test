@@ -8,6 +8,7 @@ import '../../domain/usecases/send_push_notification.dart';
 import '../../domain/usecases/get_notification_preferences.dart';
 import '../../domain/usecases/update_notification_preferences.dart';
 import '../../domain/repositories/notification_repository.dart';
+
 import 'notification_event.dart';
 import 'notification_state.dart';
 

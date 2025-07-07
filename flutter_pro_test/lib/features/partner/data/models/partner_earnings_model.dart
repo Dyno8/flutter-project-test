@@ -19,6 +19,8 @@ class PartnerEarningsModel extends Equatable {
   final double platformFeeRate;
   final DateTime lastUpdated;
   final List<Map<String, dynamic>> dailyBreakdown;
+  final double averageEarningsPerJob;
+  final double weeklyGrowth;
 
   const PartnerEarningsModel({
     required this.id,
@@ -36,6 +38,8 @@ class PartnerEarningsModel extends Equatable {
     required this.platformFeeRate,
     required this.lastUpdated,
     this.dailyBreakdown = const [],
+    required this.averageEarningsPerJob,
+    required this.weeklyGrowth,
   });
 
   /// Factory constructor from Firestore document
@@ -56,7 +60,11 @@ class PartnerEarningsModel extends Equatable {
       totalReviews: data['totalReviews'] ?? 0,
       platformFeeRate: (data['platformFeeRate'] ?? 0.15).toDouble(),
       lastUpdated: (data['lastUpdated'] as Timestamp).toDate(),
-      dailyBreakdown: List<Map<String, dynamic>>.from(data['dailyBreakdown'] ?? []),
+      dailyBreakdown: List<Map<String, dynamic>>.from(
+        data['dailyBreakdown'] ?? [],
+      ),
+      averageEarningsPerJob: (data['averageEarningsPerJob'] ?? 0.0).toDouble(),
+      weeklyGrowth: (data['weeklyGrowth'] ?? 0.0).toDouble(),
     );
   }
 
@@ -79,7 +87,11 @@ class PartnerEarningsModel extends Equatable {
       lastUpdated: map['lastUpdated'] is Timestamp
           ? (map['lastUpdated'] as Timestamp).toDate()
           : DateTime.parse(map['lastUpdated']),
-      dailyBreakdown: List<Map<String, dynamic>>.from(map['dailyBreakdown'] ?? []),
+      dailyBreakdown: List<Map<String, dynamic>>.from(
+        map['dailyBreakdown'] ?? [],
+      ),
+      averageEarningsPerJob: (map['averageEarningsPerJob'] ?? 0.0).toDouble(),
+      weeklyGrowth: (map['weeklyGrowth'] ?? 0.0).toDouble(),
     );
   }
 
@@ -163,27 +175,33 @@ class PartnerEarningsModel extends Equatable {
       platformFeeRate: earnings.platformFeeRate,
       lastUpdated: earnings.lastUpdated,
       dailyBreakdown: dailyBreakdown,
+      averageEarningsPerJob: earnings.totalJobs > 0
+          ? earnings.totalEarnings / earnings.totalJobs
+          : 0.0,
+      weeklyGrowth: 0.0, // Calculate based on previous week data if available
     );
   }
 
   @override
   List<Object?> get props => [
-        id,
-        partnerId,
-        totalEarnings,
-        todayEarnings,
-        weekEarnings,
-        monthEarnings,
-        totalJobs,
-        todayJobs,
-        weekJobs,
-        monthJobs,
-        averageRating,
-        totalReviews,
-        platformFeeRate,
-        lastUpdated,
-        dailyBreakdown,
-      ];
+    id,
+    partnerId,
+    totalEarnings,
+    todayEarnings,
+    weekEarnings,
+    monthEarnings,
+    totalJobs,
+    todayJobs,
+    weekJobs,
+    monthJobs,
+    averageRating,
+    totalReviews,
+    platformFeeRate,
+    lastUpdated,
+    dailyBreakdown,
+    averageEarningsPerJob,
+    weeklyGrowth,
+  ];
 }
 
 /// Data model for PartnerAvailability entity
@@ -217,16 +235,14 @@ class PartnerAvailabilityModel extends Equatable {
       partnerId: doc.id,
       isAvailable: data['isAvailable'] ?? true,
       isOnline: data['isOnline'] ?? false,
-      lastSeen: data['lastSeen'] != null 
-          ? (data['lastSeen'] as Timestamp).toDate() 
+      lastSeen: data['lastSeen'] != null
+          ? (data['lastSeen'] as Timestamp).toDate()
           : null,
       unavailabilityReason: data['unavailabilityReason'],
-      unavailableUntil: data['unavailableUntil'] != null 
-          ? (data['unavailableUntil'] as Timestamp).toDate() 
+      unavailableUntil: data['unavailableUntil'] != null
+          ? (data['unavailableUntil'] as Timestamp).toDate()
           : null,
-      workingHours: Map<String, List<String>>.from(
-        data['workingHours'] ?? {},
-      ),
+      workingHours: Map<String, List<String>>.from(data['workingHours'] ?? {}),
       blockedDates: List<String>.from(data['blockedDates'] ?? []),
       lastUpdated: (data['lastUpdated'] as Timestamp).toDate(),
     );
@@ -240,7 +256,9 @@ class PartnerAvailabilityModel extends Equatable {
       'isOnline': isOnline,
       'lastSeen': lastSeen != null ? Timestamp.fromDate(lastSeen!) : null,
       'unavailabilityReason': unavailabilityReason,
-      'unavailableUntil': unavailableUntil != null ? Timestamp.fromDate(unavailableUntil!) : null,
+      'unavailableUntil': unavailableUntil != null
+          ? Timestamp.fromDate(unavailableUntil!)
+          : null,
       'workingHours': workingHours,
       'blockedDates': blockedDates,
       'lastUpdated': Timestamp.fromDate(lastUpdated),
@@ -263,7 +281,9 @@ class PartnerAvailabilityModel extends Equatable {
   }
 
   /// Create from domain entity
-  factory PartnerAvailabilityModel.fromEntity(PartnerAvailability availability) {
+  factory PartnerAvailabilityModel.fromEntity(
+    PartnerAvailability availability,
+  ) {
     return PartnerAvailabilityModel(
       partnerId: availability.partnerId,
       isAvailable: availability.isAvailable,
@@ -279,14 +299,14 @@ class PartnerAvailabilityModel extends Equatable {
 
   @override
   List<Object?> get props => [
-        partnerId,
-        isAvailable,
-        isOnline,
-        lastSeen,
-        unavailabilityReason,
-        unavailableUntil,
-        workingHours,
-        blockedDates,
-        lastUpdated,
-      ];
+    partnerId,
+    isAvailable,
+    isOnline,
+    lastSeen,
+    unavailabilityReason,
+    unavailableUntil,
+    workingHours,
+    blockedDates,
+    lastUpdated,
+  ];
 }

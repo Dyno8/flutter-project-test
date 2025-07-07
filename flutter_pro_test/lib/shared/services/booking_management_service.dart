@@ -8,6 +8,7 @@ import '../repositories/user_repository.dart';
 import '../services/validation_service.dart';
 import '../services/partner_matching_service.dart';
 import '../services/notification_service.dart';
+import '../services/notification_integration_service.dart';
 import '../../core/errors/failures.dart';
 import '../../core/constants/app_constants.dart';
 
@@ -19,6 +20,11 @@ class BookingManagementService {
   final PartnerMatchingService _partnerMatchingService =
       PartnerMatchingService();
   final NotificationService _notificationService = NotificationService();
+  final NotificationIntegrationService? _notificationIntegrationService;
+
+  BookingManagementService({
+    NotificationIntegrationService? notificationIntegrationService,
+  }) : _notificationIntegrationService = notificationIntegrationService;
 
   // Create a new booking with automatic partner matching
   Future<Either<Failure, BookingModel>> createBooking({
@@ -75,6 +81,13 @@ class BookingManagementService {
 
       var createdBooking = (createResult as Right).value;
 
+      // Send booking created notification
+      if (_notificationIntegrationService != null) {
+        await _notificationIntegrationService!.notifyBookingCreated(
+          createdBooking.toDomainEntity(),
+        );
+      }
+
       // Auto-assign partner if requested
       if (autoAssignPartner) {
         final assignResult = await _assignPartnerToBooking(
@@ -99,7 +112,15 @@ class BookingManagementService {
               AppConstants.statusConfirmed,
             );
 
-            // Send notification to partner
+            // Send booking confirmed notification
+            if (_notificationIntegrationService != null) {
+              await _notificationIntegrationService!.notifyBookingConfirmed(
+                createdBooking.toDomainEntity(),
+                assignedPartner.name,
+              );
+            }
+
+            // Send notification to partner (legacy - can be removed later)
             await _notificationService.sendBookingNotification(
               assignedPartner.fcmToken,
               'Booking mới',
@@ -245,7 +266,25 @@ class BookingManagementService {
 
       final updatedBooking = (updateResult as Right).value;
 
-      // Send notification to client
+      // Send booking started notification
+      if (_notificationIntegrationService != null) {
+        // Get partner name for notification
+        final partnerResult = await _userRepository.getById(partnerId);
+        String partnerName = 'Partner';
+        if (partnerResult is Right) {
+          final partner = (partnerResult as Right).value;
+          if (partner != null) {
+            partnerName = partner.name;
+          }
+        }
+
+        await _notificationIntegrationService!.notifyBookingStarted(
+          updatedBooking.toDomainEntity(),
+          partnerName,
+        );
+      }
+
+      // Send notification to client (legacy - can be removed later)
       final userResult = await _userRepository.getById(booking.userId);
       if (userResult is Right) {
         final user = (userResult as Right).value;
@@ -299,7 +338,25 @@ class BookingManagementService {
 
       final updatedBooking = (updateResult as Right).value;
 
-      // Send notification to client
+      // Send booking completed notification
+      if (_notificationIntegrationService != null) {
+        // Get partner name for notification
+        final partnerResult = await _userRepository.getById(partnerId);
+        String partnerName = 'Partner';
+        if (partnerResult is Right) {
+          final partner = (partnerResult as Right).value;
+          if (partner != null) {
+            partnerName = partner.name;
+          }
+        }
+
+        await _notificationIntegrationService!.notifyBookingCompleted(
+          updatedBooking.toDomainEntity(),
+          partnerName,
+        );
+      }
+
+      // Send notification to client (legacy - can be removed later)
       final userResult = await _userRepository.getById(booking.userId);
       if (userResult is Right) {
         final user = (userResult as Right).value;
@@ -353,7 +410,16 @@ class BookingManagementService {
 
       final updatedBooking = (updateResult as Right).value;
 
-      // Send notification to partner if assigned
+      // Send booking cancelled notification
+      if (_notificationIntegrationService != null) {
+        await _notificationIntegrationService!.notifyBookingCancelled(
+          updatedBooking.toDomainEntity(),
+          cancellationReason,
+          cancelledBy: 'client',
+        );
+      }
+
+      // Send notification to partner if assigned (legacy - can be removed later)
       if (booking.partnerId.isNotEmpty) {
         final partnerResult = await _partnerRepository.getById(
           booking.partnerId,

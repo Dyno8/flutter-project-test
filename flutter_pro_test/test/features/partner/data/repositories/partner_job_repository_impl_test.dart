@@ -8,7 +8,7 @@ import 'package:flutter_pro_test/features/partner/data/datasources/partner_job_r
 import 'package:flutter_pro_test/features/partner/data/models/job_model.dart';
 import 'package:flutter_pro_test/features/partner/data/models/partner_earnings_model.dart';
 import 'package:flutter_pro_test/features/partner/domain/entities/job.dart';
-import 'package:flutter_pro_test/features/partner/domain/entities/partner_earnings.dart';
+
 import 'package:flutter_pro_test/core/errors/exceptions.dart';
 import 'package:flutter_pro_test/core/errors/failures.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,7 +22,9 @@ void main() {
 
   setUp(() {
     mockRemoteDataSource = MockPartnerJobRemoteDataSource();
-    repository = PartnerJobRepositoryImpl(remoteDataSource: mockRemoteDataSource);
+    repository = PartnerJobRepositoryImpl(
+      remoteDataSource: mockRemoteDataSource,
+    );
   });
 
   const tPartnerId = 'test-partner-id';
@@ -66,180 +68,255 @@ void main() {
     totalReviews: 20,
     platformFeeRate: 0.15,
     lastUpdated: DateTime(2024, 1, 15),
+    averageEarningsPerJob: 125.0,
+    weeklyGrowth: 0.1,
   );
 
   final tEarnings = tEarningsModel.toEntity();
 
   group('PartnerJobRepositoryImpl', () {
     group('getPendingJobs', () {
-      test('should return list of jobs when remote data source call succeeds', () async {
-        // arrange
-        when(mockRemoteDataSource.getPendingJobs(any))
-            .thenAnswer((_) async => [tJobModel]);
+      test(
+        'should return list of jobs when remote data source call succeeds',
+        () async {
+          // arrange
+          when(
+            mockRemoteDataSource.getPendingJobs(any),
+          ).thenAnswer((_) async => [tJobModel]);
 
-        // act
-        final result = await repository.getPendingJobs(tPartnerId);
+          // act
+          final result = await repository.getPendingJobs(tPartnerId);
 
-        // assert
-        verify(mockRemoteDataSource.getPendingJobs(tPartnerId));
-        expect(result, equals(Right([tJob])));
-      });
+          // assert
+          verify(mockRemoteDataSource.getPendingJobs(tPartnerId));
+          expect(result, equals(Right([tJob])));
+        },
+      );
 
-      test('should return ServerFailure when remote data source throws ServerException', () async {
-        // arrange
-        when(mockRemoteDataSource.getPendingJobs(any))
-            .thenThrow(const ServerException('Failed to get pending jobs'));
+      test(
+        'should return ServerFailure when remote data source throws ServerException',
+        () async {
+          // arrange
+          when(
+            mockRemoteDataSource.getPendingJobs(any),
+          ).thenThrow(const ServerException('Failed to get pending jobs'));
 
-        // act
-        final result = await repository.getPendingJobs(tPartnerId);
+          // act
+          final result = await repository.getPendingJobs(tPartnerId);
 
-        // assert
-        verify(mockRemoteDataSource.getPendingJobs(tPartnerId));
-        expect(result, equals(const Left(ServerFailure('Failed to get pending jobs'))));
-      });
+          // assert
+          verify(mockRemoteDataSource.getPendingJobs(tPartnerId));
+          expect(
+            result,
+            equals(const Left(ServerFailure('Failed to get pending jobs'))),
+          );
+        },
+      );
 
-      test('should return ServerFailure when remote data source throws generic exception', () async {
-        // arrange
-        when(mockRemoteDataSource.getPendingJobs(any))
-            .thenThrow(Exception('Generic error'));
+      test(
+        'should return ServerFailure when remote data source throws generic exception',
+        () async {
+          // arrange
+          when(
+            mockRemoteDataSource.getPendingJobs(any),
+          ).thenThrow(Exception('Generic error'));
 
-        // act
-        final result = await repository.getPendingJobs(tPartnerId);
+          // act
+          final result = await repository.getPendingJobs(tPartnerId);
 
-        // assert
-        verify(mockRemoteDataSource.getPendingJobs(tPartnerId));
-        expect(result, isA<Left<Failure, List<Job>>>());
-      });
+          // assert
+          verify(mockRemoteDataSource.getPendingJobs(tPartnerId));
+          expect(result, isA<Left<Failure, List<Job>>>());
+        },
+      );
     });
 
     group('acceptJob', () {
-      test('should return updated job when remote data source call succeeds', () async {
-        // arrange
-        final acceptedJobModel = tJobModel.copyWith(status: 'accepted');
-        when(mockRemoteDataSource.acceptJob(any, any))
-            .thenAnswer((_) async => acceptedJobModel);
+      test(
+        'should return updated job when remote data source call succeeds',
+        () async {
+          // arrange
+          final acceptedJobModel = tJobModel.copyWith(status: 'accepted');
+          when(
+            mockRemoteDataSource.acceptJob(any, any),
+          ).thenAnswer((_) async => acceptedJobModel);
 
-        // act
-        final result = await repository.acceptJob(tJobId, tPartnerId);
+          // act
+          final result = await repository.acceptJob(tJobId, tPartnerId);
 
-        // assert
-        verify(mockRemoteDataSource.acceptJob(tJobId, tPartnerId));
-        expect(result, isA<Right<Failure, Job>>());
-        result.fold(
-          (failure) => fail('Should return job'),
-          (job) => expect(job.status, JobStatus.accepted),
-        );
-      });
+          // assert
+          verify(mockRemoteDataSource.acceptJob(tJobId, tPartnerId));
+          expect(result, isA<Right<Failure, Job>>());
+          result.fold(
+            (failure) => fail('Should return job'),
+            (job) => expect(job.status, JobStatus.accepted),
+          );
+        },
+      );
 
-      test('should return ServerFailure when remote data source throws ServerException', () async {
-        // arrange
-        when(mockRemoteDataSource.acceptJob(any, any))
-            .thenThrow(const ServerException('Failed to accept job'));
+      test(
+        'should return ServerFailure when remote data source throws ServerException',
+        () async {
+          // arrange
+          when(
+            mockRemoteDataSource.acceptJob(any, any),
+          ).thenThrow(const ServerException('Failed to accept job'));
 
-        // act
-        final result = await repository.acceptJob(tJobId, tPartnerId);
+          // act
+          final result = await repository.acceptJob(tJobId, tPartnerId);
 
-        // assert
-        verify(mockRemoteDataSource.acceptJob(tJobId, tPartnerId));
-        expect(result, equals(const Left(ServerFailure('Failed to accept job'))));
-      });
+          // assert
+          verify(mockRemoteDataSource.acceptJob(tJobId, tPartnerId));
+          expect(
+            result,
+            equals(const Left(ServerFailure('Failed to accept job'))),
+          );
+        },
+      );
     });
 
     group('rejectJob', () {
       const tRejectionReason = 'Not available';
 
-      test('should return updated job when remote data source call succeeds', () async {
-        // arrange
-        final rejectedJobModel = tJobModel.copyWith(
-          status: 'rejected',
-          rejectionReason: tRejectionReason,
-        );
-        when(mockRemoteDataSource.rejectJob(any, any, any))
-            .thenAnswer((_) async => rejectedJobModel);
+      test(
+        'should return updated job when remote data source call succeeds',
+        () async {
+          // arrange
+          final rejectedJobModel = tJobModel.copyWith(
+            status: 'rejected',
+            rejectionReason: tRejectionReason,
+          );
+          when(
+            mockRemoteDataSource.rejectJob(any, any, any),
+          ).thenAnswer((_) async => rejectedJobModel);
 
-        // act
-        final result = await repository.rejectJob(tJobId, tPartnerId, tRejectionReason);
+          // act
+          final result = await repository.rejectJob(
+            tJobId,
+            tPartnerId,
+            tRejectionReason,
+          );
 
-        // assert
-        verify(mockRemoteDataSource.rejectJob(tJobId, tPartnerId, tRejectionReason));
-        expect(result, isA<Right<Failure, Job>>());
-        result.fold(
-          (failure) => fail('Should return job'),
-          (job) {
+          // assert
+          verify(
+            mockRemoteDataSource.rejectJob(
+              tJobId,
+              tPartnerId,
+              tRejectionReason,
+            ),
+          );
+          expect(result, isA<Right<Failure, Job>>());
+          result.fold((failure) => fail('Should return job'), (job) {
             expect(job.status, JobStatus.rejected);
             expect(job.rejectionReason, tRejectionReason);
-          },
-        );
-      });
+          });
+        },
+      );
 
-      test('should return ServerFailure when remote data source throws ServerException', () async {
-        // arrange
-        when(mockRemoteDataSource.rejectJob(any, any, any))
-            .thenThrow(const ServerException('Failed to reject job'));
+      test(
+        'should return ServerFailure when remote data source throws ServerException',
+        () async {
+          // arrange
+          when(
+            mockRemoteDataSource.rejectJob(any, any, any),
+          ).thenThrow(const ServerException('Failed to reject job'));
 
-        // act
-        final result = await repository.rejectJob(tJobId, tPartnerId, tRejectionReason);
+          // act
+          final result = await repository.rejectJob(
+            tJobId,
+            tPartnerId,
+            tRejectionReason,
+          );
 
-        // assert
-        verify(mockRemoteDataSource.rejectJob(tJobId, tPartnerId, tRejectionReason));
-        expect(result, equals(const Left(ServerFailure('Failed to reject job'))));
-      });
+          // assert
+          verify(
+            mockRemoteDataSource.rejectJob(
+              tJobId,
+              tPartnerId,
+              tRejectionReason,
+            ),
+          );
+          expect(
+            result,
+            equals(const Left(ServerFailure('Failed to reject job'))),
+          );
+        },
+      );
     });
 
     group('getPartnerEarnings', () {
-      test('should return partner earnings when remote data source call succeeds', () async {
-        // arrange
-        when(mockRemoteDataSource.getPartnerEarnings(any))
-            .thenAnswer((_) async => tEarningsModel);
+      test(
+        'should return partner earnings when remote data source call succeeds',
+        () async {
+          // arrange
+          when(
+            mockRemoteDataSource.getPartnerEarnings(any),
+          ).thenAnswer((_) async => tEarningsModel);
 
-        // act
-        final result = await repository.getPartnerEarnings(tPartnerId);
+          // act
+          final result = await repository.getPartnerEarnings(tPartnerId);
 
-        // assert
-        verify(mockRemoteDataSource.getPartnerEarnings(tPartnerId));
-        expect(result, equals(Right(tEarnings)));
-      });
+          // assert
+          verify(mockRemoteDataSource.getPartnerEarnings(tPartnerId));
+          expect(result, equals(Right(tEarnings)));
+        },
+      );
 
-      test('should return ServerFailure when remote data source throws ServerException', () async {
-        // arrange
-        when(mockRemoteDataSource.getPartnerEarnings(any))
-            .thenThrow(const ServerException('Failed to get earnings'));
+      test(
+        'should return ServerFailure when remote data source throws ServerException',
+        () async {
+          // arrange
+          when(
+            mockRemoteDataSource.getPartnerEarnings(any),
+          ).thenThrow(const ServerException('Failed to get earnings'));
 
-        // act
-        final result = await repository.getPartnerEarnings(tPartnerId);
+          // act
+          final result = await repository.getPartnerEarnings(tPartnerId);
 
-        // assert
-        verify(mockRemoteDataSource.getPartnerEarnings(tPartnerId));
-        expect(result, equals(const Left(ServerFailure('Failed to get earnings'))));
-      });
+          // assert
+          verify(mockRemoteDataSource.getPartnerEarnings(tPartnerId));
+          expect(
+            result,
+            equals(const Left(ServerFailure('Failed to get earnings'))),
+          );
+        },
+      );
     });
 
     group('listenToPendingJobs', () {
-      test('should return stream of jobs when remote data source stream succeeds', () async {
-        // arrange
-        when(mockRemoteDataSource.listenToPendingJobs(any))
-            .thenAnswer((_) => Stream.value([tJobModel]));
+      test(
+        'should return stream of jobs when remote data source stream succeeds',
+        () async {
+          // arrange
+          when(
+            mockRemoteDataSource.listenToPendingJobs(any),
+          ).thenAnswer((_) => Stream.value([tJobModel]));
 
-        // act
-        final stream = repository.listenToPendingJobs(tPartnerId);
+          // act
+          final stream = repository.listenToPendingJobs(tPartnerId);
 
-        // assert
-        expect(stream, emits(Right([tJob])));
-        verify(mockRemoteDataSource.listenToPendingJobs(tPartnerId));
-      });
+          // assert
+          expect(stream, emits(Right([tJob])));
+          verify(mockRemoteDataSource.listenToPendingJobs(tPartnerId));
+        },
+      );
 
-      test('should return stream with failure when remote data source stream fails', () async {
-        // arrange
-        when(mockRemoteDataSource.listenToPendingJobs(any))
-            .thenAnswer((_) => Stream.error(const ServerException('Stream error')));
+      test(
+        'should return stream with failure when remote data source stream fails',
+        () async {
+          // arrange
+          when(mockRemoteDataSource.listenToPendingJobs(any)).thenAnswer(
+            (_) => Stream.error(const ServerException('Stream error')),
+          );
 
-        // act
-        final stream = repository.listenToPendingJobs(tPartnerId);
+          // act
+          final stream = repository.listenToPendingJobs(tPartnerId);
 
-        // assert
-        expect(stream, emits(isA<Left<Failure, List<Job>>>()));
-        verify(mockRemoteDataSource.listenToPendingJobs(tPartnerId));
-      });
+          // assert
+          expect(stream, emits(isA<Left<Failure, List<Job>>>()));
+          verify(mockRemoteDataSource.listenToPendingJobs(tPartnerId));
+        },
+      );
     });
   });
 }

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../shared/models/service_model.dart';
 import '../../../../shared/services/firebase_service.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -20,12 +19,15 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   @override
   Future<List<ServiceModel>> getActiveServices() async {
     try {
-      final query = _firebaseService.collection(AppConstants.servicesCollection)
+      final query = _firebaseService
+          .collection(AppConstants.servicesCollection)
           .where('isActive', isEqualTo: true)
           .orderBy('sortOrder');
 
       final snapshot = await query.get();
-      return snapshot.docs.map((doc) => ServiceModel.fromFirestore(doc)).toList();
+      return snapshot.docs
+          .map((doc) => ServiceModel.fromFirestore(doc))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get active services: $e');
     }
@@ -47,13 +49,16 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   @override
   Future<List<ServiceModel>> getServicesByCategory(String category) async {
     try {
-      final query = _firebaseService.collection(AppConstants.servicesCollection)
+      final query = _firebaseService
+          .collection(AppConstants.servicesCollection)
           .where('category', isEqualTo: category)
           .where('isActive', isEqualTo: true)
           .orderBy('sortOrder');
 
       final snapshot = await query.get();
-      return snapshot.docs.map((doc) => ServiceModel.fromFirestore(doc)).toList();
+      return snapshot.docs
+          .map((doc) => ServiceModel.fromFirestore(doc))
+          .toList();
     } catch (e) {
       throw Exception('Failed to get services by category: $e');
     }
@@ -63,16 +68,21 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   Future<List<ServiceModel>> searchServices(String query) async {
     try {
       // Simple text search - in production, you might want to use Algolia or similar
-      final snapshot = await _firebaseService.collection(AppConstants.servicesCollection)
+      final snapshot = await _firebaseService
+          .collection(AppConstants.servicesCollection)
           .where('isActive', isEqualTo: true)
           .get();
 
       final services = snapshot.docs
           .map((doc) => ServiceModel.fromFirestore(doc))
-          .where((service) =>
-              service.name.toLowerCase().contains(query.toLowerCase()) ||
-              service.description.toLowerCase().contains(query.toLowerCase()) ||
-              service.category.toLowerCase().contains(query.toLowerCase()))
+          .where(
+            (service) =>
+                service.name.toLowerCase().contains(query.toLowerCase()) ||
+                service.description.toLowerCase().contains(
+                  query.toLowerCase(),
+                ) ||
+                service.category.toLowerCase().contains(query.toLowerCase()),
+          )
           .toList();
 
       return services;
@@ -84,12 +94,16 @@ class ServiceRemoteDataSourceImpl implements ServiceRemoteDataSource {
   @override
   Stream<List<ServiceModel>> listenToActiveServices() {
     try {
-      return _firebaseService.collection(AppConstants.servicesCollection)
+      return _firebaseService
+          .collection(AppConstants.servicesCollection)
           .where('isActive', isEqualTo: true)
           .orderBy('sortOrder')
           .snapshots()
-          .map((snapshot) =>
-              snapshot.docs.map((doc) => ServiceModel.fromFirestore(doc)).toList());
+          .map(
+            (snapshot) => snapshot.docs
+                .map((doc) => ServiceModel.fromFirestore(doc))
+                .toList(),
+          );
     } catch (e) {
       throw Exception('Failed to listen to active services: $e');
     }

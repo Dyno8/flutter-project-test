@@ -4,7 +4,7 @@ import '../../../../shared/services/firebase_service.dart';
 import '../../../../shared/models/service_model.dart';
 import '../../../../shared/models/booking_model.dart';
 import '../../../../shared/models/partner_model.dart';
-import '../../../booking/data/mappers/partner_mapper.dart';
+
 import '../models/booking_request_model.dart';
 
 /// Remote data source for client service operations using Firebase

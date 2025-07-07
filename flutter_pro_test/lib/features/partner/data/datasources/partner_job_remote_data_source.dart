@@ -31,7 +31,10 @@ abstract class PartnerJobRemoteDataSource {
 
   // Earnings Management
   Future<PartnerEarningsModel> getPartnerEarnings(String partnerId);
-  Future<PartnerEarningsModel> updatePartnerEarnings(String partnerId, double jobEarnings);
+  Future<PartnerEarningsModel> updatePartnerEarnings(
+    String partnerId,
+    double jobEarnings,
+  );
   Future<List<Map<String, dynamic>>> getEarningsByDateRange(
     String partnerId,
     DateTime startDate,
@@ -45,19 +48,30 @@ abstract class PartnerJobRemoteDataSource {
     bool isAvailable,
     String? reason,
   );
-  Future<PartnerAvailabilityModel> updateOnlineStatus(String partnerId, bool isOnline);
+  Future<PartnerAvailabilityModel> updateOnlineStatus(
+    String partnerId,
+    bool isOnline,
+  );
   Future<PartnerAvailabilityModel> updateWorkingHours(
     String partnerId,
     Map<String, List<String>> workingHours,
   );
-  Future<PartnerAvailabilityModel> blockDates(String partnerId, List<String> dates);
-  Future<PartnerAvailabilityModel> unblockDates(String partnerId, List<String> dates);
+  Future<PartnerAvailabilityModel> blockDates(
+    String partnerId,
+    List<String> dates,
+  );
+  Future<PartnerAvailabilityModel> unblockDates(
+    String partnerId,
+    List<String> dates,
+  );
   Future<PartnerAvailabilityModel> setTemporaryUnavailability(
     String partnerId,
     DateTime unavailableUntil,
     String reason,
   );
-  Future<PartnerAvailabilityModel> clearTemporaryUnavailability(String partnerId);
+  Future<PartnerAvailabilityModel> clearTemporaryUnavailability(
+    String partnerId,
+  );
 
   // Statistics
   Future<Map<String, dynamic>> getJobStatistics(
@@ -77,7 +91,7 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
   final FirebaseService _firebaseService;
 
   PartnerJobRemoteDataSourceImpl({required FirebaseService firebaseService})
-      : _firebaseService = firebaseService;
+    : _firebaseService = firebaseService;
 
   static const String _jobsCollection = 'partner_jobs';
   static const String _earningsCollection = 'partner_earnings';
@@ -134,11 +148,17 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
       }
 
       if (startDate != null) {
-        query = query.where('scheduledDate', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
+        query = query.where(
+          'scheduledDate',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(startDate),
+        );
       }
 
       if (endDate != null) {
-        query = query.where('scheduledDate', isLessThanOrEqualTo: Timestamp.fromDate(endDate));
+        query = query.where(
+          'scheduledDate',
+          isLessThanOrEqualTo: Timestamp.fromDate(endDate),
+        );
       }
 
       query = query.orderBy('scheduledDate', descending: true).limit(limit);
@@ -170,10 +190,10 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
       };
 
       await _firebaseService.updateDocument(_jobsCollection, jobId, updateData);
-      
+
       // Also update the corresponding booking status
       await _updateBookingStatus(jobId, 'confirmed');
-      
+
       final doc = await _firebaseService.getDocument(_jobsCollection, jobId);
       return JobModel.fromFirestore(doc);
     } catch (e) {
@@ -182,7 +202,11 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
   }
 
   @override
-  Future<JobModel> rejectJob(String jobId, String partnerId, String reason) async {
+  Future<JobModel> rejectJob(
+    String jobId,
+    String partnerId,
+    String reason,
+  ) async {
     try {
       final updateData = {
         'status': 'rejected',
@@ -192,10 +216,10 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
       };
 
       await _firebaseService.updateDocument(_jobsCollection, jobId, updateData);
-      
+
       // Also update the corresponding booking status
       await _updateBookingStatus(jobId, 'rejected');
-      
+
       final doc = await _firebaseService.getDocument(_jobsCollection, jobId);
       return JobModel.fromFirestore(doc);
     } catch (e) {
@@ -213,10 +237,10 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
       };
 
       await _firebaseService.updateDocument(_jobsCollection, jobId, updateData);
-      
+
       // Also update the corresponding booking status
       await _updateBookingStatus(jobId, 'inProgress');
-      
+
       final doc = await _firebaseService.getDocument(_jobsCollection, jobId);
       return JobModel.fromFirestore(doc);
     } catch (e) {
@@ -234,14 +258,14 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
       };
 
       await _firebaseService.updateDocument(_jobsCollection, jobId, updateData);
-      
+
       // Also update the corresponding booking status
       await _updateBookingStatus(jobId, 'completed');
-      
+
       // Update partner earnings
       final job = await getJobById(jobId);
       await updatePartnerEarnings(partnerId, job.partnerEarnings);
-      
+
       final doc = await _firebaseService.getDocument(_jobsCollection, jobId);
       return JobModel.fromFirestore(doc);
     } catch (e) {
@@ -250,7 +274,11 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
   }
 
   @override
-  Future<JobModel> cancelJob(String jobId, String partnerId, String reason) async {
+  Future<JobModel> cancelJob(
+    String jobId,
+    String partnerId,
+    String reason,
+  ) async {
     try {
       final updateData = {
         'status': 'cancelled',
@@ -260,10 +288,10 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
       };
 
       await _firebaseService.updateDocument(_jobsCollection, jobId, updateData);
-      
+
       // Also update the corresponding booking status
       await _updateBookingStatus(jobId, 'cancelled');
-      
+
       final doc = await _firebaseService.getDocument(_jobsCollection, jobId);
       return JobModel.fromFirestore(doc);
     } catch (e) {
@@ -277,7 +305,7 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
       // Get the job to find the booking ID
       final jobDoc = await _firebaseService.getDocument(_jobsCollection, jobId);
       final job = JobModel.fromFirestore(jobDoc);
-      
+
       // Update the booking status
       await _firebaseService.updateDocument('bookings', job.bookingId, {
         'status': status,
@@ -298,7 +326,11 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
           .where('status', isEqualTo: 'pending')
           .orderBy('createdAt', descending: true)
           .snapshots()
-          .map((snapshot) => snapshot.docs.map((doc) => JobModel.fromFirestore(doc)).toList());
+          .map(
+            (snapshot) => snapshot.docs
+                .map((doc) => JobModel.fromFirestore(doc))
+                .toList(),
+          );
     } catch (e) {
       throw ServerException('Failed to listen to pending jobs: $e');
     }
@@ -313,7 +345,11 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
           .where('status', whereIn: ['accepted', 'inProgress'])
           .orderBy('scheduledDate', descending: false)
           .snapshots()
-          .map((snapshot) => snapshot.docs.map((doc) => JobModel.fromFirestore(doc)).toList());
+          .map(
+            (snapshot) => snapshot.docs
+                .map((doc) => JobModel.fromFirestore(doc))
+                .toList(),
+          );
     } catch (e) {
       throw ServerException('Failed to listen to accepted jobs: $e');
     }
@@ -341,7 +377,11 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
           .where('status', whereIn: ['pending', 'accepted', 'inProgress'])
           .orderBy('scheduledDate', descending: false)
           .snapshots()
-          .map((snapshot) => snapshot.docs.map((doc) => JobModel.fromFirestore(doc)).toList());
+          .map(
+            (snapshot) => snapshot.docs
+                .map((doc) => JobModel.fromFirestore(doc))
+                .toList(),
+          );
     } catch (e) {
       throw ServerException('Failed to listen to active jobs: $e');
     }
@@ -350,7 +390,10 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
   @override
   Future<PartnerEarningsModel> getPartnerEarnings(String partnerId) async {
     try {
-      final doc = await _firebaseService.getDocument(_earningsCollection, partnerId);
+      final doc = await _firebaseService.getDocument(
+        _earningsCollection,
+        partnerId,
+      );
       return PartnerEarningsModel.fromFirestore(doc);
     } catch (e) {
       // If earnings document doesn't exist, create a default one
@@ -369,28 +412,37 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
         totalReviews: 0,
         platformFeeRate: 0.15,
         lastUpdated: DateTime.now(),
+        averageEarningsPerJob: 0.0,
+        weeklyGrowth: 0.0,
       );
-      
-      await _firebaseService.setDocument(_earningsCollection, partnerId, defaultEarnings.toMap());
+
+      await _firebaseService.setDocument(
+        _earningsCollection,
+        partnerId,
+        defaultEarnings.toMap(),
+      );
       return defaultEarnings;
     }
   }
 
   @override
-  Future<PartnerEarningsModel> updatePartnerEarnings(String partnerId, double jobEarnings) async {
+  Future<PartnerEarningsModel> updatePartnerEarnings(
+    String partnerId,
+    double jobEarnings,
+  ) async {
     try {
       final earnings = await getPartnerEarnings(partnerId);
       final now = DateTime.now();
       final today = DateTime(now.year, now.month, now.day);
-      
+
       // Calculate new earnings
       final newTotalEarnings = earnings.totalEarnings + jobEarnings;
       final newTotalJobs = earnings.totalJobs + 1;
-      
+
       // Update today's earnings if it's the same day
       double newTodayEarnings = earnings.todayEarnings;
       int newTodayJobs = earnings.todayJobs;
-      
+
       if (earnings.lastUpdated.day == today.day &&
           earnings.lastUpdated.month == today.month &&
           earnings.lastUpdated.year == today.year) {
@@ -400,7 +452,7 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
         newTodayEarnings = jobEarnings;
         newTodayJobs = 1;
       }
-      
+
       final updateData = {
         'totalEarnings': newTotalEarnings,
         'todayEarnings': newTodayEarnings,
@@ -408,10 +460,17 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
         'todayJobs': newTodayJobs,
         'lastUpdated': Timestamp.fromDate(now),
       };
-      
-      await _firebaseService.updateDocument(_earningsCollection, partnerId, updateData);
-      
-      final doc = await _firebaseService.getDocument(_earningsCollection, partnerId);
+
+      await _firebaseService.updateDocument(
+        _earningsCollection,
+        partnerId,
+        updateData,
+      );
+
+      final doc = await _firebaseService.getDocument(
+        _earningsCollection,
+        partnerId,
+      );
       return PartnerEarningsModel.fromFirestore(doc);
     } catch (e) {
       throw ServerException('Failed to update partner earnings: $e');
@@ -429,20 +488,29 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
           .collection(_jobsCollection)
           .where('partnerId', isEqualTo: partnerId)
           .where('status', isEqualTo: 'completed')
-          .where('completedAt', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate))
-          .where('completedAt', isLessThanOrEqualTo: Timestamp.fromDate(endDate))
+          .where(
+            'completedAt',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(startDate),
+          )
+          .where(
+            'completedAt',
+            isLessThanOrEqualTo: Timestamp.fromDate(endDate),
+          )
           .orderBy('completedAt', descending: false);
 
       final snapshot = await query.get();
-      final jobs = snapshot.docs.map((doc) => JobModel.fromFirestore(doc)).toList();
-      
+      final jobs = snapshot.docs
+          .map((doc) => JobModel.fromFirestore(doc))
+          .toList();
+
       // Group by date
       final Map<String, Map<String, dynamic>> dailyEarnings = {};
-      
+
       for (final job in jobs) {
         if (job.completedAt != null) {
-          final dateKey = '${job.completedAt!.year}-${job.completedAt!.month.toString().padLeft(2, '0')}-${job.completedAt!.day.toString().padLeft(2, '0')}';
-          
+          final dateKey =
+              '${job.completedAt!.year}-${job.completedAt!.month.toString().padLeft(2, '0')}-${job.completedAt!.day.toString().padLeft(2, '0')}';
+
           if (!dailyEarnings.containsKey(dateKey)) {
             dailyEarnings[dateKey] = {
               'date': job.completedAt!,
@@ -451,13 +519,13 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
               'hoursWorked': 0.0,
             };
           }
-          
+
           dailyEarnings[dateKey]!['earnings'] += job.partnerEarnings;
           dailyEarnings[dateKey]!['jobsCompleted'] += 1;
           dailyEarnings[dateKey]!['hoursWorked'] += job.hours;
         }
       }
-      
+
       return dailyEarnings.values.toList();
     } catch (e) {
       throw ServerException('Failed to get earnings by date range: $e');
@@ -465,9 +533,14 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
   }
 
   @override
-  Future<PartnerAvailabilityModel> getPartnerAvailability(String partnerId) async {
+  Future<PartnerAvailabilityModel> getPartnerAvailability(
+    String partnerId,
+  ) async {
     try {
-      final doc = await _firebaseService.getDocument(_availabilityCollection, partnerId);
+      final doc = await _firebaseService.getDocument(
+        _availabilityCollection,
+        partnerId,
+      );
       return PartnerAvailabilityModel.fromFirestore(doc);
     } catch (e) {
       // If availability document doesn't exist, create a default one
@@ -486,8 +559,12 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
         },
         lastUpdated: DateTime.now(),
       );
-      
-      await _firebaseService.setDocument(_availabilityCollection, partnerId, defaultAvailability.toMap());
+
+      await _firebaseService.setDocument(
+        _availabilityCollection,
+        partnerId,
+        defaultAvailability.toMap(),
+      );
       return defaultAvailability;
     }
   }
@@ -504,10 +581,17 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
         'unavailabilityReason': reason,
         'lastUpdated': Timestamp.now(),
       };
-      
-      await _firebaseService.updateDocument(_availabilityCollection, partnerId, updateData);
-      
-      final doc = await _firebaseService.getDocument(_availabilityCollection, partnerId);
+
+      await _firebaseService.updateDocument(
+        _availabilityCollection,
+        partnerId,
+        updateData,
+      );
+
+      final doc = await _firebaseService.getDocument(
+        _availabilityCollection,
+        partnerId,
+      );
       return PartnerAvailabilityModel.fromFirestore(doc);
     } catch (e) {
       throw ServerException('Failed to update availability status: $e');
@@ -515,17 +599,27 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
   }
 
   @override
-  Future<PartnerAvailabilityModel> updateOnlineStatus(String partnerId, bool isOnline) async {
+  Future<PartnerAvailabilityModel> updateOnlineStatus(
+    String partnerId,
+    bool isOnline,
+  ) async {
     try {
       final updateData = {
         'isOnline': isOnline,
         'lastSeen': Timestamp.now(),
         'lastUpdated': Timestamp.now(),
       };
-      
-      await _firebaseService.updateDocument(_availabilityCollection, partnerId, updateData);
-      
-      final doc = await _firebaseService.getDocument(_availabilityCollection, partnerId);
+
+      await _firebaseService.updateDocument(
+        _availabilityCollection,
+        partnerId,
+        updateData,
+      );
+
+      final doc = await _firebaseService.getDocument(
+        _availabilityCollection,
+        partnerId,
+      );
       return PartnerAvailabilityModel.fromFirestore(doc);
     } catch (e) {
       throw ServerException('Failed to update online status: $e');
@@ -542,10 +636,17 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
         'workingHours': workingHours,
         'lastUpdated': Timestamp.now(),
       };
-      
-      await _firebaseService.updateDocument(_availabilityCollection, partnerId, updateData);
-      
-      final doc = await _firebaseService.getDocument(_availabilityCollection, partnerId);
+
+      await _firebaseService.updateDocument(
+        _availabilityCollection,
+        partnerId,
+        updateData,
+      );
+
+      final doc = await _firebaseService.getDocument(
+        _availabilityCollection,
+        partnerId,
+      );
       return PartnerAvailabilityModel.fromFirestore(doc);
     } catch (e) {
       throw ServerException('Failed to update working hours: $e');
@@ -553,19 +654,32 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
   }
 
   @override
-  Future<PartnerAvailabilityModel> blockDates(String partnerId, List<String> dates) async {
+  Future<PartnerAvailabilityModel> blockDates(
+    String partnerId,
+    List<String> dates,
+  ) async {
     try {
       final availability = await getPartnerAvailability(partnerId);
-      final newBlockedDates = [...availability.blockedDates, ...dates].toSet().toList();
-      
+      final newBlockedDates = [
+        ...availability.blockedDates,
+        ...dates,
+      ].toSet().toList();
+
       final updateData = {
         'blockedDates': newBlockedDates,
         'lastUpdated': Timestamp.now(),
       };
-      
-      await _firebaseService.updateDocument(_availabilityCollection, partnerId, updateData);
-      
-      final doc = await _firebaseService.getDocument(_availabilityCollection, partnerId);
+
+      await _firebaseService.updateDocument(
+        _availabilityCollection,
+        partnerId,
+        updateData,
+      );
+
+      final doc = await _firebaseService.getDocument(
+        _availabilityCollection,
+        partnerId,
+      );
       return PartnerAvailabilityModel.fromFirestore(doc);
     } catch (e) {
       throw ServerException('Failed to block dates: $e');
@@ -573,19 +687,31 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
   }
 
   @override
-  Future<PartnerAvailabilityModel> unblockDates(String partnerId, List<String> dates) async {
+  Future<PartnerAvailabilityModel> unblockDates(
+    String partnerId,
+    List<String> dates,
+  ) async {
     try {
       final availability = await getPartnerAvailability(partnerId);
-      final newBlockedDates = availability.blockedDates.where((date) => !dates.contains(date)).toList();
-      
+      final newBlockedDates = availability.blockedDates
+          .where((date) => !dates.contains(date))
+          .toList();
+
       final updateData = {
         'blockedDates': newBlockedDates,
         'lastUpdated': Timestamp.now(),
       };
-      
-      await _firebaseService.updateDocument(_availabilityCollection, partnerId, updateData);
-      
-      final doc = await _firebaseService.getDocument(_availabilityCollection, partnerId);
+
+      await _firebaseService.updateDocument(
+        _availabilityCollection,
+        partnerId,
+        updateData,
+      );
+
+      final doc = await _firebaseService.getDocument(
+        _availabilityCollection,
+        partnerId,
+      );
       return PartnerAvailabilityModel.fromFirestore(doc);
     } catch (e) {
       throw ServerException('Failed to unblock dates: $e');
@@ -605,10 +731,17 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
         'unavailabilityReason': reason,
         'lastUpdated': Timestamp.now(),
       };
-      
-      await _firebaseService.updateDocument(_availabilityCollection, partnerId, updateData);
-      
-      final doc = await _firebaseService.getDocument(_availabilityCollection, partnerId);
+
+      await _firebaseService.updateDocument(
+        _availabilityCollection,
+        partnerId,
+        updateData,
+      );
+
+      final doc = await _firebaseService.getDocument(
+        _availabilityCollection,
+        partnerId,
+      );
       return PartnerAvailabilityModel.fromFirestore(doc);
     } catch (e) {
       throw ServerException('Failed to set temporary unavailability: $e');
@@ -616,7 +749,9 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
   }
 
   @override
-  Future<PartnerAvailabilityModel> clearTemporaryUnavailability(String partnerId) async {
+  Future<PartnerAvailabilityModel> clearTemporaryUnavailability(
+    String partnerId,
+  ) async {
     try {
       final updateData = {
         'isAvailable': true,
@@ -624,10 +759,17 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
         'unavailabilityReason': null,
         'lastUpdated': Timestamp.now(),
       };
-      
-      await _firebaseService.updateDocument(_availabilityCollection, partnerId, updateData);
-      
-      final doc = await _firebaseService.getDocument(_availabilityCollection, partnerId);
+
+      await _firebaseService.updateDocument(
+        _availabilityCollection,
+        partnerId,
+        updateData,
+      );
+
+      final doc = await _firebaseService.getDocument(
+        _availabilityCollection,
+        partnerId,
+      );
       return PartnerAvailabilityModel.fromFirestore(doc);
     } catch (e) {
       throw ServerException('Failed to clear temporary unavailability: $e');
@@ -646,15 +788,23 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
           .where('partnerId', isEqualTo: partnerId);
 
       if (startDate != null) {
-        query = query.where('createdAt', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
+        query = query.where(
+          'createdAt',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(startDate),
+        );
       }
 
       if (endDate != null) {
-        query = query.where('createdAt', isLessThanOrEqualTo: Timestamp.fromDate(endDate));
+        query = query.where(
+          'createdAt',
+          isLessThanOrEqualTo: Timestamp.fromDate(endDate),
+        );
       }
 
       final snapshot = await query.get();
-      final jobs = snapshot.docs.map((doc) => JobModel.fromFirestore(doc)).toList();
+      final jobs = snapshot.docs
+          .map((doc) => JobModel.fromFirestore(doc))
+          .toList();
 
       final stats = {
         'totalJobs': jobs.length,
@@ -663,11 +813,33 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
         'completedJobs': jobs.where((job) => job.status == 'completed').length,
         'rejectedJobs': jobs.where((job) => job.status == 'rejected').length,
         'cancelledJobs': jobs.where((job) => job.status == 'cancelled').length,
-        'totalEarnings': jobs.where((job) => job.status == 'completed').fold(0.0, (sum, job) => sum + job.partnerEarnings),
-        'totalHours': jobs.where((job) => job.status == 'completed').fold(0.0, (sum, job) => sum + job.hours),
-        'acceptanceRate': jobs.isNotEmpty ? (jobs.where((job) => job.status != 'rejected').length / jobs.length) * 100 : 0.0,
-        'completionRate': jobs.where((job) => job.status == 'accepted' || job.status == 'completed').isNotEmpty 
-            ? (jobs.where((job) => job.status == 'completed').length / jobs.where((job) => job.status == 'accepted' || job.status == 'completed').length) * 100 
+        'totalEarnings': jobs
+            .where((job) => job.status == 'completed')
+            .fold(0.0, (sum, job) => sum + job.partnerEarnings),
+        'totalHours': jobs
+            .where((job) => job.status == 'completed')
+            .fold(0.0, (sum, job) => sum + job.hours),
+        'acceptanceRate': jobs.isNotEmpty
+            ? (jobs.where((job) => job.status != 'rejected').length /
+                      jobs.length) *
+                  100
+            : 0.0,
+        'completionRate':
+            jobs
+                .where(
+                  (job) =>
+                      job.status == 'accepted' || job.status == 'completed',
+                )
+                .isNotEmpty
+            ? (jobs.where((job) => job.status == 'completed').length /
+                      jobs
+                          .where(
+                            (job) =>
+                                job.status == 'accepted' ||
+                                job.status == 'completed',
+                          )
+                          .length) *
+                  100
             : 0.0,
       };
 
@@ -682,7 +854,7 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
     try {
       final earnings = await getPartnerEarnings(partnerId);
       final stats = await getJobStatistics(partnerId);
-      
+
       return {
         'totalEarnings': earnings.totalEarnings,
         'averageRating': earnings.averageRating,
@@ -702,10 +874,11 @@ class PartnerJobRemoteDataSourceImpl implements PartnerJobRemoteDataSource {
   Future<void> markJobNotificationAsRead(String partnerId, String jobId) async {
     try {
       final notificationId = '${partnerId}_$jobId';
-      await _firebaseService.updateDocument(_notificationsCollection, notificationId, {
-        'isRead': true,
-        'readAt': Timestamp.now(),
-      });
+      await _firebaseService.updateDocument(
+        _notificationsCollection,
+        notificationId,
+        {'isRead': true, 'readAt': Timestamp.now()},
+      );
     } catch (e) {
       throw ServerException('Failed to mark notification as read: $e');
     }

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/booking_request.dart';
+
 import '../../domain/entities/booking.dart';
 
 abstract class BookingEvent extends Equatable {
@@ -41,10 +41,7 @@ class SelectTimeSlotEvent extends BookingEvent {
   final String timeSlot;
   final double hours;
 
-  const SelectTimeSlotEvent({
-    required this.timeSlot,
-    required this.hours,
-  });
+  const SelectTimeSlotEvent({required this.timeSlot, required this.hours});
 
   @override
   List<Object?> get props => [timeSlot, hours];
@@ -67,7 +64,13 @@ class LoadAvailablePartnersEvent extends BookingEvent {
   });
 
   @override
-  List<Object?> get props => [serviceId, date, timeSlot, clientLatitude, clientLongitude];
+  List<Object?> get props => [
+    serviceId,
+    date,
+    timeSlot,
+    clientLatitude,
+    clientLongitude,
+  ];
 }
 
 class SelectPartnerEvent extends BookingEvent {
@@ -124,10 +127,7 @@ class ConfirmBookingEvent extends BookingEvent {
   final String bookingId;
   final String partnerId;
 
-  const ConfirmBookingEvent({
-    required this.bookingId,
-    required this.partnerId,
-  });
+  const ConfirmBookingEvent({required this.bookingId, required this.partnerId});
 
   @override
   List<Object?> get props => [bookingId, partnerId];
@@ -138,10 +138,7 @@ class LoadUserBookingsEvent extends BookingEvent {
   final String userId;
   final BookingStatus? status;
 
-  const LoadUserBookingsEvent({
-    required this.userId,
-    this.status,
-  });
+  const LoadUserBookingsEvent({required this.userId, this.status});
 
   @override
   List<Object?> get props => [userId, status];
@@ -151,10 +148,7 @@ class LoadPartnerBookingsEvent extends BookingEvent {
   final String partnerId;
   final BookingStatus? status;
 
-  const LoadPartnerBookingsEvent({
-    required this.partnerId,
-    this.status,
-  });
+  const LoadPartnerBookingsEvent({required this.partnerId, this.status});
 
   @override
   List<Object?> get props => [partnerId, status];
@@ -177,10 +171,7 @@ class StartBookingEvent extends BookingEvent {
   final String bookingId;
   final String partnerId;
 
-  const StartBookingEvent({
-    required this.bookingId,
-    required this.partnerId,
-  });
+  const StartBookingEvent({required this.bookingId, required this.partnerId});
 
   @override
   List<Object?> get props => [bookingId, partnerId];

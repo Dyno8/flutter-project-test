@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../domain/entities/booking.dart';
+
 import '../../domain/entities/booking_request.dart';
 import '../../domain/entities/service.dart';
 import '../../domain/entities/partner.dart';

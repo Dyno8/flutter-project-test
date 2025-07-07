@@ -7,15 +7,13 @@ import 'package:flutter_pro_test/shared/services/realtime_booking_service.dart';
 import 'package:flutter_pro_test/shared/services/firebase_service.dart';
 import 'package:flutter_pro_test/shared/services/notification_service.dart';
 import 'package:flutter_pro_test/features/booking/presentation/bloc/realtime_booking_bloc.dart';
-import 'package:flutter_pro_test/core/constants/app_constants.dart';
+
 import 'package:flutter_pro_test/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(SimpleRealtimeTestApp());
 }
@@ -25,10 +23,7 @@ class SimpleRealtimeTestApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Simple Real-time Booking Test',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       home: SimpleRealtimeTestScreen(),
     );
   }
@@ -36,7 +31,8 @@ class SimpleRealtimeTestApp extends StatelessWidget {
 
 class SimpleRealtimeTestScreen extends StatefulWidget {
   @override
-  _SimpleRealtimeTestScreenState createState() => _SimpleRealtimeTestScreenState();
+  _SimpleRealtimeTestScreenState createState() =>
+      _SimpleRealtimeTestScreenState();
 }
 
 class _SimpleRealtimeTestScreenState extends State<SimpleRealtimeTestScreen> {
@@ -53,7 +49,10 @@ class _SimpleRealtimeTestScreenState extends State<SimpleRealtimeTestScreen> {
   void _initializeServices() {
     final firebaseService = FirebaseService();
     final notificationService = NotificationService();
-    _realtimeService = RealtimeBookingService(firebaseService, notificationService);
+    _realtimeService = RealtimeBookingService(
+      firebaseService,
+      notificationService,
+    );
     _realtimeBloc = RealtimeBookingBloc(_realtimeService);
   }
 
@@ -82,11 +81,13 @@ class _SimpleRealtimeTestScreenState extends State<SimpleRealtimeTestScreen> {
 
   void _updateStatus(String status) {
     if (_currentBookingId != null) {
-      _realtimeBloc.add(UpdateBookingStatusEvent(
-        bookingId: _currentBookingId!,
-        status: status,
-        message: 'Status updated to $status',
-      ));
+      _realtimeBloc.add(
+        UpdateBookingStatusEvent(
+          bookingId: _currentBookingId!,
+          status: status,
+          message: 'Status updated to $status',
+        ),
+      );
     }
   }
 
@@ -132,28 +133,32 @@ class _SimpleRealtimeTestScreenState extends State<SimpleRealtimeTestScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  
+
                   // Control buttons
                   Row(
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: _currentBookingId == null ? _startTracking : null,
+                          onPressed: _currentBookingId == null
+                              ? _startTracking
+                              : null,
                           child: Text('Start Tracking'),
                         ),
                       ),
                       SizedBox(width: 8),
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: _currentBookingId != null ? _stopTracking : null,
+                          onPressed: _currentBookingId != null
+                              ? _stopTracking
+                              : null,
                           child: Text('Stop Tracking'),
                         ),
                       ),
                     ],
                   ),
-                  
+
                   SizedBox(height: 16),
-                  
+
                   // Status update buttons
                   if (_currentBookingId != null) ...[
                     Text(
@@ -183,9 +188,9 @@ class _SimpleRealtimeTestScreenState extends State<SimpleRealtimeTestScreen> {
                       ],
                     ),
                   ],
-                  
+
                   SizedBox(height: 16),
-                  
+
                   // State display
                   Expanded(
                     child: Card(
@@ -243,14 +248,17 @@ class _SimpleRealtimeTestScreenState extends State<SimpleRealtimeTestScreen> {
             Text('Last Updated: ${updatedState.data.lastUpdated}'),
             Text('Partner En Route: ${updatedState.data.isPartnerEnRoute}'),
             if (updatedState.data.partnerLocation != null)
-              Text('Partner Location: ${updatedState.data.partnerLocation!.latitude}, ${updatedState.data.partnerLocation!.longitude}'),
+              Text(
+                'Partner Location: ${updatedState.data.partnerLocation!.latitude}, ${updatedState.data.partnerLocation!.longitude}',
+              ),
             if (updatedState.data.estimatedArrival != null)
               Text('Estimated Arrival: ${updatedState.data.estimatedArrival}'),
             if (updatedState.data.messages.isNotEmpty) ...[
               SizedBox(height: 8),
               Text('Messages:'),
-              ...updatedState.data.messages.map((msg) => 
-                Text('- ${msg.message} (${msg.timestamp})')),
+              ...updatedState.data.messages.map(
+                (msg) => Text('- ${msg.message} (${msg.timestamp})'),
+              ),
             ],
           ],
         );

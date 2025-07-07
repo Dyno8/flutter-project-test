@@ -1,7 +1,9 @@
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../../../../shared/models/location_model.dart';
 import '../../../../shared/models/partner_model.dart';
 import '../../domain/repositories/partner_repository.dart';
 import '../datasources/partner_datasource.dart';
@@ -18,12 +20,16 @@ class PartnerRepositoryImpl implements PartnerRepository {
   }
 
   @override
-  Future<Either<Failure, PartnerModel>> createPartner(PartnerModel partner) async {
+  Future<Either<Failure, PartnerModel>> createPartner(
+    PartnerModel partner,
+  ) async {
     return await dataSource.createPartner(partner);
   }
 
   @override
-  Future<Either<Failure, PartnerModel>> updatePartner(PartnerModel partner) async {
+  Future<Either<Failure, PartnerModel>> updatePartner(
+    PartnerModel partner,
+  ) async {
     return await dataSource.updatePartner(partner);
   }
 
@@ -33,134 +39,137 @@ class PartnerRepositoryImpl implements PartnerRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updatePartnerServices(String uid, List<String> services) async {
+  Future<Either<Failure, void>> updatePartnerServices(
+    String uid,
+    List<String> services,
+  ) async {
     final partnerResult = await dataSource.getPartner(uid);
-    
-    return partnerResult.fold(
-      (failure) => Left(failure),
-      (partner) async {
-        final updatedPartner = partner.copyWith(
-          services: services,
-          updatedAt: DateTime.now(),
-        );
-        
-        final updateResult = await dataSource.updatePartner(updatedPartner);
-        return updateResult.fold(
-          (failure) => Left(failure),
-          (_) => const Right(null),
-        );
-      },
-    );
+
+    return partnerResult.fold((failure) => Left(failure), (partner) async {
+      final updatedPartner = partner.copyWith(
+        services: services,
+        updatedAt: DateTime.now(),
+      );
+
+      final updateResult = await dataSource.updatePartner(updatedPartner);
+      return updateResult.fold(
+        (failure) => Left(failure),
+        (_) => const Right(null),
+      );
+    });
   }
 
   @override
-  Future<Either<Failure, void>> updateWorkingHours(String uid, Map<String, List<String>> workingHours) async {
+  Future<Either<Failure, void>> updateWorkingHours(
+    String uid,
+    Map<String, List<String>> workingHours,
+  ) async {
     final partnerResult = await dataSource.getPartner(uid);
-    
-    return partnerResult.fold(
-      (failure) => Left(failure),
-      (partner) async {
-        final updatedPartner = partner.copyWith(
-          workingHours: workingHours,
-          updatedAt: DateTime.now(),
-        );
-        
-        final updateResult = await dataSource.updatePartner(updatedPartner);
-        return updateResult.fold(
-          (failure) => Left(failure),
-          (_) => const Right(null),
-        );
-      },
-    );
+
+    return partnerResult.fold((failure) => Left(failure), (partner) async {
+      final updatedPartner = partner.copyWith(
+        workingHours: workingHours,
+        updatedAt: DateTime.now(),
+      );
+
+      final updateResult = await dataSource.updatePartner(updatedPartner);
+      return updateResult.fold(
+        (failure) => Left(failure),
+        (_) => const Right(null),
+      );
+    });
   }
 
   @override
-  Future<Either<Failure, void>> updatePartnerLocation(String uid, LocationModel location) async {
+  Future<Either<Failure, void>> updatePartnerLocation(
+    String uid,
+    GeoPoint location,
+  ) async {
     final partnerResult = await dataSource.getPartner(uid);
-    
-    return partnerResult.fold(
-      (failure) => Left(failure),
-      (partner) async {
-        final updatedPartner = partner.copyWith(
-          location: location,
-          updatedAt: DateTime.now(),
-        );
-        
-        final updateResult = await dataSource.updatePartner(updatedPartner);
-        return updateResult.fold(
-          (failure) => Left(failure),
-          (_) => const Right(null),
-        );
-      },
-    );
+
+    return partnerResult.fold((failure) => Left(failure), (partner) async {
+      final updatedPartner = partner.copyWith(
+        location: location,
+        updatedAt: DateTime.now(),
+      );
+
+      final updateResult = await dataSource.updatePartner(updatedPartner);
+      return updateResult.fold(
+        (failure) => Left(failure),
+        (_) => const Right(null),
+      );
+    });
   }
 
   @override
-  Future<Either<Failure, void>> updateAvailabilityStatus(String uid, bool isAvailable) async {
+  Future<Either<Failure, void>> updateAvailabilityStatus(
+    String uid,
+    bool isAvailable,
+  ) async {
     final partnerResult = await dataSource.getPartner(uid);
-    
-    return partnerResult.fold(
-      (failure) => Left(failure),
-      (partner) async {
-        final updatedPartner = partner.copyWith(
-          isAvailable: isAvailable,
-          updatedAt: DateTime.now(),
-        );
-        
-        final updateResult = await dataSource.updatePartner(updatedPartner);
-        return updateResult.fold(
-          (failure) => Left(failure),
-          (_) => const Right(null),
-        );
-      },
-    );
+
+    return partnerResult.fold((failure) => Left(failure), (partner) async {
+      final updatedPartner = partner.copyWith(
+        isAvailable: isAvailable,
+        updatedAt: DateTime.now(),
+      );
+
+      final updateResult = await dataSource.updatePartner(updatedPartner);
+      return updateResult.fold(
+        (failure) => Left(failure),
+        (_) => const Right(null),
+      );
+    });
   }
 
   @override
-  Future<Either<Failure, void>> updateVerificationStatus(String uid, bool isVerified) async {
+  Future<Either<Failure, void>> updateVerificationStatus(
+    String uid,
+    bool isVerified,
+  ) async {
     final partnerResult = await dataSource.getPartner(uid);
-    
-    return partnerResult.fold(
-      (failure) => Left(failure),
-      (partner) async {
-        final updatedPartner = partner.copyWith(
-          isVerified: isVerified,
-          updatedAt: DateTime.now(),
-        );
-        
-        final updateResult = await dataSource.updatePartner(updatedPartner);
-        return updateResult.fold(
-          (failure) => Left(failure),
-          (_) => const Right(null),
-        );
-      },
-    );
+
+    return partnerResult.fold((failure) => Left(failure), (partner) async {
+      final updatedPartner = partner.copyWith(
+        isVerified: isVerified,
+        updatedAt: DateTime.now(),
+      );
+
+      final updateResult = await dataSource.updatePartner(updatedPartner);
+      return updateResult.fold(
+        (failure) => Left(failure),
+        (_) => const Right(null),
+      );
+    });
   }
 
   @override
-  Future<Either<Failure, void>> updatePartnerRating(String uid, double rating, int totalReviews) async {
+  Future<Either<Failure, void>> updatePartnerRating(
+    String uid,
+    double rating,
+    int totalReviews,
+  ) async {
     final partnerResult = await dataSource.getPartner(uid);
-    
-    return partnerResult.fold(
-      (failure) => Left(failure),
-      (partner) async {
-        final updatedPartner = partner.copyWith(
-          rating: rating,
-          totalReviews: totalReviews,
-          updatedAt: DateTime.now(),
-        );
-        
-        final updateResult = await dataSource.updatePartner(updatedPartner);
-        return updateResult.fold(
-          (failure) => Left(failure),
-          (_) => const Right(null),
-        );
-      },
-    );
+
+    return partnerResult.fold((failure) => Left(failure), (partner) async {
+      final updatedPartner = partner.copyWith(
+        rating: rating,
+        totalReviews: totalReviews,
+        updatedAt: DateTime.now(),
+      );
+
+      final updateResult = await dataSource.updatePartner(updatedPartner);
+      return updateResult.fold(
+        (failure) => Left(failure),
+        (_) => const Right(null),
+      );
+    });
   }
 
   @override
-  Future<Either<Failure, List<PartnerModel>>> getPartnersByService(String serviceId) async {
+  Future<Either<Failure, List<PartnerModel>>> getPartnersByService(
+    String serviceId,
+  ) async {
     return await dataSource.getPartnersByService(serviceId);
   }
 
@@ -172,46 +181,44 @@ class PartnerRepositoryImpl implements PartnerRepository {
   }) async {
     // Get all available partners first
     final partnersResult = await dataSource.searchPartners(isAvailable: true);
-    
-    return partnersResult.fold(
-      (failure) => Left(failure),
-      (partners) {
-        // Filter partners by distance
-        final nearbyPartners = partners.where((partner) {
-          if (partner.location?.latitude == null || partner.location?.longitude == null) {
-            return false;
-          }
-          
-          final distance = _calculateDistance(
-            latitude,
-            longitude,
-            partner.location!.latitude,
-            partner.location!.longitude,
-          );
-          
-          return distance <= radiusKm;
-        }).toList();
 
-        // Sort by distance
-        nearbyPartners.sort((a, b) {
-          final distanceA = _calculateDistance(
-            latitude,
-            longitude,
-            a.location!.latitude,
-            a.location!.longitude,
-          );
-          final distanceB = _calculateDistance(
-            latitude,
-            longitude,
-            b.location!.latitude,
-            b.location!.longitude,
-          );
-          return distanceA.compareTo(distanceB);
-        });
+    return partnersResult.fold((failure) => Left(failure), (partners) {
+      // Filter partners by distance
+      final nearbyPartners = partners.where((partner) {
+        if (partner.location?.latitude == null ||
+            partner.location?.longitude == null) {
+          return false;
+        }
 
-        return Right(nearbyPartners);
-      },
-    );
+        final distance = _calculateDistance(
+          latitude,
+          longitude,
+          partner.location!.latitude,
+          partner.location!.longitude,
+        );
+
+        return distance <= radiusKm;
+      }).toList();
+
+      // Sort by distance
+      nearbyPartners.sort((a, b) {
+        final distanceA = _calculateDistance(
+          latitude,
+          longitude,
+          a.location!.latitude,
+          a.location!.longitude,
+        );
+        final distanceB = _calculateDistance(
+          latitude,
+          longitude,
+          b.location!.latitude,
+          b.location!.longitude,
+        );
+        return distanceA.compareTo(distanceB);
+      });
+
+      return Right(nearbyPartners);
+    });
   }
 
   @override
@@ -251,55 +258,53 @@ class PartnerRepositoryImpl implements PartnerRepository {
         ? await dataSource.searchPartners(services: services, isAvailable: true)
         : await dataSource.searchPartners(isAvailable: true);
 
-    return partnersResult.fold(
-      (failure) => Left(failure),
-      (partners) {
-        // Filter by availability for specific time slot
-        List<PartnerModel> availablePartners = partners.where((partner) {
-          return partner.isAvailableAt(day, timeSlot);
+    return partnersResult.fold((failure) => Left(failure), (partners) {
+      // Filter by availability for specific time slot
+      List<PartnerModel> availablePartners = partners.where((partner) {
+        return partner.isAvailableAt(day, timeSlot);
+      }).toList();
+
+      // Filter by location if provided
+      if (latitude != null && longitude != null && radiusKm != null) {
+        availablePartners = availablePartners.where((partner) {
+          if (partner.location?.latitude == null ||
+              partner.location?.longitude == null) {
+            return false;
+          }
+
+          final distance = _calculateDistance(
+            latitude,
+            longitude,
+            partner.location!.latitude,
+            partner.location!.longitude,
+          );
+
+          return distance <= radiusKm;
         }).toList();
 
-        // Filter by location if provided
-        if (latitude != null && longitude != null && radiusKm != null) {
-          availablePartners = availablePartners.where((partner) {
-            if (partner.location?.latitude == null || partner.location?.longitude == null) {
-              return false;
-            }
-            
-            final distance = _calculateDistance(
-              latitude,
-              longitude,
-              partner.location!.latitude,
-              partner.location!.longitude,
-            );
-            
-            return distance <= radiusKm;
-          }).toList();
+        // Sort by distance
+        availablePartners.sort((a, b) {
+          final distanceA = _calculateDistance(
+            latitude,
+            longitude,
+            a.location!.latitude,
+            a.location!.longitude,
+          );
+          final distanceB = _calculateDistance(
+            latitude,
+            longitude,
+            b.location!.latitude,
+            b.location!.longitude,
+          );
+          return distanceA.compareTo(distanceB);
+        });
+      } else {
+        // Sort by rating if no location filtering
+        availablePartners.sort((a, b) => b.rating.compareTo(a.rating));
+      }
 
-          // Sort by distance
-          availablePartners.sort((a, b) {
-            final distanceA = _calculateDistance(
-              latitude,
-              longitude,
-              a.location!.latitude,
-              a.location!.longitude,
-            );
-            final distanceB = _calculateDistance(
-              latitude,
-              longitude,
-              b.location!.latitude,
-              b.location!.longitude,
-            );
-            return distanceA.compareTo(distanceB);
-          });
-        } else {
-          // Sort by rating if no location filtering
-          availablePartners.sort((a, b) => b.rating.compareTo(a.rating));
-        }
-
-        return Right(availablePartners);
-      },
-    );
+      return Right(availablePartners);
+    });
   }
 
   @override
@@ -313,24 +318,21 @@ class PartnerRepositoryImpl implements PartnerRepository {
       minRating: 4.0, // Only get highly rated partners
     );
 
-    return partnersResult.fold(
-      (failure) => Left(failure),
-      (partners) {
-        // Sort by rating and total reviews
-        partners.sort((a, b) {
-          // First sort by rating
-          final ratingComparison = b.rating.compareTo(a.rating);
-          if (ratingComparison != 0) return ratingComparison;
-          
-          // If ratings are equal, sort by total reviews
-          return b.totalReviews.compareTo(a.totalReviews);
-        });
+    return partnersResult.fold((failure) => Left(failure), (partners) {
+      // Sort by rating and total reviews
+      partners.sort((a, b) {
+        // First sort by rating
+        final ratingComparison = b.rating.compareTo(a.rating);
+        if (ratingComparison != 0) return ratingComparison;
 
-        // Take only the requested number
-        final topPartners = partners.take(limit).toList();
-        return Right(topPartners);
-      },
-    );
+        // If ratings are equal, sort by total reviews
+        return b.totalReviews.compareTo(a.totalReviews);
+      });
+
+      // Take only the requested number
+      final topPartners = partners.take(limit).toList();
+      return Right(topPartners);
+    });
   }
 
   @override
@@ -366,21 +368,26 @@ class PartnerRepositoryImpl implements PartnerRepository {
   }
 
   /// Calculate distance between two points using Haversine formula
-  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  double _calculateDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
     const double earthRadius = 6371; // Earth's radius in kilometers
-    
+
     final double dLat = _degreesToRadians(lat2 - lat1);
     final double dLon = _degreesToRadians(lon2 - lon1);
-    
+
     final double a =
         sin(dLat / 2) * sin(dLat / 2) +
         cos(_degreesToRadians(lat1)) *
             cos(_degreesToRadians(lat2)) *
             sin(dLon / 2) *
             sin(dLon / 2);
-    
+
     final double c = 2 * asin(sqrt(a));
-    
+
     return earthRadius * c;
   }
 

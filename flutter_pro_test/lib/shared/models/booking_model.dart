@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import '../../features/booking/domain/entities/booking.dart' as domain;
 
 /// Enum for booking status
 enum BookingStatus {
@@ -346,6 +347,69 @@ class BookingModel extends Equatable {
   String get formattedDate =>
       '${scheduledDate.day}/${scheduledDate.month}/${scheduledDate.year}';
   String get formattedDateTime => '$formattedDate - $timeSlot';
+
+  /// Convert to domain entity
+  domain.Booking toDomainEntity() {
+    return domain.Booking(
+      id: id,
+      userId: userId,
+      partnerId: partnerId,
+      serviceId: serviceId,
+      serviceName: serviceName,
+      scheduledDate: scheduledDate,
+      timeSlot: timeSlot,
+      hours: hours,
+      totalPrice: totalPrice,
+      status: _mapToDomainBookingStatus(status),
+      paymentStatus: _mapToDomainPaymentStatus(paymentStatus),
+      paymentMethod: paymentMethod,
+      paymentTransactionId: paymentTransactionId,
+      clientAddress: clientAddress,
+      clientLatitude: clientLocation.latitude,
+      clientLongitude: clientLocation.longitude,
+      specialInstructions: specialInstructions,
+      cancellationReason: cancellationReason,
+      completedAt: completedAt,
+      cancelledAt: cancelledAt,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
+  /// Map string status to domain BookingStatus
+  domain.BookingStatus _mapToDomainBookingStatus(String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return domain.BookingStatus.pending;
+      case 'confirmed':
+        return domain.BookingStatus.confirmed;
+      case 'in-progress':
+      case 'inprogress':
+        return domain.BookingStatus.inProgress;
+      case 'completed':
+        return domain.BookingStatus.completed;
+      case 'cancelled':
+        return domain.BookingStatus.cancelled;
+      case 'rejected':
+        return domain.BookingStatus.rejected;
+      default:
+        return domain.BookingStatus.pending;
+    }
+  }
+
+  /// Map string payment status to domain PaymentStatus
+  domain.PaymentStatus _mapToDomainPaymentStatus(String paymentStatus) {
+    switch (paymentStatus.toLowerCase()) {
+      case 'paid':
+        return domain.PaymentStatus.paid;
+      case 'refunded':
+        return domain.PaymentStatus.refunded;
+      case 'failed':
+        return domain.PaymentStatus.failed;
+      default:
+        return domain.PaymentStatus.unpaid;
+    }
+  }
 
   // Check if booking can be cancelled
   bool get canBeCancelled {

@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../shared/models/partner_model.dart';
 
 /// Abstract repository interface for partner operations
@@ -18,25 +19,46 @@ abstract class PartnerRepository {
   Future<Either<Failure, void>> deletePartner(String uid);
 
   /// Update partner services
-  Future<Either<Failure, void>> updatePartnerServices(String uid, List<String> services);
+  Future<Either<Failure, void>> updatePartnerServices(
+    String uid,
+    List<String> services,
+  );
 
   /// Update partner working hours
-  Future<Either<Failure, void>> updateWorkingHours(String uid, Map<String, List<String>> workingHours);
+  Future<Either<Failure, void>> updateWorkingHours(
+    String uid,
+    Map<String, List<String>> workingHours,
+  );
 
   /// Update partner location
-  Future<Either<Failure, void>> updatePartnerLocation(String uid, LocationModel location);
+  Future<Either<Failure, void>> updatePartnerLocation(
+    String uid,
+    GeoPoint location,
+  );
 
   /// Update partner availability status
-  Future<Either<Failure, void>> updateAvailabilityStatus(String uid, bool isAvailable);
+  Future<Either<Failure, void>> updateAvailabilityStatus(
+    String uid,
+    bool isAvailable,
+  );
 
   /// Update partner verification status
-  Future<Either<Failure, void>> updateVerificationStatus(String uid, bool isVerified);
+  Future<Either<Failure, void>> updateVerificationStatus(
+    String uid,
+    bool isVerified,
+  );
 
   /// Update partner rating
-  Future<Either<Failure, void>> updatePartnerRating(String uid, double rating, int totalReviews);
+  Future<Either<Failure, void>> updatePartnerRating(
+    String uid,
+    double rating,
+    int totalReviews,
+  );
 
   /// Get partners by service
-  Future<Either<Failure, List<PartnerModel>>> getPartnersByService(String serviceId);
+  Future<Either<Failure, List<PartnerModel>>> getPartnersByService(
+    String serviceId,
+  );
 
   /// Get partners by location
   Future<Either<Failure, List<PartnerModel>>> getPartnersByLocation({

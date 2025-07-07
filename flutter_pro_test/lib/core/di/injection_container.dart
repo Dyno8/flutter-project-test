@@ -46,6 +46,7 @@ import '../../features/partner/domain/usecases/manage_job_status.dart';
 import '../../features/partner/domain/usecases/get_partner_earnings.dart';
 import '../../features/partner/domain/usecases/manage_availability.dart';
 import '../../features/partner/presentation/bloc/partner_dashboard_bloc.dart';
+import '../../features/partner/domain/services/partner_job_service.dart';
 import '../../features/client/data/datasources/client_service_remote_data_source.dart';
 import '../../features/client/data/datasources/payment_remote_data_source.dart';
 import '../../features/client/data/repositories/client_service_repository_impl.dart';
@@ -62,6 +63,9 @@ import '../../features/client/domain/usecases/get_client_bookings.dart';
 import '../../features/client/presentation/bloc/client_booking_bloc.dart';
 import '../../shared/services/firebase_service.dart';
 import '../../shared/services/notification_service.dart';
+import '../../shared/services/notification_integration_service.dart';
+import '../../shared/services/notification_action_handler.dart';
+import '../../shared/services/realtime_notification_service.dart';
 
 // Notification system imports
 import '../../features/notifications/domain/repositories/notification_repository.dart';
@@ -136,6 +140,7 @@ Future<void> init() async {
       updateOnlineStatus: sl(),
       updateWorkingHours: sl(),
       repository: sl(),
+      partnerJobService: sl(),
     ),
   );
 
@@ -303,6 +308,41 @@ Future<void> init() async {
   //! Services
   sl.registerLazySingleton(() => NotificationService());
   sl.registerLazySingleton(() => RealtimeBookingService(sl(), sl()));
+  sl.registerLazySingleton(
+    () => NotificationIntegrationService(
+      notificationRepository: sl(),
+      authRepository: sl(),
+      userRepository: sl(),
+      notificationService: sl(),
+      createNotification: sl(),
+      sendPushNotification: sl(),
+      getNotificationPreferences: sl(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => PartnerJobService(
+      acceptJob: sl(),
+      rejectJob: sl(),
+      startJob: sl(),
+      completeJob: sl(),
+      cancelJob: sl(),
+      getPartnerEarnings: sl(),
+      notificationIntegrationService: sl(),
+      userRepository: sl(),
+    ),
+  );
+  sl.registerLazySingleton(
+    () => NotificationActionHandler(authRepository: sl(), userRepository: sl()),
+  );
+  sl.registerLazySingleton(
+    () => RealtimeNotificationService(
+      notificationRepository: sl(),
+      bookingRepository: sl(),
+      partnerJobRepository: sl(),
+      authRepository: sl(),
+      notificationIntegrationService: sl(),
+    ),
+  );
 
   //! External
   sl.registerLazySingleton(() => FirebaseAuth.instance);

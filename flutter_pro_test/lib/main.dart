@@ -8,6 +8,7 @@ import 'core/di/injection_container.dart' as di;
 import 'shared/theme/app_theme.dart';
 import 'shared/services/firebase_service.dart';
 import 'shared/services/notification_service.dart';
+import 'shared/services/notification_action_handler.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/profile/presentation/bloc/profile_bloc.dart';
 import 'features/booking/presentation/bloc/booking_bloc.dart';
@@ -31,8 +32,9 @@ void main() async {
   final notificationService = di.sl<NotificationService>();
   await notificationService.initialize();
 
-  // Set up notification service with repository
+  // Set up notification service with repository and action handler
   notificationService.setRepository(di.sl<NotificationRepository>());
+  notificationService.setActionHandler(di.sl<NotificationActionHandler>());
 
   runApp(const CareNowApp());
 }
@@ -60,14 +62,37 @@ class CareNowApp extends StatelessWidget {
               create: (context) => di.sl<NotificationBloc>(),
             ),
           ],
-          child: MaterialApp.router(
-            title: 'CareNow',
-            theme: AppTheme.lightTheme,
-            routerConfig: AppRouter.router,
-            debugShowCheckedModeBanner: false,
-          ),
+          child: _AppWithNotificationSetup(),
         );
       },
+    );
+  }
+}
+
+class _AppWithNotificationSetup extends StatefulWidget {
+  @override
+  State<_AppWithNotificationSetup> createState() =>
+      _AppWithNotificationSetupState();
+}
+
+class _AppWithNotificationSetupState extends State<_AppWithNotificationSetup> {
+  @override
+  void initState() {
+    super.initState();
+    // Set up notification action handler with router context
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final actionHandler = di.sl<NotificationActionHandler>();
+      actionHandler.setNavigationContext(context, AppRouter.router);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'CareNow',
+      theme: AppTheme.lightTheme,
+      routerConfig: AppRouter.router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

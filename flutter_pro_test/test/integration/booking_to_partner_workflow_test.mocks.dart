@@ -14,7 +14,7 @@ import 'package:flutter_pro_test/features/booking/domain/entities/booking_reques
 import 'package:flutter_pro_test/features/booking/domain/repositories/booking_repository.dart'
     as _i3;
 import 'package:flutter_pro_test/features/notifications/domain/entities/notification.dart'
-    as _i14;
+    as _i15;
 import 'package:flutter_pro_test/features/notifications/domain/entities/notification_preferences.dart'
     as _i13;
 import 'package:flutter_pro_test/features/notifications/domain/repositories/notification_repository.dart'
@@ -25,6 +25,8 @@ import 'package:flutter_pro_test/features/partner/domain/entities/partner_earnin
     as _i10;
 import 'package:flutter_pro_test/features/partner/domain/repositories/partner_job_repository.dart'
     as _i8;
+import 'package:flutter_pro_test/shared/services/notification_action_handler.dart'
+    as _i14;
 import 'package:flutter_pro_test/shared/services/notification_service.dart'
     as _i11;
 import 'package:mockito/mockito.dart' as _i1;
@@ -860,6 +862,13 @@ class MockNotificationService extends _i1.Mock
       );
 
   @override
+  void setActionHandler(_i14.NotificationActionHandler? actionHandler) =>
+      super.noSuchMethod(
+        Invocation.method(#setActionHandler, [actionHandler]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   _i4.Future<void> initialize() =>
       (super.noSuchMethod(
             Invocation.method(#initialize, []),
@@ -1080,7 +1089,7 @@ class MockNotificationService extends _i1.Mock
     required String? title,
     required String? body,
     required Map<String, dynamic>? data,
-    _i14.NotificationPriority? priority = _i14.NotificationPriority.high,
+    _i15.NotificationPriority? priority = _i15.NotificationPriority.high,
     String? imageUrl,
   }) =>
       (super.noSuchMethod(
@@ -1103,7 +1112,7 @@ class MockNotificationService extends _i1.Mock
     required String? title,
     required String? body,
     required Map<String, dynamic>? data,
-    _i14.NotificationPriority? priority = _i14.NotificationPriority.high,
+    _i15.NotificationPriority? priority = _i15.NotificationPriority.high,
     String? imageUrl,
   }) =>
       (super.noSuchMethod(
@@ -1126,7 +1135,7 @@ class MockNotificationService extends _i1.Mock
     required String? title,
     required String? body,
     required Map<String, dynamic>? data,
-    _i14.NotificationPriority? priority = _i14.NotificationPriority.high,
+    _i15.NotificationPriority? priority = _i15.NotificationPriority.high,
     String? imageUrl,
   }) =>
       (super.noSuchMethod(
@@ -1149,7 +1158,7 @@ class MockNotificationService extends _i1.Mock
     required String? title,
     required String? body,
     required Map<String, dynamic>? data,
-    _i14.NotificationPriority? priority = _i14.NotificationPriority.normal,
+    _i15.NotificationPriority? priority = _i15.NotificationPriority.normal,
     String? imageUrl,
   }) =>
       (super.noSuchMethod(

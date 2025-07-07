@@ -10,7 +10,7 @@ import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/phone_verification_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
-import '../../features/profile/presentation/screens/edit_profile_screen.dart';
+
 import '../../features/booking/presentation/screens/service_selection_screen.dart';
 import '../../features/booking/presentation/screens/datetime_selection_screen.dart';
 import '../../features/booking/presentation/screens/partner_selection_screen.dart';

@@ -6,6 +6,7 @@ import '../../core/errors/failures.dart';
 import '../../features/notifications/domain/entities/notification.dart';
 import '../../features/notifications/domain/entities/notification_preferences.dart';
 import '../../features/notifications/domain/repositories/notification_repository.dart';
+import 'notification_action_handler.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -22,6 +23,9 @@ class NotificationService {
   // Current user preferences
   NotificationPreferences? _currentPreferences;
 
+  // Action handler for notification taps
+  NotificationActionHandler? _actionHandler;
+
   // Notification channels
   static const String _defaultChannelId = 'carenow_default';
   static const String _bookingChannelId = 'carenow_booking';
@@ -37,6 +41,11 @@ class NotificationService {
   /// Set current user preferences
   void setUserPreferences(NotificationPreferences preferences) {
     _currentPreferences = preferences;
+  }
+
+  /// Set action handler for notification taps
+  void setActionHandler(NotificationActionHandler actionHandler) {
+    _actionHandler = actionHandler;
   }
 
   // Initialize notification service
@@ -188,8 +197,12 @@ class NotificationService {
       'Notification tapped: ${message.data}',
       name: 'NotificationService',
     );
-    // Navigate to appropriate screen based on notification data
-    _navigateBasedOnNotification(message.data);
+    // Use action handler if available, otherwise fallback to legacy navigation
+    if (_actionHandler != null) {
+      _actionHandler!.handleNotificationTap(data: message.data);
+    } else {
+      _navigateBasedOnNotification(message.data);
+    }
   }
 
   // Handle local notification tap
@@ -198,7 +211,36 @@ class NotificationService {
       'Local notification tapped: ${response.payload}',
       name: 'NotificationService',
     );
-    // Handle local notification tap
+
+    // Use action handler if available
+    if (_actionHandler != null && response.payload != null) {
+      try {
+        final data = response.payload!.isNotEmpty
+            ? Map<String, dynamic>.from(
+                response.payload!.split('&').fold<Map<String, String>>({}, (
+                  map,
+                  pair,
+                ) {
+                  final parts = pair.split('=');
+                  if (parts.length == 2) {
+                    map[parts[0]] = parts[1];
+                  }
+                  return map;
+                }),
+              )
+            : <String, dynamic>{};
+
+        _actionHandler!.handleNotificationTap(
+          data: data,
+          payload: response.payload,
+        );
+      } catch (e) {
+        developer.log(
+          'Error handling notification tap: $e',
+          name: 'NotificationService',
+        );
+      }
+    }
   }
 
   // Show local notification with enhanced features

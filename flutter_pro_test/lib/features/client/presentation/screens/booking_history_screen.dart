@@ -9,16 +9,12 @@ import '../bloc/client_booking_bloc.dart';
 import '../bloc/client_booking_event.dart';
 import '../bloc/client_booking_state.dart';
 import '../widgets/booking_history_card.dart';
-import '../widgets/booking_filter_tabs.dart';
 
 /// Screen for displaying client's booking history
 class BookingHistoryScreen extends StatefulWidget {
   final String userId;
 
-  const BookingHistoryScreen({
-    super.key,
-    required this.userId,
-  });
+  const BookingHistoryScreen({super.key, required this.userId});
 
   @override
   State<BookingHistoryScreen> createState() => _BookingHistoryScreenState();
@@ -28,13 +24,9 @@ class _BookingHistoryScreenState extends State<BookingHistoryScreen>
     with SingleTickerProviderStateMixin {
   late ClientBookingBloc _bookingBloc;
   late TabController _tabController;
-  
+
   final List<BookingFilterTab> _filterTabs = [
-    BookingFilterTab(
-      label: 'Tất cả',
-      status: null,
-      icon: Icons.list_alt,
-    ),
+    BookingFilterTab(label: 'Tất cả', status: null, icon: Icons.list_alt),
     BookingFilterTab(
       label: 'Đang chờ',
       status: BookingStatus.pending,
@@ -86,10 +78,14 @@ class _BookingHistoryScreenState extends State<BookingHistoryScreen>
             controller: _tabController,
             isScrollable: true,
             onTap: _onTabChanged,
-            tabs: _filterTabs.map((tab) => Tab(
-              icon: Icon(tab.icon, size: 20.r),
-              text: tab.label,
-            )).toList(),
+            tabs: _filterTabs
+                .map(
+                  (tab) => Tab(
+                    icon: Icon(tab.icon, size: 20.r),
+                    text: tab.label,
+                  ),
+                )
+                .toList(),
           ),
         ),
         body: BlocConsumer<ClientBookingBloc, ClientBookingState>(
@@ -164,16 +160,12 @@ class _BookingHistoryScreenState extends State<BookingHistoryScreen>
 
   Widget _buildEmptyState(BuildContext context) {
     final currentTab = _filterTabs[_tabController.index];
-    
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            currentTab.icon,
-            size: 64.r,
-            color: Colors.grey,
-          ),
+          Icon(currentTab.icon, size: 64.r, color: Colors.grey),
           SizedBox(height: 16.h),
           Text(
             _getEmptyStateTitle(currentTab.status),
@@ -186,10 +178,7 @@ class _BookingHistoryScreenState extends State<BookingHistoryScreen>
           SizedBox(height: 8.h),
           Text(
             _getEmptyStateSubtitle(currentTab.status),
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: 14.sp, color: Colors.grey),
             textAlign: TextAlign.center,
           ),
           if (currentTab.status == null) ...[
@@ -211,7 +200,9 @@ class _BookingHistoryScreenState extends State<BookingHistoryScreen>
     if (currentTab.status == null) {
       return bookings;
     }
-    return bookings.where((booking) => booking.status == currentTab.status).toList();
+    return bookings
+        .where((booking) => booking.status == currentTab.status)
+        .toList();
   }
 
   String _getEmptyStateTitle(BookingStatus? status) {
@@ -253,11 +244,7 @@ class _BookingHistoryScreenState extends State<BookingHistoryScreen>
   }
 
   void _showBookingDetails(Booking booking) {
-    Navigator.pushNamed(
-      context,
-      '/client/booking/details',
-      arguments: booking,
-    );
+    Navigator.pushNamed(context, '/client/booking/details', arguments: booking);
   }
 
   void _showCancelDialog(Booking booking) {
@@ -288,11 +275,7 @@ class _BookingHistoryScreenState extends State<BookingHistoryScreen>
   }
 
   void _showReviewDialog(Booking booking) {
-    Navigator.pushNamed(
-      context,
-      '/client/review',
-      arguments: booking,
-    );
+    Navigator.pushNamed(context, '/client/review', arguments: booking);
   }
 }
 
