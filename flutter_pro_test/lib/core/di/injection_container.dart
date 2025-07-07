@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import '../../features/auth/data/datasources/firebase_auth_datasource.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
@@ -60,6 +62,19 @@ import '../../features/client/domain/usecases/get_client_bookings.dart';
 import '../../features/client/presentation/bloc/client_booking_bloc.dart';
 import '../../shared/services/firebase_service.dart';
 import '../../shared/services/notification_service.dart';
+
+// Notification system imports
+import '../../features/notifications/domain/repositories/notification_repository.dart';
+import '../../features/notifications/domain/usecases/get_user_notifications.dart';
+import '../../features/notifications/domain/usecases/get_unread_notifications.dart';
+import '../../features/notifications/domain/usecases/mark_notification_as_read.dart';
+import '../../features/notifications/domain/usecases/create_notification.dart';
+import '../../features/notifications/domain/usecases/send_push_notification.dart';
+import '../../features/notifications/domain/usecases/get_notification_preferences.dart';
+import '../../features/notifications/domain/usecases/update_notification_preferences.dart';
+import '../../features/notifications/data/repositories/notification_repository_impl.dart';
+import '../../features/notifications/data/datasources/notification_remote_data_source.dart';
+import '../../features/notifications/presentation/bloc/notification_bloc.dart';
 import '../../shared/services/realtime_booking_service.dart';
 import '../../features/booking/presentation/bloc/realtime_booking_bloc.dart';
 
@@ -141,6 +156,21 @@ Future<void> init() async {
   // Bloc
   sl.registerFactory(() => RealtimeBookingBloc(sl()));
 
+  //! Features - Notifications
+  // Bloc
+  sl.registerFactory(
+    () => NotificationBloc(
+      getUserNotifications: sl(),
+      getUnreadNotifications: sl(),
+      markNotificationAsRead: sl(),
+      createNotification: sl(),
+      sendPushNotification: sl(),
+      getNotificationPreferences: sl(),
+      updateNotificationPreferences: sl(),
+      repository: sl(),
+    ),
+  );
+
   // Use cases
   sl.registerLazySingleton(() => SignInWithEmail(sl()));
   sl.registerLazySingleton(() => SignUpWithEmail(sl()));
@@ -183,6 +213,15 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetAvailablePaymentMethods(sl()));
   sl.registerLazySingleton(() => GetClientBookings(sl()));
 
+  // Notification use cases
+  sl.registerLazySingleton(() => GetUserNotifications(sl()));
+  sl.registerLazySingleton(() => GetUnreadNotifications(sl()));
+  sl.registerLazySingleton(() => MarkNotificationAsRead(sl()));
+  sl.registerLazySingleton(() => CreateNotification(sl()));
+  sl.registerLazySingleton(() => SendPushNotification(sl()));
+  sl.registerLazySingleton(() => GetNotificationPreferences(sl()));
+  sl.registerLazySingleton(() => UpdateNotificationPreferences(sl()));
+
   // Repository
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(dataSource: sl()),
@@ -215,6 +254,11 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<PaymentRepository>(
     () => PaymentRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // Notification repository
+  sl.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(remoteDataSource: sl()),
   );
 
   // Data sources
@@ -251,11 +295,18 @@ Future<void> init() async {
     () => PaymentRemoteDataSourceImpl(sl()),
   );
 
+  // Notification data sources
+  sl.registerLazySingleton<NotificationRemoteDataSource>(
+    () => NotificationRemoteDataSourceImpl(firestore: sl(), messaging: sl()),
+  );
+
   //! Services
   sl.registerLazySingleton(() => NotificationService());
   sl.registerLazySingleton(() => RealtimeBookingService(sl(), sl()));
 
   //! External
   sl.registerLazySingleton(() => FirebaseAuth.instance);
+  sl.registerLazySingleton(() => FirebaseFirestore.instance);
+  sl.registerLazySingleton(() => FirebaseMessaging.instance);
   sl.registerLazySingleton(() => FirebaseService());
 }

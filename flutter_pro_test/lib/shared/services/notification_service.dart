@@ -1,7 +1,11 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:dartz/dartz.dart';
+import 'dart:developer' as developer;
 import '../../core/errors/failures.dart';
+import '../../features/notifications/domain/entities/notification.dart';
+import '../../features/notifications/domain/entities/notification_preferences.dart';
+import '../../features/notifications/domain/repositories/notification_repository.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -12,6 +16,29 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
 
+  // Repository for advanced notification management
+  NotificationRepository? _repository;
+
+  // Current user preferences
+  NotificationPreferences? _currentPreferences;
+
+  // Notification channels
+  static const String _defaultChannelId = 'carenow_default';
+  static const String _bookingChannelId = 'carenow_booking';
+  static const String _jobChannelId = 'carenow_job';
+  static const String _paymentChannelId = 'carenow_payment';
+  static const String _urgentChannelId = 'carenow_urgent';
+
+  /// Set the notification repository for advanced features
+  void setRepository(NotificationRepository repository) {
+    _repository = repository;
+  }
+
+  /// Set current user preferences
+  void setUserPreferences(NotificationPreferences preferences) {
+    _currentPreferences = preferences;
+  }
+
   // Initialize notification service
   Future<void> initialize() async {
     // Request permissions
@@ -19,6 +46,9 @@ class NotificationService {
 
     // Initialize local notifications
     await _initializeLocalNotifications();
+
+    // Create notification channels
+    await _createNotificationChannels();
 
     // Setup FCM handlers
     _setupFCMHandlers();
@@ -36,7 +66,10 @@ class NotificationService {
       sound: true,
     );
 
-    print('Notification permission status: ${settings.authorizationStatus}');
+    developer.log(
+      'Notification permission status: ${settings.authorizationStatus}',
+      name: 'NotificationService',
+    );
   }
 
   // Initialize local notifications
@@ -61,6 +94,59 @@ class NotificationService {
     );
   }
 
+  // Create notification channels for Android
+  Future<void> _createNotificationChannels() async {
+    final List<AndroidNotificationChannel> channels = [
+      AndroidNotificationChannel(
+        _defaultChannelId,
+        'General Notifications',
+        description: 'General notifications for CareNow app',
+        importance: Importance.defaultImportance,
+        playSound: true,
+      ),
+      AndroidNotificationChannel(
+        _bookingChannelId,
+        'Booking Notifications',
+        description: 'Notifications related to bookings',
+        importance: Importance.high,
+        playSound: true,
+        enableVibration: true,
+      ),
+      AndroidNotificationChannel(
+        _jobChannelId,
+        'Job Notifications',
+        description: 'Notifications for partner jobs',
+        importance: Importance.high,
+        playSound: true,
+        enableVibration: true,
+      ),
+      AndroidNotificationChannel(
+        _paymentChannelId,
+        'Payment Notifications',
+        description: 'Payment and earnings notifications',
+        importance: Importance.high,
+        playSound: true,
+      ),
+      AndroidNotificationChannel(
+        _urgentChannelId,
+        'Urgent Notifications',
+        description: 'Urgent notifications requiring immediate attention',
+        importance: Importance.max,
+        playSound: true,
+        enableVibration: true,
+        enableLights: true,
+      ),
+    ];
+
+    for (final channel in channels) {
+      await _localNotifications
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.createNotificationChannel(channel);
+    }
+  }
+
   // Setup FCM message handlers
   void _setupFCMHandlers() {
     // Handle foreground messages
@@ -75,7 +161,10 @@ class NotificationService {
 
   // Handle foreground messages
   Future<void> _handleForegroundMessage(RemoteMessage message) async {
-    print('Received foreground message: ${message.messageId}');
+    developer.log(
+      'Received foreground message: ${message.messageId}',
+      name: 'NotificationService',
+    );
 
     // Show local notification
     await _showLocalNotification(
@@ -87,44 +176,98 @@ class NotificationService {
 
   // Handle background messages
   static Future<void> _handleBackgroundMessage(RemoteMessage message) async {
-    print('Received background message: ${message.messageId}');
+    developer.log(
+      'Received background message: ${message.messageId}',
+      name: 'NotificationService',
+    );
   }
 
   // Handle notification tap
   Future<void> _handleNotificationTap(RemoteMessage message) async {
-    print('Notification tapped: ${message.data}');
+    developer.log(
+      'Notification tapped: ${message.data}',
+      name: 'NotificationService',
+    );
     // Navigate to appropriate screen based on notification data
     _navigateBasedOnNotification(message.data);
   }
 
   // Handle local notification tap
   void _onNotificationTapped(NotificationResponse response) {
-    print('Local notification tapped: ${response.payload}');
+    developer.log(
+      'Local notification tapped: ${response.payload}',
+      name: 'NotificationService',
+    );
     // Handle local notification tap
   }
 
-  // Show local notification
+  // Show local notification with enhanced features
   Future<void> _showLocalNotification({
     required String title,
     required String body,
     Map<String, dynamic>? data,
+    NotificationCategory? category,
+    NotificationPriority? priority,
+    String? imageUrl,
   }) async {
-    const androidDetails = AndroidNotificationDetails(
-      'carenow_channel',
-      'CareNow Notifications',
-      channelDescription: 'Notifications for CareNow app',
-      importance: Importance.high,
-      priority: Priority.high,
+    // Check user preferences before showing notification
+    if (_currentPreferences != null) {
+      final mockNotification = NotificationEntity(
+        id: 'temp',
+        userId: 'temp',
+        title: title,
+        body: body,
+        type: data?['type'] ?? 'general',
+        data: data ?? {},
+        createdAt: DateTime.now(),
+        isRead: false,
+        priority: priority ?? NotificationPriority.normal,
+        category: category ?? NotificationCategory.system,
+        isScheduled: false,
+        isPersistent: false,
+      );
+
+      if (!_currentPreferences!.shouldShowNotification(mockNotification)) {
+        return; // Don't show notification based on user preferences
+      }
+    }
+
+    // Determine channel based on category
+    String channelId = _getChannelIdForCategory(category);
+
+    final androidDetails = AndroidNotificationDetails(
+      channelId,
+      _getChannelNameForCategory(category),
+      channelDescription: _getChannelDescriptionForCategory(category),
+      importance: _getImportanceForPriority(
+        priority ?? NotificationPriority.normal,
+      ),
+      priority: _getPriorityForPriority(
+        priority ?? NotificationPriority.normal,
+      ),
       showWhen: true,
+      playSound: _currentPreferences?.soundEnabled ?? true,
+      enableVibration: _currentPreferences?.vibrationEnabled ?? true,
+      visibility: _currentPreferences?.showOnLockScreen == true
+          ? NotificationVisibility.public
+          : NotificationVisibility.private,
+      styleInformation: imageUrl != null
+          ? BigPictureStyleInformation(
+              FilePathAndroidBitmap(imageUrl),
+              contentTitle: title,
+              summaryText: body,
+            )
+          : BigTextStyleInformation(body),
     );
 
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
+    final iosDetails = DarwinNotificationDetails(
+      presentAlert: _currentPreferences?.showPreview ?? true,
       presentBadge: true,
-      presentSound: true,
+      presentSound: _currentPreferences?.soundEnabled ?? true,
+      subtitle: _getCategoryDisplayName(category),
     );
 
-    const notificationDetails = NotificationDetails(
+    final notificationDetails = NotificationDetails(
       android: androidDetails,
       iOS: iosDetails,
     );
@@ -136,6 +279,19 @@ class NotificationService {
       notificationDetails,
       payload: data?.toString(),
     );
+
+    // Save notification to repository if available
+    if (_repository != null && data?['userId'] != null) {
+      await _saveNotificationToRepository(
+        userId: data!['userId'],
+        title: title,
+        body: body,
+        type: data['type'] ?? 'general',
+        data: data,
+        category: category ?? NotificationCategory.system,
+        priority: priority ?? NotificationPriority.normal,
+      );
+    }
   }
 
   // Send booking notification
@@ -165,7 +321,7 @@ class NotificationService {
     try {
       return await _firebaseMessaging.getToken();
     } catch (e) {
-      print('Error getting FCM token: $e');
+      developer.log('Error getting FCM token: $e', name: 'NotificationService');
       return null;
     }
   }
@@ -175,7 +331,7 @@ class NotificationService {
     try {
       await _firebaseMessaging.subscribeToTopic(topic);
     } catch (e) {
-      print('Error subscribing to topic: $e');
+      // Error subscribing to topic
     }
   }
 
@@ -184,53 +340,45 @@ class NotificationService {
     try {
       await _firebaseMessaging.unsubscribeFromTopic(topic);
     } catch (e) {
-      print('Error unsubscribing from topic: $e');
+      // Error unsubscribing from topic
     }
   }
 
   // Navigate based on notification data
   void _navigateBasedOnNotification(Map<String, dynamic> data) {
     final type = data['type'] as String?;
-    final bookingId = data['bookingId'] as String?;
-    final jobId = data['jobId'] as String?;
 
     switch (type) {
       case 'new_booking':
       case 'new_job':
         // Navigate to partner job details
-        print('Navigate to job details: ${jobId ?? bookingId}');
+        // Navigate to job details
         break;
       case 'booking_confirmed':
       case 'job_accepted':
         // Navigate to job details
-        print('Navigate to job details: ${jobId ?? bookingId}');
+        // Navigate to job details
         break;
       case 'booking_started':
       case 'job_started':
         // Navigate to job tracking
-        print('Navigate to job tracking: ${jobId ?? bookingId}');
         break;
       case 'booking_completed':
       case 'job_completed':
         // Navigate to earnings or review screen
-        print('Navigate to earnings screen');
         break;
       case 'booking_cancelled':
       case 'job_cancelled':
         // Navigate to job history
-        print('Navigate to job history');
         break;
       case 'earnings_update':
         // Navigate to earnings screen
-        print('Navigate to earnings screen');
         break;
       case 'rating_received':
         // Navigate to profile/ratings
-        print('Navigate to profile ratings');
         break;
       default:
         // Navigate to partner dashboard
-        print('Navigate to partner dashboard');
         break;
     }
   }
@@ -241,14 +389,14 @@ class NotificationService {
   Future<void> subscribeToPartnerNotifications(String partnerId) async {
     await subscribeToTopic('partner_$partnerId');
     await subscribeToTopic('partner_general');
-    print('Subscribed to partner notifications: $partnerId');
+    // Subscribed to partner notifications
   }
 
   /// Unsubscribe from partner notifications
   Future<void> unsubscribeFromPartnerNotifications(String partnerId) async {
     await unsubscribeFromTopic('partner_$partnerId');
     await unsubscribeFromTopic('partner_general');
-    print('Unsubscribed from partner notifications: $partnerId');
+    // Unsubscribed from partner notifications
   }
 
   /// Send new job notification to partner
@@ -404,5 +552,213 @@ class NotificationService {
         data: {'type': 'booking_reminder', 'bookingId': bookingId},
       );
     }
+  }
+
+  // Helper methods for enhanced notification features
+
+  /// Get channel ID based on notification category
+  String _getChannelIdForCategory(NotificationCategory? category) {
+    switch (category) {
+      case NotificationCategory.booking:
+        return _bookingChannelId;
+      case NotificationCategory.job:
+        return _jobChannelId;
+      case NotificationCategory.payment:
+        return _paymentChannelId;
+      case NotificationCategory.system:
+      case NotificationCategory.promotion:
+      case NotificationCategory.reminder:
+      case NotificationCategory.social:
+      case null:
+        return _defaultChannelId;
+    }
+  }
+
+  /// Get channel name based on notification category
+  String _getChannelNameForCategory(NotificationCategory? category) {
+    switch (category) {
+      case NotificationCategory.booking:
+        return 'Booking Notifications';
+      case NotificationCategory.job:
+        return 'Job Notifications';
+      case NotificationCategory.payment:
+        return 'Payment Notifications';
+      case NotificationCategory.system:
+        return 'System Notifications';
+      case NotificationCategory.promotion:
+        return 'Promotional Notifications';
+      case NotificationCategory.reminder:
+        return 'Reminder Notifications';
+      case NotificationCategory.social:
+        return 'Social Notifications';
+      case null:
+        return 'General Notifications';
+    }
+  }
+
+  /// Get channel description based on notification category
+  String _getChannelDescriptionForCategory(NotificationCategory? category) {
+    switch (category) {
+      case NotificationCategory.booking:
+        return 'Notifications related to your bookings';
+      case NotificationCategory.job:
+        return 'Notifications for partner jobs';
+      case NotificationCategory.payment:
+        return 'Payment and earnings notifications';
+      case NotificationCategory.system:
+        return 'System and app notifications';
+      case NotificationCategory.promotion:
+        return 'Promotional offers and discounts';
+      case NotificationCategory.reminder:
+        return 'Reminders and scheduled notifications';
+      case NotificationCategory.social:
+        return 'Social interactions and reviews';
+      case null:
+        return 'General notifications for CareNow app';
+    }
+  }
+
+  /// Get Android importance level based on notification priority
+  Importance _getImportanceForPriority(NotificationPriority priority) {
+    switch (priority) {
+      case NotificationPriority.low:
+        return Importance.low;
+      case NotificationPriority.normal:
+        return Importance.defaultImportance;
+      case NotificationPriority.high:
+        return Importance.high;
+      case NotificationPriority.urgent:
+        return Importance.max;
+    }
+  }
+
+  /// Get Android priority level based on notification priority
+  Priority _getPriorityForPriority(NotificationPriority priority) {
+    switch (priority) {
+      case NotificationPriority.low:
+        return Priority.low;
+      case NotificationPriority.normal:
+        return Priority.defaultPriority;
+      case NotificationPriority.high:
+        return Priority.high;
+      case NotificationPriority.urgent:
+        return Priority.max;
+    }
+  }
+
+  /// Get category display name for iOS subtitle
+  String? _getCategoryDisplayName(NotificationCategory? category) {
+    return category?.displayName;
+  }
+
+  /// Save notification to repository
+  Future<void> _saveNotificationToRepository({
+    required String userId,
+    required String title,
+    required String body,
+    required String type,
+    required Map<String, dynamic> data,
+    required NotificationCategory category,
+    required NotificationPriority priority,
+  }) async {
+    try {
+      final notification = NotificationEntity(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        userId: userId,
+        title: title,
+        body: body,
+        type: type,
+        data: data,
+        createdAt: DateTime.now(),
+        isRead: false,
+        priority: priority,
+        category: category,
+        isScheduled: false,
+        isPersistent: false,
+      );
+
+      await _repository!.createNotification(notification);
+    } catch (e) {
+      // Silently fail - notification was already shown to user
+      // Failed to save notification to repository
+    }
+  }
+
+  /// Enhanced notification methods with category and priority support
+
+  /// Send enhanced booking notification
+  Future<void> sendEnhancedBookingNotification({
+    required String userId,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    NotificationPriority priority = NotificationPriority.high,
+    String? imageUrl,
+  }) async {
+    await _showLocalNotification(
+      title: title,
+      body: body,
+      data: {...data, 'userId': userId},
+      category: NotificationCategory.booking,
+      priority: priority,
+      imageUrl: imageUrl,
+    );
+  }
+
+  /// Send enhanced job notification
+  Future<void> sendEnhancedJobNotification({
+    required String userId,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    NotificationPriority priority = NotificationPriority.high,
+    String? imageUrl,
+  }) async {
+    await _showLocalNotification(
+      title: title,
+      body: body,
+      data: {...data, 'userId': userId},
+      category: NotificationCategory.job,
+      priority: priority,
+      imageUrl: imageUrl,
+    );
+  }
+
+  /// Send enhanced payment notification
+  Future<void> sendEnhancedPaymentNotification({
+    required String userId,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    NotificationPriority priority = NotificationPriority.high,
+    String? imageUrl,
+  }) async {
+    await _showLocalNotification(
+      title: title,
+      body: body,
+      data: {...data, 'userId': userId},
+      category: NotificationCategory.payment,
+      priority: priority,
+      imageUrl: imageUrl,
+    );
+  }
+
+  /// Send system notification
+  Future<void> sendSystemNotification({
+    required String userId,
+    required String title,
+    required String body,
+    required Map<String, dynamic> data,
+    NotificationPriority priority = NotificationPriority.normal,
+    String? imageUrl,
+  }) async {
+    await _showLocalNotification(
+      title: title,
+      body: body,
+      data: {...data, 'userId': userId},
+      category: NotificationCategory.system,
+      priority: priority,
+      imageUrl: imageUrl,
+    );
   }
 }

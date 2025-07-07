@@ -3,26 +3,30 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i4;
 
 import 'package:dartz/dartz.dart' as _i2;
-import 'package:flutter_pro_test/core/errors/failures.dart' as _i6;
+import 'package:flutter_pro_test/core/errors/failures.dart' as _i5;
 import 'package:flutter_pro_test/features/booking/domain/entities/booking.dart'
-    as _i7;
+    as _i6;
 import 'package:flutter_pro_test/features/booking/domain/entities/booking_request.dart'
-    as _i8;
+    as _i7;
 import 'package:flutter_pro_test/features/booking/domain/repositories/booking_repository.dart'
-    as _i4;
-import 'package:flutter_pro_test/features/partner/domain/entities/job.dart'
-    as _i10;
-import 'package:flutter_pro_test/features/partner/domain/entities/partner_earnings.dart'
-    as _i11;
-import 'package:flutter_pro_test/features/partner/domain/repositories/partner_job_repository.dart'
-    as _i9;
-import 'package:flutter_pro_test/shared/repositories/base_repository.dart'
     as _i3;
-import 'package:flutter_pro_test/shared/services/notification_service.dart'
+import 'package:flutter_pro_test/features/notifications/domain/entities/notification.dart'
+    as _i14;
+import 'package:flutter_pro_test/features/notifications/domain/entities/notification_preferences.dart'
+    as _i13;
+import 'package:flutter_pro_test/features/notifications/domain/repositories/notification_repository.dart'
     as _i12;
+import 'package:flutter_pro_test/features/partner/domain/entities/job.dart'
+    as _i9;
+import 'package:flutter_pro_test/features/partner/domain/entities/partner_earnings.dart'
+    as _i10;
+import 'package:flutter_pro_test/features/partner/domain/repositories/partner_job_repository.dart'
+    as _i8;
+import 'package:flutter_pro_test/shared/services/notification_service.dart'
+    as _i11;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -44,53 +48,48 @@ class _FakeEither_0<L, R> extends _i1.SmartFake implements _i2.Either<L, R> {
     : super(parent, parentInvocation);
 }
 
-class _FakeEither_1<L, R> extends _i1.SmartFake implements _i3.Either<L, R> {
-  _FakeEither_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
 /// A class which mocks [BookingRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBookingRepository extends _i1.Mock implements _i4.BookingRepository {
+class MockBookingRepository extends _i1.Mock implements _i3.BookingRepository {
   MockBookingRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>> createBooking(
-    _i8.BookingRequest? request,
+  _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>> createBooking(
+    _i7.BookingRequest? request,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#createBooking, [request]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>.value(
-              _FakeEither_0<_i6.Failure, _i7.Booking>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>.value(
+              _FakeEither_0<_i5.Failure, _i6.Booking>(
                 this,
                 Invocation.method(#createBooking, [request]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>> getBookingById(
+  _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>> getBookingById(
     String? bookingId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getBookingById, [bookingId]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>.value(
-              _FakeEither_0<_i6.Failure, _i7.Booking>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>.value(
+              _FakeEither_0<_i5.Failure, _i6.Booking>(
                 this,
                 Invocation.method(#getBookingById, [bookingId]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, List<_i7.Booking>>> getUserBookings(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Booking>>> getUserBookings(
     String? userId, {
-    _i7.BookingStatus? status,
+    _i6.BookingStatus? status,
     int? limit = 20,
   }) =>
       (super.noSuchMethod(
@@ -100,8 +99,8 @@ class MockBookingRepository extends _i1.Mock implements _i4.BookingRepository {
               {#status: status, #limit: limit},
             ),
             returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, List<_i7.Booking>>>.value(
-                  _FakeEither_0<_i6.Failure, List<_i7.Booking>>(
+                _i4.Future<_i2.Either<_i5.Failure, List<_i6.Booking>>>.value(
+                  _FakeEither_0<_i5.Failure, List<_i6.Booking>>(
                     this,
                     Invocation.method(
                       #getUserBookings,
@@ -111,12 +110,12 @@ class MockBookingRepository extends _i1.Mock implements _i4.BookingRepository {
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, List<_i7.Booking>>>);
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Booking>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, List<_i7.Booking>>> getPartnerBookings(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Booking>>> getPartnerBookings(
     String? partnerId, {
-    _i7.BookingStatus? status,
+    _i6.BookingStatus? status,
     int? limit = 20,
   }) =>
       (super.noSuchMethod(
@@ -126,8 +125,8 @@ class MockBookingRepository extends _i1.Mock implements _i4.BookingRepository {
               {#status: status, #limit: limit},
             ),
             returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, List<_i7.Booking>>>.value(
-                  _FakeEither_0<_i6.Failure, List<_i7.Booking>>(
+                _i4.Future<_i2.Either<_i5.Failure, List<_i6.Booking>>>.value(
+                  _FakeEither_0<_i5.Failure, List<_i6.Booking>>(
                     this,
                     Invocation.method(
                       #getPartnerBookings,
@@ -137,10 +136,10 @@ class MockBookingRepository extends _i1.Mock implements _i4.BookingRepository {
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, List<_i7.Booking>>>);
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Booking>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, List<_i7.Booking>>> getBookingsByDateRange(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Booking>>> getBookingsByDateRange(
     String? userId,
     DateTime? startDate,
     DateTime? endDate, {
@@ -153,8 +152,8 @@ class MockBookingRepository extends _i1.Mock implements _i4.BookingRepository {
               {#isPartner: isPartner},
             ),
             returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, List<_i7.Booking>>>.value(
-                  _FakeEither_0<_i6.Failure, List<_i7.Booking>>(
+                _i4.Future<_i2.Either<_i5.Failure, List<_i6.Booking>>>.value(
+                  _FakeEither_0<_i5.Failure, List<_i6.Booking>>(
                     this,
                     Invocation.method(
                       #getBookingsByDateRange,
@@ -164,33 +163,33 @@ class MockBookingRepository extends _i1.Mock implements _i4.BookingRepository {
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, List<_i7.Booking>>>);
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Booking>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>> updateBookingStatus(
+  _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>> updateBookingStatus(
     String? bookingId,
-    _i7.BookingStatus? status,
+    _i6.BookingStatus? status,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateBookingStatus, [bookingId, status]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>.value(
-              _FakeEither_0<_i6.Failure, _i7.Booking>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>.value(
+              _FakeEither_0<_i5.Failure, _i6.Booking>(
                 this,
                 Invocation.method(#updateBookingStatus, [bookingId, status]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>> cancelBooking(
+  _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>> cancelBooking(
     String? bookingId,
     String? cancellationReason,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#cancelBooking, [bookingId, cancellationReason]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>.value(
-              _FakeEither_0<_i6.Failure, _i7.Booking>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>.value(
+              _FakeEither_0<_i5.Failure, _i6.Booking>(
                 this,
                 Invocation.method(#cancelBooking, [
                   bookingId,
@@ -199,60 +198,60 @@ class MockBookingRepository extends _i1.Mock implements _i4.BookingRepository {
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>> confirmBooking(
+  _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>> confirmBooking(
     String? bookingId,
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#confirmBooking, [bookingId, partnerId]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>.value(
-              _FakeEither_0<_i6.Failure, _i7.Booking>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>.value(
+              _FakeEither_0<_i5.Failure, _i6.Booking>(
                 this,
                 Invocation.method(#confirmBooking, [bookingId, partnerId]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>> startBooking(
+  _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>> startBooking(
     String? bookingId,
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#startBooking, [bookingId, partnerId]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>.value(
-              _FakeEither_0<_i6.Failure, _i7.Booking>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>.value(
+              _FakeEither_0<_i5.Failure, _i6.Booking>(
                 this,
                 Invocation.method(#startBooking, [bookingId, partnerId]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>> completeBooking(
+  _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>> completeBooking(
     String? bookingId,
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#completeBooking, [bookingId, partnerId]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>.value(
-              _FakeEither_0<_i6.Failure, _i7.Booking>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>.value(
+              _FakeEither_0<_i5.Failure, _i6.Booking>(
                 this,
                 Invocation.method(#completeBooking, [bookingId, partnerId]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i7.Booking>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i6.Booking>>);
 
   @override
-  _i5.Stream<_i2.Either<_i6.Failure, List<_i7.Booking>>> listenToUserBookings(
+  _i4.Stream<_i2.Either<_i5.Failure, List<_i6.Booking>>> listenToUserBookings(
     String? userId, {
-    _i7.BookingStatus? status,
+    _i6.BookingStatus? status,
     int? limit = 20,
   }) =>
       (super.noSuchMethod(
@@ -262,15 +261,15 @@ class MockBookingRepository extends _i1.Mock implements _i4.BookingRepository {
               {#status: status, #limit: limit},
             ),
             returnValue:
-                _i5.Stream<_i2.Either<_i6.Failure, List<_i7.Booking>>>.empty(),
+                _i4.Stream<_i2.Either<_i5.Failure, List<_i6.Booking>>>.empty(),
           )
-          as _i5.Stream<_i2.Either<_i6.Failure, List<_i7.Booking>>>);
+          as _i4.Stream<_i2.Either<_i5.Failure, List<_i6.Booking>>>);
 
   @override
-  _i5.Stream<_i2.Either<_i6.Failure, List<_i7.Booking>>>
+  _i4.Stream<_i2.Either<_i5.Failure, List<_i6.Booking>>>
   listenToPartnerBookings(
     String? partnerId, {
-    _i7.BookingStatus? status,
+    _i6.BookingStatus? status,
     int? limit = 20,
   }) =>
       (super.noSuchMethod(
@@ -280,67 +279,67 @@ class MockBookingRepository extends _i1.Mock implements _i4.BookingRepository {
               {#status: status, #limit: limit},
             ),
             returnValue:
-                _i5.Stream<_i2.Either<_i6.Failure, List<_i7.Booking>>>.empty(),
+                _i4.Stream<_i2.Either<_i5.Failure, List<_i6.Booking>>>.empty(),
           )
-          as _i5.Stream<_i2.Either<_i6.Failure, List<_i7.Booking>>>);
+          as _i4.Stream<_i2.Either<_i5.Failure, List<_i6.Booking>>>);
 
   @override
-  _i5.Stream<_i2.Either<_i6.Failure, _i7.Booking>> listenToBooking(
+  _i4.Stream<_i2.Either<_i5.Failure, _i6.Booking>> listenToBooking(
     String? bookingId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#listenToBooking, [bookingId]),
             returnValue:
-                _i5.Stream<_i2.Either<_i6.Failure, _i7.Booking>>.empty(),
+                _i4.Stream<_i2.Either<_i5.Failure, _i6.Booking>>.empty(),
           )
-          as _i5.Stream<_i2.Either<_i6.Failure, _i7.Booking>>);
+          as _i4.Stream<_i2.Either<_i5.Failure, _i6.Booking>>);
 }
 
 /// A class which mocks [PartnerJobRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockPartnerJobRepository extends _i1.Mock
-    implements _i9.PartnerJobRepository {
+    implements _i8.PartnerJobRepository {
   MockPartnerJobRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, List<_i10.Job>>> getPendingJobs(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i9.Job>>> getPendingJobs(
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getPendingJobs, [partnerId]),
             returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, List<_i10.Job>>>.value(
-                  _FakeEither_0<_i6.Failure, List<_i10.Job>>(
+                _i4.Future<_i2.Either<_i5.Failure, List<_i9.Job>>>.value(
+                  _FakeEither_0<_i5.Failure, List<_i9.Job>>(
                     this,
                     Invocation.method(#getPendingJobs, [partnerId]),
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, List<_i10.Job>>>);
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i9.Job>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, List<_i10.Job>>> getAcceptedJobs(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i9.Job>>> getAcceptedJobs(
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getAcceptedJobs, [partnerId]),
             returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, List<_i10.Job>>>.value(
-                  _FakeEither_0<_i6.Failure, List<_i10.Job>>(
+                _i4.Future<_i2.Either<_i5.Failure, List<_i9.Job>>>.value(
+                  _FakeEither_0<_i5.Failure, List<_i9.Job>>(
                     this,
                     Invocation.method(#getAcceptedJobs, [partnerId]),
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, List<_i10.Job>>>);
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i9.Job>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, List<_i10.Job>>> getJobHistory(
+  _i4.Future<_i2.Either<_i5.Failure, List<_i9.Job>>> getJobHistory(
     String? partnerId, {
-    _i10.JobStatus? status,
+    _i9.JobStatus? status,
     DateTime? startDate,
     DateTime? endDate,
     int? limit = 20,
@@ -357,8 +356,8 @@ class MockPartnerJobRepository extends _i1.Mock
               },
             ),
             returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, List<_i10.Job>>>.value(
-                  _FakeEither_0<_i6.Failure, List<_i10.Job>>(
+                _i4.Future<_i2.Either<_i5.Failure, List<_i9.Job>>>.value(
+                  _FakeEither_0<_i5.Failure, List<_i9.Job>>(
                     this,
                     Invocation.method(
                       #getJobHistory,
@@ -373,47 +372,47 @@ class MockPartnerJobRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, List<_i10.Job>>>);
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i9.Job>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i10.Job>> getJobById(String? jobId) =>
+  _i4.Future<_i2.Either<_i5.Failure, _i9.Job>> getJobById(String? jobId) =>
       (super.noSuchMethod(
             Invocation.method(#getJobById, [jobId]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>.value(
-              _FakeEither_0<_i6.Failure, _i10.Job>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>.value(
+              _FakeEither_0<_i5.Failure, _i9.Job>(
                 this,
                 Invocation.method(#getJobById, [jobId]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i10.Job>> acceptJob(
+  _i4.Future<_i2.Either<_i5.Failure, _i9.Job>> acceptJob(
     String? jobId,
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#acceptJob, [jobId, partnerId]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>.value(
-              _FakeEither_0<_i6.Failure, _i10.Job>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>.value(
+              _FakeEither_0<_i5.Failure, _i9.Job>(
                 this,
                 Invocation.method(#acceptJob, [jobId, partnerId]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i10.Job>> rejectJob(
+  _i4.Future<_i2.Either<_i5.Failure, _i9.Job>> rejectJob(
     String? jobId,
     String? partnerId,
     String? rejectionReason,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#rejectJob, [jobId, partnerId, rejectionReason]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>.value(
-              _FakeEither_0<_i6.Failure, _i10.Job>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>.value(
+              _FakeEither_0<_i5.Failure, _i9.Job>(
                 this,
                 Invocation.method(#rejectJob, [
                   jobId,
@@ -423,42 +422,42 @@ class MockPartnerJobRepository extends _i1.Mock
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i10.Job>> startJob(
+  _i4.Future<_i2.Either<_i5.Failure, _i9.Job>> startJob(
     String? jobId,
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#startJob, [jobId, partnerId]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>.value(
-              _FakeEither_0<_i6.Failure, _i10.Job>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>.value(
+              _FakeEither_0<_i5.Failure, _i9.Job>(
                 this,
                 Invocation.method(#startJob, [jobId, partnerId]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i10.Job>> completeJob(
+  _i4.Future<_i2.Either<_i5.Failure, _i9.Job>> completeJob(
     String? jobId,
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#completeJob, [jobId, partnerId]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>.value(
-              _FakeEither_0<_i6.Failure, _i10.Job>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>.value(
+              _FakeEither_0<_i5.Failure, _i9.Job>(
                 this,
                 Invocation.method(#completeJob, [jobId, partnerId]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i10.Job>> cancelJob(
+  _i4.Future<_i2.Either<_i5.Failure, _i9.Job>> cancelJob(
     String? jobId,
     String? partnerId,
     String? cancellationReason,
@@ -469,8 +468,8 @@ class MockPartnerJobRepository extends _i1.Mock
               partnerId,
               cancellationReason,
             ]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>.value(
-              _FakeEither_0<_i6.Failure, _i10.Job>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>.value(
+              _FakeEither_0<_i5.Failure, _i9.Job>(
                 this,
                 Invocation.method(#cancelJob, [
                   jobId,
@@ -480,73 +479,73 @@ class MockPartnerJobRepository extends _i1.Mock
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i10.Job>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i9.Job>>);
 
   @override
-  _i5.Stream<_i2.Either<_i6.Failure, List<_i10.Job>>> listenToPendingJobs(
+  _i4.Stream<_i2.Either<_i5.Failure, List<_i9.Job>>> listenToPendingJobs(
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#listenToPendingJobs, [partnerId]),
             returnValue:
-                _i5.Stream<_i2.Either<_i6.Failure, List<_i10.Job>>>.empty(),
+                _i4.Stream<_i2.Either<_i5.Failure, List<_i9.Job>>>.empty(),
           )
-          as _i5.Stream<_i2.Either<_i6.Failure, List<_i10.Job>>>);
+          as _i4.Stream<_i2.Either<_i5.Failure, List<_i9.Job>>>);
 
   @override
-  _i5.Stream<_i2.Either<_i6.Failure, List<_i10.Job>>> listenToAcceptedJobs(
+  _i4.Stream<_i2.Either<_i5.Failure, List<_i9.Job>>> listenToAcceptedJobs(
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#listenToAcceptedJobs, [partnerId]),
             returnValue:
-                _i5.Stream<_i2.Either<_i6.Failure, List<_i10.Job>>>.empty(),
+                _i4.Stream<_i2.Either<_i5.Failure, List<_i9.Job>>>.empty(),
           )
-          as _i5.Stream<_i2.Either<_i6.Failure, List<_i10.Job>>>);
+          as _i4.Stream<_i2.Either<_i5.Failure, List<_i9.Job>>>);
 
   @override
-  _i5.Stream<_i2.Either<_i6.Failure, _i10.Job>> listenToJob(String? jobId) =>
+  _i4.Stream<_i2.Either<_i5.Failure, _i9.Job>> listenToJob(String? jobId) =>
       (super.noSuchMethod(
             Invocation.method(#listenToJob, [jobId]),
-            returnValue: _i5.Stream<_i2.Either<_i6.Failure, _i10.Job>>.empty(),
+            returnValue: _i4.Stream<_i2.Either<_i5.Failure, _i9.Job>>.empty(),
           )
-          as _i5.Stream<_i2.Either<_i6.Failure, _i10.Job>>);
+          as _i4.Stream<_i2.Either<_i5.Failure, _i9.Job>>);
 
   @override
-  _i5.Stream<_i2.Either<_i6.Failure, List<_i10.Job>>> listenToActiveJobs(
+  _i4.Stream<_i2.Either<_i5.Failure, List<_i9.Job>>> listenToActiveJobs(
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#listenToActiveJobs, [partnerId]),
             returnValue:
-                _i5.Stream<_i2.Either<_i6.Failure, List<_i10.Job>>>.empty(),
+                _i4.Stream<_i2.Either<_i5.Failure, List<_i9.Job>>>.empty(),
           )
-          as _i5.Stream<_i2.Either<_i6.Failure, List<_i10.Job>>>);
+          as _i4.Stream<_i2.Either<_i5.Failure, List<_i9.Job>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerEarnings>> getPartnerEarnings(
+  _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerEarnings>> getPartnerEarnings(
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getPartnerEarnings, [partnerId]),
             returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerEarnings>>.value(
-                  _FakeEither_0<_i6.Failure, _i11.PartnerEarnings>(
+                _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerEarnings>>.value(
+                  _FakeEither_0<_i5.Failure, _i10.PartnerEarnings>(
                     this,
                     Invocation.method(#getPartnerEarnings, [partnerId]),
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerEarnings>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerEarnings>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerEarnings>>
+  _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerEarnings>>
   updatePartnerEarnings(String? partnerId, double? jobEarnings) =>
       (super.noSuchMethod(
             Invocation.method(#updatePartnerEarnings, [partnerId, jobEarnings]),
             returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerEarnings>>.value(
-                  _FakeEither_0<_i6.Failure, _i11.PartnerEarnings>(
+                _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerEarnings>>.value(
+                  _FakeEither_0<_i5.Failure, _i10.PartnerEarnings>(
                     this,
                     Invocation.method(#updatePartnerEarnings, [
                       partnerId,
@@ -555,10 +554,10 @@ class MockPartnerJobRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerEarnings>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerEarnings>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, List<_i11.DailyEarning>>>
+  _i4.Future<_i2.Either<_i5.Failure, List<_i10.DailyEarning>>>
   getEarningsByDateRange(
     String? partnerId,
     DateTime? startDate,
@@ -571,10 +570,10 @@ class MockPartnerJobRepository extends _i1.Mock
               endDate,
             ]),
             returnValue:
-                _i5.Future<
-                  _i2.Either<_i6.Failure, List<_i11.DailyEarning>>
+                _i4.Future<
+                  _i2.Either<_i5.Failure, List<_i10.DailyEarning>>
                 >.value(
-                  _FakeEither_0<_i6.Failure, List<_i11.DailyEarning>>(
+                  _FakeEither_0<_i5.Failure, List<_i10.DailyEarning>>(
                     this,
                     Invocation.method(#getEarningsByDateRange, [
                       partnerId,
@@ -584,27 +583,27 @@ class MockPartnerJobRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, List<_i11.DailyEarning>>>);
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i10.DailyEarning>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>
+  _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>
   getPartnerAvailability(String? partnerId) =>
       (super.noSuchMethod(
             Invocation.method(#getPartnerAvailability, [partnerId]),
             returnValue:
-                _i5.Future<
-                  _i2.Either<_i6.Failure, _i11.PartnerAvailability>
+                _i4.Future<
+                  _i2.Either<_i5.Failure, _i10.PartnerAvailability>
                 >.value(
-                  _FakeEither_0<_i6.Failure, _i11.PartnerAvailability>(
+                  _FakeEither_0<_i5.Failure, _i10.PartnerAvailability>(
                     this,
                     Invocation.method(#getPartnerAvailability, [partnerId]),
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>
+  _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>
   updateAvailabilityStatus(
     String? partnerId,
     bool? isAvailable,
@@ -617,10 +616,10 @@ class MockPartnerJobRepository extends _i1.Mock
               reason,
             ]),
             returnValue:
-                _i5.Future<
-                  _i2.Either<_i6.Failure, _i11.PartnerAvailability>
+                _i4.Future<
+                  _i2.Either<_i5.Failure, _i10.PartnerAvailability>
                 >.value(
-                  _FakeEither_0<_i6.Failure, _i11.PartnerAvailability>(
+                  _FakeEither_0<_i5.Failure, _i10.PartnerAvailability>(
                     this,
                     Invocation.method(#updateAvailabilityStatus, [
                       partnerId,
@@ -630,18 +629,18 @@ class MockPartnerJobRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>
+  _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>
   updateOnlineStatus(String? partnerId, bool? isOnline) =>
       (super.noSuchMethod(
             Invocation.method(#updateOnlineStatus, [partnerId, isOnline]),
             returnValue:
-                _i5.Future<
-                  _i2.Either<_i6.Failure, _i11.PartnerAvailability>
+                _i4.Future<
+                  _i2.Either<_i5.Failure, _i10.PartnerAvailability>
                 >.value(
-                  _FakeEither_0<_i6.Failure, _i11.PartnerAvailability>(
+                  _FakeEither_0<_i5.Failure, _i10.PartnerAvailability>(
                     this,
                     Invocation.method(#updateOnlineStatus, [
                       partnerId,
@@ -650,10 +649,10 @@ class MockPartnerJobRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>
+  _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>
   updateWorkingHours(
     String? partnerId,
     Map<String, List<String>>? workingHours,
@@ -661,10 +660,10 @@ class MockPartnerJobRepository extends _i1.Mock
       (super.noSuchMethod(
             Invocation.method(#updateWorkingHours, [partnerId, workingHours]),
             returnValue:
-                _i5.Future<
-                  _i2.Either<_i6.Failure, _i11.PartnerAvailability>
+                _i4.Future<
+                  _i2.Either<_i5.Failure, _i10.PartnerAvailability>
                 >.value(
-                  _FakeEither_0<_i6.Failure, _i11.PartnerAvailability>(
+                  _FakeEither_0<_i5.Failure, _i10.PartnerAvailability>(
                     this,
                     Invocation.method(#updateWorkingHours, [
                       partnerId,
@@ -673,48 +672,48 @@ class MockPartnerJobRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>> blockDates(
+  _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>> blockDates(
     String? partnerId,
     List<String>? dates,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#blockDates, [partnerId, dates]),
             returnValue:
-                _i5.Future<
-                  _i2.Either<_i6.Failure, _i11.PartnerAvailability>
+                _i4.Future<
+                  _i2.Either<_i5.Failure, _i10.PartnerAvailability>
                 >.value(
-                  _FakeEither_0<_i6.Failure, _i11.PartnerAvailability>(
+                  _FakeEither_0<_i5.Failure, _i10.PartnerAvailability>(
                     this,
                     Invocation.method(#blockDates, [partnerId, dates]),
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>> unblockDates(
+  _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>> unblockDates(
     String? partnerId,
     List<String>? dates,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#unblockDates, [partnerId, dates]),
             returnValue:
-                _i5.Future<
-                  _i2.Either<_i6.Failure, _i11.PartnerAvailability>
+                _i4.Future<
+                  _i2.Either<_i5.Failure, _i10.PartnerAvailability>
                 >.value(
-                  _FakeEither_0<_i6.Failure, _i11.PartnerAvailability>(
+                  _FakeEither_0<_i5.Failure, _i10.PartnerAvailability>(
                     this,
                     Invocation.method(#unblockDates, [partnerId, dates]),
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>
+  _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>
   setTemporaryUnavailability(
     String? partnerId,
     DateTime? unavailableUntil,
@@ -727,10 +726,10 @@ class MockPartnerJobRepository extends _i1.Mock
               reason,
             ]),
             returnValue:
-                _i5.Future<
-                  _i2.Either<_i6.Failure, _i11.PartnerAvailability>
+                _i4.Future<
+                  _i2.Either<_i5.Failure, _i10.PartnerAvailability>
                 >.value(
-                  _FakeEither_0<_i6.Failure, _i11.PartnerAvailability>(
+                  _FakeEither_0<_i5.Failure, _i10.PartnerAvailability>(
                     this,
                     Invocation.method(#setTemporaryUnavailability, [
                       partnerId,
@@ -740,18 +739,18 @@ class MockPartnerJobRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>
+  _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>
   clearTemporaryUnavailability(String? partnerId) =>
       (super.noSuchMethod(
             Invocation.method(#clearTemporaryUnavailability, [partnerId]),
             returnValue:
-                _i5.Future<
-                  _i2.Either<_i6.Failure, _i11.PartnerAvailability>
+                _i4.Future<
+                  _i2.Either<_i5.Failure, _i10.PartnerAvailability>
                 >.value(
-                  _FakeEither_0<_i6.Failure, _i11.PartnerAvailability>(
+                  _FakeEither_0<_i5.Failure, _i10.PartnerAvailability>(
                     this,
                     Invocation.method(#clearTemporaryUnavailability, [
                       partnerId,
@@ -759,10 +758,10 @@ class MockPartnerJobRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, _i11.PartnerAvailability>>);
+          as _i4.Future<_i2.Either<_i5.Failure, _i10.PartnerAvailability>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, Map<String, dynamic>>> getJobStatistics(
+  _i4.Future<_i2.Either<_i5.Failure, Map<String, dynamic>>> getJobStatistics(
     String? partnerId, {
     DateTime? startDate,
     DateTime? endDate,
@@ -774,8 +773,8 @@ class MockPartnerJobRepository extends _i1.Mock
               {#startDate: startDate, #endDate: endDate},
             ),
             returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, Map<String, dynamic>>>.value(
-                  _FakeEither_0<_i6.Failure, Map<String, dynamic>>(
+                _i4.Future<_i2.Either<_i5.Failure, Map<String, dynamic>>>.value(
+                  _FakeEither_0<_i5.Failure, Map<String, dynamic>>(
                     this,
                     Invocation.method(
                       #getJobStatistics,
@@ -785,32 +784,32 @@ class MockPartnerJobRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, Map<String, dynamic>>>);
+          as _i4.Future<_i2.Either<_i5.Failure, Map<String, dynamic>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, Map<String, dynamic>>>
+  _i4.Future<_i2.Either<_i5.Failure, Map<String, dynamic>>>
   getPerformanceMetrics(String? partnerId) =>
       (super.noSuchMethod(
             Invocation.method(#getPerformanceMetrics, [partnerId]),
             returnValue:
-                _i5.Future<_i2.Either<_i6.Failure, Map<String, dynamic>>>.value(
-                  _FakeEither_0<_i6.Failure, Map<String, dynamic>>(
+                _i4.Future<_i2.Either<_i5.Failure, Map<String, dynamic>>>.value(
+                  _FakeEither_0<_i5.Failure, Map<String, dynamic>>(
                     this,
                     Invocation.method(#getPerformanceMetrics, [partnerId]),
                   ),
                 ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, Map<String, dynamic>>>);
+          as _i4.Future<_i2.Either<_i5.Failure, Map<String, dynamic>>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, void>> markJobNotificationAsRead(
+  _i4.Future<_i2.Either<_i5.Failure, void>> markJobNotificationAsRead(
     String? partnerId,
     String? jobId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#markJobNotificationAsRead, [partnerId, jobId]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, void>>.value(
-              _FakeEither_0<_i6.Failure, void>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, void>>.value(
+              _FakeEither_0<_i5.Failure, void>(
                 this,
                 Invocation.method(#markJobNotificationAsRead, [
                   partnerId,
@@ -819,44 +818,58 @@ class MockPartnerJobRepository extends _i1.Mock
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, void>>);
+          as _i4.Future<_i2.Either<_i5.Failure, void>>);
 
   @override
-  _i5.Future<_i2.Either<_i6.Failure, int>> getUnreadNotificationsCount(
+  _i4.Future<_i2.Either<_i5.Failure, int>> getUnreadNotificationsCount(
     String? partnerId,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getUnreadNotificationsCount, [partnerId]),
-            returnValue: _i5.Future<_i2.Either<_i6.Failure, int>>.value(
-              _FakeEither_0<_i6.Failure, int>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, int>>.value(
+              _FakeEither_0<_i5.Failure, int>(
                 this,
                 Invocation.method(#getUnreadNotificationsCount, [partnerId]),
               ),
             ),
           )
-          as _i5.Future<_i2.Either<_i6.Failure, int>>);
+          as _i4.Future<_i2.Either<_i5.Failure, int>>);
 }
 
 /// A class which mocks [NotificationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockNotificationService extends _i1.Mock
-    implements _i12.NotificationService {
+    implements _i11.NotificationService {
   MockNotificationService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<void> initialize() =>
-      (super.noSuchMethod(
-            Invocation.method(#initialize, []),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
-          )
-          as _i5.Future<void>);
+  void setRepository(_i12.NotificationRepository? repository) =>
+      super.noSuchMethod(
+        Invocation.method(#setRepository, [repository]),
+        returnValueForMissingStub: null,
+      );
 
   @override
-  _i5.Future<_i3.Either<_i6.Failure, void>> sendBookingNotification(
+  void setUserPreferences(_i13.NotificationPreferences? preferences) =>
+      super.noSuchMethod(
+        Invocation.method(#setUserPreferences, [preferences]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i4.Future<void> initialize() =>
+      (super.noSuchMethod(
+            Invocation.method(#initialize, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<_i2.Either<_i5.Failure, void>> sendBookingNotification(
     String? fcmToken,
     String? title,
     String? body,
@@ -869,8 +882,8 @@ class MockNotificationService extends _i1.Mock
               body,
               data,
             ]),
-            returnValue: _i5.Future<_i3.Either<_i6.Failure, void>>.value(
-              _FakeEither_1<_i6.Failure, void>(
+            returnValue: _i4.Future<_i2.Either<_i5.Failure, void>>.value(
+              _FakeEither_0<_i5.Failure, void>(
                 this,
                 Invocation.method(#sendBookingNotification, [
                   fcmToken,
@@ -881,56 +894,56 @@ class MockNotificationService extends _i1.Mock
               ),
             ),
           )
-          as _i5.Future<_i3.Either<_i6.Failure, void>>);
+          as _i4.Future<_i2.Either<_i5.Failure, void>>);
 
   @override
-  _i5.Future<String?> getFCMToken() =>
+  _i4.Future<String?> getFCMToken() =>
       (super.noSuchMethod(
             Invocation.method(#getFCMToken, []),
-            returnValue: _i5.Future<String?>.value(),
+            returnValue: _i4.Future<String?>.value(),
           )
-          as _i5.Future<String?>);
+          as _i4.Future<String?>);
 
   @override
-  _i5.Future<void> subscribeToTopic(String? topic) =>
+  _i4.Future<void> subscribeToTopic(String? topic) =>
       (super.noSuchMethod(
             Invocation.method(#subscribeToTopic, [topic]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> unsubscribeFromTopic(String? topic) =>
+  _i4.Future<void> unsubscribeFromTopic(String? topic) =>
       (super.noSuchMethod(
             Invocation.method(#unsubscribeFromTopic, [topic]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> subscribeToPartnerNotifications(String? partnerId) =>
+  _i4.Future<void> subscribeToPartnerNotifications(String? partnerId) =>
       (super.noSuchMethod(
             Invocation.method(#subscribeToPartnerNotifications, [partnerId]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> unsubscribeFromPartnerNotifications(String? partnerId) =>
+  _i4.Future<void> unsubscribeFromPartnerNotifications(String? partnerId) =>
       (super.noSuchMethod(
             Invocation.method(#unsubscribeFromPartnerNotifications, [
               partnerId,
             ]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> sendNewJobNotification({
+  _i4.Future<void> sendNewJobNotification({
     required String? partnerId,
     required String? jobId,
     required String? serviceName,
@@ -945,13 +958,13 @@ class MockNotificationService extends _i1.Mock
               #clientName: clientName,
               #earnings: earnings,
             }),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> sendJobStatusNotification({
+  _i4.Future<void> sendJobStatusNotification({
     required String? partnerId,
     required String? jobId,
     required String? status,
@@ -964,13 +977,13 @@ class MockNotificationService extends _i1.Mock
               #status: status,
               #serviceName: serviceName,
             }),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> sendEarningsNotification({
+  _i4.Future<void> sendEarningsNotification({
     required String? partnerId,
     required String? amount,
     required String? period,
@@ -981,13 +994,13 @@ class MockNotificationService extends _i1.Mock
               #amount: amount,
               #period: period,
             }),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> sendRatingNotification({
+  _i4.Future<void> sendRatingNotification({
     required String? partnerId,
     required String? jobId,
     required double? rating,
@@ -1000,13 +1013,13 @@ class MockNotificationService extends _i1.Mock
               #rating: rating,
               #review: review,
             }),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> scheduleNotification({
+  _i4.Future<void> scheduleNotification({
     required int? id,
     required String? title,
     required String? body,
@@ -1021,31 +1034,31 @@ class MockNotificationService extends _i1.Mock
               #scheduledDate: scheduledDate,
               #data: data,
             }),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> cancelScheduledNotification(int? id) =>
+  _i4.Future<void> cancelScheduledNotification(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#cancelScheduledNotification, [id]),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> cancelAllNotifications() =>
+  _i4.Future<void> cancelAllNotifications() =>
       (super.noSuchMethod(
             Invocation.method(#cancelAllNotifications, []),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
 
   @override
-  _i5.Future<void> scheduleBookingReminder({
+  _i4.Future<void> scheduleBookingReminder({
     required String? bookingId,
     required String? serviceName,
     required DateTime? scheduledDate,
@@ -1056,8 +1069,100 @@ class MockNotificationService extends _i1.Mock
               #serviceName: serviceName,
               #scheduledDate: scheduledDate,
             }),
-            returnValue: _i5.Future<void>.value(),
-            returnValueForMissingStub: _i5.Future<void>.value(),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
           )
-          as _i5.Future<void>);
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> sendEnhancedBookingNotification({
+    required String? userId,
+    required String? title,
+    required String? body,
+    required Map<String, dynamic>? data,
+    _i14.NotificationPriority? priority = _i14.NotificationPriority.high,
+    String? imageUrl,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#sendEnhancedBookingNotification, [], {
+              #userId: userId,
+              #title: title,
+              #body: body,
+              #data: data,
+              #priority: priority,
+              #imageUrl: imageUrl,
+            }),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> sendEnhancedJobNotification({
+    required String? userId,
+    required String? title,
+    required String? body,
+    required Map<String, dynamic>? data,
+    _i14.NotificationPriority? priority = _i14.NotificationPriority.high,
+    String? imageUrl,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#sendEnhancedJobNotification, [], {
+              #userId: userId,
+              #title: title,
+              #body: body,
+              #data: data,
+              #priority: priority,
+              #imageUrl: imageUrl,
+            }),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> sendEnhancedPaymentNotification({
+    required String? userId,
+    required String? title,
+    required String? body,
+    required Map<String, dynamic>? data,
+    _i14.NotificationPriority? priority = _i14.NotificationPriority.high,
+    String? imageUrl,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#sendEnhancedPaymentNotification, [], {
+              #userId: userId,
+              #title: title,
+              #body: body,
+              #data: data,
+              #priority: priority,
+              #imageUrl: imageUrl,
+            }),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> sendSystemNotification({
+    required String? userId,
+    required String? title,
+    required String? body,
+    required Map<String, dynamic>? data,
+    _i14.NotificationPriority? priority = _i14.NotificationPriority.normal,
+    String? imageUrl,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#sendSystemNotification, [], {
+              #userId: userId,
+              #title: title,
+              #body: body,
+              #data: data,
+              #priority: priority,
+              #imageUrl: imageUrl,
+            }),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
 }
