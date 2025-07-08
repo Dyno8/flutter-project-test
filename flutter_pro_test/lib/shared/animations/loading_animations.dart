@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -36,94 +37,18 @@ class LoadingAnimations {
     );
   }
 
-  /// Skeleton loader for list items
-  static Widget skeletonListItem({
-    bool showAvatar = true,
-    int lineCount = 2,
-  }) {
-    return shimmer(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (showAvatar) ...[
-              Container(
-                width: 48.w,
-                height: 48.w,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24.r),
-                ),
-              ),
-              SizedBox(width: 12.w),
-            ],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 16.h,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                  ),
-                  SizedBox(height: 8.h),
-                  for (int i = 0; i < lineCount - 1; i++) ...[
-                    Container(
-                      width: (i == lineCount - 2) ? 0.7.sw : double.infinity,
-                      height: 14.h,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(7.r),
-                      ),
-                    ),
-                    if (i < lineCount - 2) SizedBox(height: 6.h),
-                  ],
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Pulsing dot animation
+  /// Pulsing dots loading animation
   static Widget pulsingDots({
-    int dotCount = 3,
     Color? color,
     double size = 8.0,
+    int dotCount = 3,
     Duration duration = const Duration(milliseconds: 1200),
   }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: List.generate(dotCount, (index) {
-        return _PulsingDot(
-          delay: Duration(milliseconds: index * 200),
-          color: color ?? Colors.blue,
-          size: size,
-          duration: duration,
-        );
-      }),
-    );
-  }
-
-  /// Rotating loading indicator
-  static Widget rotatingIndicator({
-    Color? color,
-    double size = 24.0,
-    Duration duration = const Duration(milliseconds: 1000),
-  }) {
-    return _RotatingWidget(
+    return _PulsingDotsWidget(
+      color: color ?? Colors.blue,
+      size: size,
+      dotCount: dotCount,
       duration: duration,
-      child: Icon(
-        Icons.refresh,
-        color: color ?? Colors.blue,
-        size: size,
-      ),
     );
   }
 
@@ -131,25 +56,30 @@ class LoadingAnimations {
   static Widget waveLoading({
     Color? color,
     double size = 40.0,
-    int waveCount = 4,
+    Duration duration = const Duration(milliseconds: 1000),
   }) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: List.generate(waveCount, (index) {
-          return _WaveBar(
-            delay: Duration(milliseconds: index * 100),
-            color: color ?? Colors.blue,
-          );
-        }),
-      ),
+    return _WaveLoadingWidget(
+      color: color ?? Colors.blue,
+      size: size,
+      duration: duration,
+    );
+  }
+
+  /// Rotating indicator
+  static Widget rotatingIndicator({
+    Color? color,
+    double size = 40.0,
+    Duration duration = const Duration(milliseconds: 1000),
+  }) {
+    return _RotatingIndicatorWidget(
+      color: color ?? Colors.blue,
+      size: size,
+      duration: duration,
     );
   }
 }
 
-/// Internal shimmer widget implementation
+/// Shimmer widget implementation
 class _ShimmerWidget extends StatefulWidget {
   final Widget child;
   final Color baseColor;
@@ -175,13 +105,12 @@ class _ShimmerWidgetState extends State<_ShimmerWidget>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.period,
-      vsync: this,
-    )..repeat();
-    _animation = Tween<double>(begin: -1.0, end: 2.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _controller = AnimationController(duration: widget.period, vsync: this)
+      ..repeat();
+    _animation = Tween<double>(
+      begin: -1.0,
+      end: 2.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -219,45 +148,101 @@ class _ShimmerWidgetState extends State<_ShimmerWidget>
   }
 }
 
-/// Pulsing dot widget
-class _PulsingDot extends StatefulWidget {
-  final Duration delay;
+/// Pulsing dots widget implementation
+class _PulsingDotsWidget extends StatefulWidget {
+  final Color color;
+  final double size;
+  final int dotCount;
+  final Duration duration;
+
+  const _PulsingDotsWidget({
+    required this.color,
+    required this.size,
+    required this.dotCount,
+    required this.duration,
+  });
+
+  @override
+  State<_PulsingDotsWidget> createState() => _PulsingDotsWidgetState();
+}
+
+class _PulsingDotsWidgetState extends State<_PulsingDotsWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(duration: widget.duration, vsync: this)
+      ..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(widget.dotCount, (index) {
+        return AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            final delay = index * 0.2;
+            final animationValue = (_controller.value + delay) % 1.0;
+            final scale =
+                0.5 +
+                0.5 * (1 - (animationValue - 0.5).abs() * 2).clamp(0.0, 1.0);
+
+            return Container(
+              margin: EdgeInsets.symmetric(horizontal: 2.w),
+              child: Transform.scale(
+                scale: scale,
+                child: Container(
+                  width: widget.size.w,
+                  height: widget.size.h,
+                  decoration: BoxDecoration(
+                    color: widget.color,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }),
+    );
+  }
+}
+
+/// Wave loading widget implementation
+class _WaveLoadingWidget extends StatefulWidget {
   final Color color;
   final double size;
   final Duration duration;
 
-  const _PulsingDot({
-    required this.delay,
+  const _WaveLoadingWidget({
     required this.color,
     required this.size,
     required this.duration,
   });
 
   @override
-  State<_PulsingDot> createState() => _PulsingDotState();
+  State<_WaveLoadingWidget> createState() => _WaveLoadingWidgetState();
 }
 
-class _PulsingDotState extends State<_PulsingDot>
+class _WaveLoadingWidgetState extends State<_WaveLoadingWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-
-    Future.delayed(widget.delay, () {
-      if (mounted) {
-        _controller.repeat(reverse: true);
-      }
-    });
+    _controller = AnimationController(duration: widget.duration, vsync: this)
+      ..repeat();
   }
 
   @override
@@ -268,48 +253,91 @@ class _PulsingDotState extends State<_PulsingDot>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 2.w),
-          width: widget.size.w,
-          height: widget.size.w,
-          decoration: BoxDecoration(
-            color: widget.color.withOpacity(_animation.value),
-            shape: BoxShape.circle,
-          ),
-        );
-      },
+    return SizedBox(
+      width: widget.size.w,
+      height: widget.size.h,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return CustomPaint(
+            painter: _WavePainter(
+              color: widget.color,
+              animationValue: _controller.value,
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
-/// Rotating widget
-class _RotatingWidget extends StatefulWidget {
-  final Widget child;
+/// Wave painter for wave loading animation
+class _WavePainter extends CustomPainter {
+  final Color color;
+  final double animationValue;
+
+  _WavePainter({required this.color, required this.animationValue});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    final waveHeight = size.height * 0.2;
+    final waveLength = size.width;
+    final phase = animationValue * 2 * math.pi;
+
+    path.moveTo(0, size.height);
+
+    for (double x = 0; x <= size.width; x += 1) {
+      final y =
+          size.height -
+          waveHeight *
+              (1 +
+                  0.5 *
+                      math.sin(x / waveLength) *
+                      math.sin(phase + x / waveLength * 2 * math.pi));
+      path.lineTo(x, y);
+    }
+
+    path.lineTo(size.width, size.height);
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+/// Rotating indicator widget implementation
+class _RotatingIndicatorWidget extends StatefulWidget {
+  final Color color;
+  final double size;
   final Duration duration;
 
-  const _RotatingWidget({
-    required this.child,
+  const _RotatingIndicatorWidget({
+    required this.color,
+    required this.size,
     required this.duration,
   });
 
   @override
-  State<_RotatingWidget> createState() => _RotatingWidgetState();
+  State<_RotatingIndicatorWidget> createState() =>
+      _RotatingIndicatorWidgetState();
 }
 
-class _RotatingWidgetState extends State<_RotatingWidget>
+class _RotatingIndicatorWidgetState extends State<_RotatingIndicatorWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    )..repeat();
+    _controller = AnimationController(duration: widget.duration, vsync: this)
+      ..repeat();
   }
 
   @override
@@ -320,75 +348,48 @@ class _RotatingWidgetState extends State<_RotatingWidget>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Transform.rotate(
-          angle: _controller.value * 2 * 3.14159,
-          child: widget.child,
-        );
-      },
+    return SizedBox(
+      width: widget.size.w,
+      height: widget.size.h,
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Transform.rotate(
+            angle: _controller.value * 2 * math.pi,
+            child: CustomPaint(painter: _RotatingPainter(color: widget.color)),
+          );
+        },
+      ),
     );
   }
 }
 
-/// Wave bar widget
-class _WaveBar extends StatefulWidget {
-  final Duration delay;
+/// Rotating painter for rotating indicator
+class _RotatingPainter extends CustomPainter {
   final Color color;
 
-  const _WaveBar({
-    required this.delay,
-    required this.color,
-  });
+  _RotatingPainter({required this.color});
 
   @override
-  State<_WaveBar> createState() => _WaveBarState();
-}
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0
+      ..strokeCap = StrokeCap.round;
 
-class _WaveBarState extends State<_WaveBar>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2 - 2;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-    _animation = Tween<double>(begin: 0.2, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-
-    Future.delayed(widget.delay, () {
-      if (mounted) {
-        _controller.repeat(reverse: true);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Container(
-          width: 4.w,
-          height: 20.h * _animation.value,
-          decoration: BoxDecoration(
-            color: widget.color,
-            borderRadius: BorderRadius.circular(2.r),
-          ),
-        );
-      },
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      0,
+      math.pi * 1.5,
+      false,
+      paint,
     );
   }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

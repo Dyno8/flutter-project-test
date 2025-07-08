@@ -34,6 +34,13 @@ class AppConstants {
   static const String notificationPreferencesCollection =
       'notification_preferences';
 
+  // Admin Collections
+  static const String adminUsersCollection = 'admin_users';
+  static const String adminActivityLogsCollection = 'admin_activity_logs';
+  static const String systemMetricsCollection = 'system_metrics';
+  static const String systemHealthCollection = 'system_health';
+  static const String analyticsExportsCollection = 'analytics_exports';
+
   // Shared Preferences Keys
   static const String keyUserRole = 'user_role';
   static const String keyUserId = 'user_id';
