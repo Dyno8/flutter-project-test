@@ -66,6 +66,7 @@ import '../../shared/services/notification_service.dart';
 import '../../shared/services/notification_integration_service.dart';
 import '../../shared/services/notification_action_handler.dart';
 import '../../shared/services/realtime_notification_service.dart';
+import '../../shared/repositories/user_repository.dart';
 
 // Notification system imports
 import '../../features/notifications/domain/repositories/notification_repository.dart';
@@ -265,6 +266,9 @@ Future<void> init() async {
   sl.registerLazySingleton<NotificationRepository>(
     () => NotificationRepositoryImpl(remoteDataSource: sl()),
   );
+
+  // User repository
+  sl.registerLazySingleton<UserRepository>(() => UserRepository());
 
   // Data sources
   sl.registerLazySingleton<FirebaseAuthDataSource>(

@@ -19,6 +19,7 @@ import '../../features/partner/presentation/screens/partner_dashboard_screen.dar
 import '../../features/client/presentation/screens/payment_method_selection_screen.dart';
 import '../../features/client/presentation/screens/payment_processing_screen.dart';
 import '../../features/booking/presentation/screens/booking_tracking_screen.dart';
+import '../../features/admin/presentation/screens/simple_admin_dashboard_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -41,8 +42,11 @@ class AppRouter {
   static const String partnerEarnings = '/partner/earnings';
   static const String partnerSettings = '/partner/settings';
 
+  // Admin routes
+  static const String adminDashboard = '/admin/dashboard';
+
   static final GoRouter router = GoRouter(
-    initialLocation: splash,
+    initialLocation: adminDashboard, // Temporarily bypass splash for testing
     routes: [
       // Splash Screen
       GoRoute(path: splash, builder: (context, state) => const SplashScreen()),
@@ -197,6 +201,12 @@ class AppRouter {
             builder: (context, state) => const ProfileScreen(),
           ),
         ],
+      ),
+
+      // Admin Routes
+      GoRoute(
+        path: adminDashboard,
+        builder: (context, state) => const SimpleAdminDashboardScreen(),
       ),
     ],
   );

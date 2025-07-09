@@ -17,26 +17,100 @@ import 'features/notifications/domain/repositories/notification_repository.dart'
 import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    print('🚀 Starting CareNow MVP...');
 
-  // Initialize Firebase services
-  await FirebaseService().initialize();
+    // Initialize Firebase
+    print('🔥 Initializing Firebase...');
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('✅ Firebase initialized successfully');
 
-  // Initialize dependency injection
-  await di.init();
+    // Initialize Firebase services
+    print('🔧 Initializing Firebase services...');
+    await FirebaseService().initialize();
+    print('✅ Firebase services initialized');
 
-  // Initialize and configure notification service
-  final notificationService = di.sl<NotificationService>();
-  await notificationService.initialize();
+    // Initialize dependency injection
+    print('💉 Initializing dependency injection...');
+    await di.init();
+    print('✅ Dependency injection initialized');
 
-  // Set up notification service with repository and action handler
-  notificationService.setRepository(di.sl<NotificationRepository>());
-  notificationService.setActionHandler(di.sl<NotificationActionHandler>());
+    // Initialize and configure notification service
+    print('🔔 Initializing notification service...');
+    final notificationService = di.sl<NotificationService>();
+    await notificationService.initialize();
 
-  runApp(const CareNowApp());
+    // Set up notification service with repository and action handler
+    notificationService.setRepository(di.sl<NotificationRepository>());
+    notificationService.setActionHandler(di.sl<NotificationActionHandler>());
+    print('✅ Notification service configured');
+
+    print('🎉 All services initialized successfully. Starting app...');
+    runApp(const MinimalCareNowApp());
+  } catch (e, stackTrace) {
+    print('❌ Error during app initialization: $e');
+    print('Stack trace: $stackTrace');
+
+    // Run a minimal error app
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          backgroundColor: Colors.red,
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error, size: 64, color: Colors.white),
+                const SizedBox(height: 16),
+                const Text(
+                  'Initialization Error',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    'Error: $e',
+                    style: const TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MinimalCareNowApp extends StatelessWidget {
+  const MinimalCareNowApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ScreenUtilInit(
+      designSize: const Size(375, 812), // iPhone X design size
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp.router(
+          title: 'CareNow Admin',
+          theme: AppTheme.lightTheme,
+          routerConfig: AppRouter.router,
+          debugShowCheckedModeBanner: false,
+        );
+      },
+    );
+  }
 }
 
 class CareNowApp extends StatelessWidget {
