@@ -57,6 +57,37 @@ class SystemMetrics extends Equatable {
     return (activeBookings / totalPartners) * 100;
   }
 
+  /// Calculate system health as a numeric value (0.0 to 1.0)
+  double get systemHealth {
+    // Base health score on performance metrics
+    double healthScore = 1.0;
+
+    // Reduce score based on error rate (0-10% range)
+    if (performance.errorRate > 0) {
+      healthScore -= (performance.errorRate / 10.0).clamp(0.0, 0.3);
+    }
+
+    // Reduce score based on API response time (0-3000ms range)
+    if (performance.apiResponseTime > 500) {
+      healthScore -= ((performance.apiResponseTime - 500) / 2500.0).clamp(
+        0.0,
+        0.3,
+      );
+    }
+
+    // Reduce score based on CPU usage (0-100% range)
+    if (performance.cpuUsage > 50) {
+      healthScore -= ((performance.cpuUsage - 50) / 50.0).clamp(0.0, 0.2);
+    }
+
+    // Reduce score based on memory usage (0-100% range)
+    if (performance.memoryUsage > 50) {
+      healthScore -= ((performance.memoryUsage - 50) / 50.0).clamp(0.0, 0.2);
+    }
+
+    return healthScore.clamp(0.0, 1.0);
+  }
+
   /// Get growth metrics compared to previous period
   GrowthMetrics getGrowthMetrics(SystemMetrics? previousMetrics) {
     if (previousMetrics == null) {
@@ -70,9 +101,18 @@ class SystemMetrics extends Equatable {
 
     return GrowthMetrics(
       userGrowth: _calculateGrowthRate(previousMetrics.totalUsers, totalUsers),
-      partnerGrowth: _calculateGrowthRate(previousMetrics.totalPartners, totalPartners),
-      bookingGrowth: _calculateGrowthRate(previousMetrics.totalBookings, totalBookings),
-      revenueGrowth: _calculateGrowthRate(previousMetrics.totalRevenue, totalRevenue),
+      partnerGrowth: _calculateGrowthRate(
+        previousMetrics.totalPartners,
+        totalPartners,
+      ),
+      bookingGrowth: _calculateGrowthRate(
+        previousMetrics.totalBookings,
+        totalBookings,
+      ),
+      revenueGrowth: _calculateGrowthRate(
+        previousMetrics.totalRevenue,
+        totalRevenue,
+      ),
     );
   }
 
@@ -83,20 +123,20 @@ class SystemMetrics extends Equatable {
 
   @override
   List<Object?> get props => [
-        totalUsers,
-        totalPartners,
-        totalBookings,
-        activeBookings,
-        completedBookings,
-        cancelledBookings,
-        totalRevenue,
-        monthlyRevenue,
-        dailyRevenue,
-        averageRating,
-        totalReviews,
-        timestamp,
-        performance,
-      ];
+    totalUsers,
+    totalPartners,
+    totalBookings,
+    activeBookings,
+    completedBookings,
+    cancelledBookings,
+    totalRevenue,
+    monthlyRevenue,
+    dailyRevenue,
+    averageRating,
+    totalReviews,
+    timestamp,
+    performance,
+  ];
 }
 
 /// System performance metrics
@@ -123,9 +163,15 @@ class SystemPerformance extends Equatable {
 
   /// Get system health status
   SystemHealthStatus get healthStatus {
-    if (errorRate > 5.0 || apiResponseTime > 2000 || cpuUsage > 90 || memoryUsage > 90) {
+    if (errorRate > 5.0 ||
+        apiResponseTime > 2000 ||
+        cpuUsage > 90 ||
+        memoryUsage > 90) {
       return SystemHealthStatus.critical;
-    } else if (errorRate > 2.0 || apiResponseTime > 1000 || cpuUsage > 70 || memoryUsage > 70) {
+    } else if (errorRate > 2.0 ||
+        apiResponseTime > 1000 ||
+        cpuUsage > 70 ||
+        memoryUsage > 70) {
       return SystemHealthStatus.warning;
     } else {
       return SystemHealthStatus.healthy;
@@ -134,15 +180,15 @@ class SystemPerformance extends Equatable {
 
   @override
   List<Object?> get props => [
-        apiResponseTime,
-        errorRate,
-        activeConnections,
-        memoryUsage,
-        cpuUsage,
-        diskUsage,
-        requestsPerMinute,
-        lastUpdated,
-      ];
+    apiResponseTime,
+    errorRate,
+    activeConnections,
+    memoryUsage,
+    cpuUsage,
+    diskUsage,
+    requestsPerMinute,
+    lastUpdated,
+  ];
 }
 
 /// Growth metrics for comparison
@@ -161,11 +207,11 @@ class GrowthMetrics extends Equatable {
 
   @override
   List<Object?> get props => [
-        userGrowth,
-        partnerGrowth,
-        bookingGrowth,
-        revenueGrowth,
-      ];
+    userGrowth,
+    partnerGrowth,
+    bookingGrowth,
+    revenueGrowth,
+  ];
 }
 
 /// System health status

@@ -11,16 +11,24 @@ import 'package:flutter_pro_test/features/admin/domain/entities/admin_user.dart'
     as _i3;
 import 'package:flutter_pro_test/features/admin/domain/entities/booking_analytics.dart'
     as _i9;
+import 'package:flutter_pro_test/features/admin/domain/entities/partner_analytics.dart'
+    as _i10;
+import 'package:flutter_pro_test/features/admin/domain/entities/report_config.dart'
+    as _i13;
+import 'package:flutter_pro_test/features/admin/domain/entities/revenue_analytics.dart'
+    as _i12;
 import 'package:flutter_pro_test/features/admin/domain/entities/system_metrics.dart'
     as _i8;
+import 'package:flutter_pro_test/features/admin/domain/entities/user_analytics.dart'
+    as _i11;
 import 'package:flutter_pro_test/features/admin/domain/repositories/admin_repository.dart'
     as _i5;
 import 'package:flutter_pro_test/features/admin/domain/repositories/analytics_repository.dart'
     as _i4;
 import 'package:flutter_pro_test/features/admin/domain/usecases/get_booking_analytics.dart'
-    as _i11;
+    as _i15;
 import 'package:flutter_pro_test/features/admin/domain/usecases/get_system_metrics.dart'
-    as _i10;
+    as _i14;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -122,84 +130,97 @@ class MockAnalyticsRepository extends _i1.Mock
           as _i6.Future<_i2.Either<_i7.Failure, _i9.BookingAnalytics>>);
 
   @override
-  _i6.Future<_i2.Either<_i7.Failure, _i4.PartnerAnalytics>>
+  _i6.Future<_i2.Either<_i7.Failure, _i10.PartnerAnalytics>>
   getPartnerAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
-    String? serviceId,
+    bool? includePerformanceDetails = false,
+    bool? includeQualityMetrics = false,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#getPartnerAnalytics, [], {
               #startDate: startDate,
               #endDate: endDate,
-              #serviceId: serviceId,
+              #includePerformanceDetails: includePerformanceDetails,
+              #includeQualityMetrics: includeQualityMetrics,
             }),
             returnValue:
-                _i6.Future<_i2.Either<_i7.Failure, _i4.PartnerAnalytics>>.value(
-                  _FakeEither_0<_i7.Failure, _i4.PartnerAnalytics>(
+                _i6.Future<
+                  _i2.Either<_i7.Failure, _i10.PartnerAnalytics>
+                >.value(
+                  _FakeEither_0<_i7.Failure, _i10.PartnerAnalytics>(
                     this,
                     Invocation.method(#getPartnerAnalytics, [], {
                       #startDate: startDate,
                       #endDate: endDate,
-                      #serviceId: serviceId,
+                      #includePerformanceDetails: includePerformanceDetails,
+                      #includeQualityMetrics: includeQualityMetrics,
                     }),
                   ),
                 ),
           )
-          as _i6.Future<_i2.Either<_i7.Failure, _i4.PartnerAnalytics>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i10.PartnerAnalytics>>);
 
   @override
-  _i6.Future<_i2.Either<_i7.Failure, _i4.UserAnalytics>> getUserAnalytics({
+  _i6.Future<_i2.Either<_i7.Failure, _i11.UserAnalytics>> getUserAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
+    bool? includeCohortAnalysis = false,
+    bool? includeSegmentation = false,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#getUserAnalytics, [], {
               #startDate: startDate,
               #endDate: endDate,
+              #includeCohortAnalysis: includeCohortAnalysis,
+              #includeSegmentation: includeSegmentation,
             }),
             returnValue:
-                _i6.Future<_i2.Either<_i7.Failure, _i4.UserAnalytics>>.value(
-                  _FakeEither_0<_i7.Failure, _i4.UserAnalytics>(
+                _i6.Future<_i2.Either<_i7.Failure, _i11.UserAnalytics>>.value(
+                  _FakeEither_0<_i7.Failure, _i11.UserAnalytics>(
                     this,
                     Invocation.method(#getUserAnalytics, [], {
                       #startDate: startDate,
                       #endDate: endDate,
+                      #includeCohortAnalysis: includeCohortAnalysis,
+                      #includeSegmentation: includeSegmentation,
                     }),
                   ),
                 ),
           )
-          as _i6.Future<_i2.Either<_i7.Failure, _i4.UserAnalytics>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i11.UserAnalytics>>);
 
   @override
-  _i6.Future<_i2.Either<_i7.Failure, _i4.RevenueAnalytics>>
+  _i6.Future<_i2.Either<_i7.Failure, _i12.RevenueAnalytics>>
   getRevenueAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
-    String? serviceId,
-    String? partnerId,
+    bool? includeForecasts = false,
+    bool? includeComparisons = false,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#getRevenueAnalytics, [], {
               #startDate: startDate,
               #endDate: endDate,
-              #serviceId: serviceId,
-              #partnerId: partnerId,
+              #includeForecasts: includeForecasts,
+              #includeComparisons: includeComparisons,
             }),
             returnValue:
-                _i6.Future<_i2.Either<_i7.Failure, _i4.RevenueAnalytics>>.value(
-                  _FakeEither_0<_i7.Failure, _i4.RevenueAnalytics>(
+                _i6.Future<
+                  _i2.Either<_i7.Failure, _i12.RevenueAnalytics>
+                >.value(
+                  _FakeEither_0<_i7.Failure, _i12.RevenueAnalytics>(
                     this,
                     Invocation.method(#getRevenueAnalytics, [], {
                       #startDate: startDate,
                       #endDate: endDate,
-                      #serviceId: serviceId,
-                      #partnerId: partnerId,
+                      #includeForecasts: includeForecasts,
+                      #includeComparisons: includeComparisons,
                     }),
                   ),
                 ),
           )
-          as _i6.Future<_i2.Either<_i7.Failure, _i4.RevenueAnalytics>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i12.RevenueAnalytics>>);
 
   @override
   _i6.Future<_i2.Either<_i7.Failure, _i4.SystemHealth>> getSystemHealth() =>
@@ -404,6 +425,193 @@ class MockAnalyticsRepository extends _i1.Mock
                 ),
           )
           as _i6.Future<_i2.Either<_i7.Failure, Map<String, dynamic>>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i13.GeneratedReport>> generateReport({
+    required _i13.ReportConfig? config,
+    Map<String, dynamic>? customData,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#generateReport, [], {
+              #config: config,
+              #customData: customData,
+            }),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, _i13.GeneratedReport>>.value(
+                  _FakeEither_0<_i7.Failure, _i13.GeneratedReport>(
+                    this,
+                    Invocation.method(#generateReport, [], {
+                      #config: config,
+                      #customData: customData,
+                    }),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, _i13.GeneratedReport>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, List<_i13.ReportConfig>>>
+  getReportConfigs() =>
+      (super.noSuchMethod(
+            Invocation.method(#getReportConfigs, []),
+            returnValue:
+                _i6.Future<
+                  _i2.Either<_i7.Failure, List<_i13.ReportConfig>>
+                >.value(
+                  _FakeEither_0<_i7.Failure, List<_i13.ReportConfig>>(
+                    this,
+                    Invocation.method(#getReportConfigs, []),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, List<_i13.ReportConfig>>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i13.ReportConfig>> createReportConfig({
+    required String? name,
+    required String? description,
+    required _i13.ReportType? type,
+    required _i13.ReportFormat? format,
+    required DateTime? startDate,
+    required DateTime? endDate,
+    required List<String>? metrics,
+    required List<String>? dimensions,
+    List<_i13.ReportFilter>? filters = const [],
+    _i13.ReportSchedule? schedule,
+    List<String>? recipients = const [],
+    Map<String, dynamic>? customSettings = const {},
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#createReportConfig, [], {
+              #name: name,
+              #description: description,
+              #type: type,
+              #format: format,
+              #startDate: startDate,
+              #endDate: endDate,
+              #metrics: metrics,
+              #dimensions: dimensions,
+              #filters: filters,
+              #schedule: schedule,
+              #recipients: recipients,
+              #customSettings: customSettings,
+            }),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, _i13.ReportConfig>>.value(
+                  _FakeEither_0<_i7.Failure, _i13.ReportConfig>(
+                    this,
+                    Invocation.method(#createReportConfig, [], {
+                      #name: name,
+                      #description: description,
+                      #type: type,
+                      #format: format,
+                      #startDate: startDate,
+                      #endDate: endDate,
+                      #metrics: metrics,
+                      #dimensions: dimensions,
+                      #filters: filters,
+                      #schedule: schedule,
+                      #recipients: recipients,
+                      #customSettings: customSettings,
+                    }),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, _i13.ReportConfig>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i13.ReportConfig>> updateReportConfig({
+    required String? id,
+    String? name,
+    String? description,
+    _i13.ReportType? type,
+    _i13.ReportFormat? format,
+    DateTime? startDate,
+    DateTime? endDate,
+    List<String>? metrics,
+    List<String>? dimensions,
+    List<_i13.ReportFilter>? filters,
+    _i13.ReportSchedule? schedule,
+    List<String>? recipients,
+    Map<String, dynamic>? customSettings,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateReportConfig, [], {
+              #id: id,
+              #name: name,
+              #description: description,
+              #type: type,
+              #format: format,
+              #startDate: startDate,
+              #endDate: endDate,
+              #metrics: metrics,
+              #dimensions: dimensions,
+              #filters: filters,
+              #schedule: schedule,
+              #recipients: recipients,
+              #customSettings: customSettings,
+            }),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, _i13.ReportConfig>>.value(
+                  _FakeEither_0<_i7.Failure, _i13.ReportConfig>(
+                    this,
+                    Invocation.method(#updateReportConfig, [], {
+                      #id: id,
+                      #name: name,
+                      #description: description,
+                      #type: type,
+                      #format: format,
+                      #startDate: startDate,
+                      #endDate: endDate,
+                      #metrics: metrics,
+                      #dimensions: dimensions,
+                      #filters: filters,
+                      #schedule: schedule,
+                      #recipients: recipients,
+                      #customSettings: customSettings,
+                    }),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, _i13.ReportConfig>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, void>> deleteReportConfig(String? id) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteReportConfig, [id]),
+            returnValue: _i6.Future<_i2.Either<_i7.Failure, void>>.value(
+              _FakeEither_0<_i7.Failure, void>(
+                this,
+                Invocation.method(#deleteReportConfig, [id]),
+              ),
+            ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, void>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, List<_i13.GeneratedReport>>>
+  getGeneratedReports({String? configId, int? limit = 20, int? offset = 0}) =>
+      (super.noSuchMethod(
+            Invocation.method(#getGeneratedReports, [], {
+              #configId: configId,
+              #limit: limit,
+              #offset: offset,
+            }),
+            returnValue:
+                _i6.Future<
+                  _i2.Either<_i7.Failure, List<_i13.GeneratedReport>>
+                >.value(
+                  _FakeEither_0<_i7.Failure, List<_i13.GeneratedReport>>(
+                    this,
+                    Invocation.method(#getGeneratedReports, [], {
+                      #configId: configId,
+                      #limit: limit,
+                      #offset: offset,
+                    }),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, List<_i13.GeneratedReport>>>);
 }
 
 /// A class which mocks [AdminRepository].
@@ -699,7 +907,7 @@ class MockAdminRepository extends _i1.Mock implements _i5.AdminRepository {
 /// A class which mocks [GetSystemMetrics].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGetSystemMetrics extends _i1.Mock implements _i10.GetSystemMetrics {
+class MockGetSystemMetrics extends _i1.Mock implements _i14.GetSystemMetrics {
   MockGetSystemMetrics() {
     _i1.throwOnMissingStub(this);
   }
@@ -745,7 +953,7 @@ class MockGetSystemMetrics extends _i1.Mock implements _i10.GetSystemMetrics {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockGetBookingAnalytics extends _i1.Mock
-    implements _i11.GetBookingAnalytics {
+    implements _i15.GetBookingAnalytics {
   MockGetBookingAnalytics() {
     _i1.throwOnMissingStub(this);
   }
@@ -774,7 +982,7 @@ class MockGetBookingAnalytics extends _i1.Mock
 
   @override
   _i6.Future<_i2.Either<_i7.Failure, _i9.BookingAnalytics>> call(
-    _i11.GetBookingAnalyticsParams? params,
+    _i15.GetBookingAnalyticsParams? params,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#call, [params]),

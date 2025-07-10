@@ -3,18 +3,24 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
+import 'dart:async' as _i9;
 
 import 'package:flutter_pro_test/features/admin/data/datasources/analytics_remote_data_source.dart'
-    as _i5;
+    as _i8;
 import 'package:flutter_pro_test/features/admin/data/models/system_metrics_model.dart'
     as _i2;
 import 'package:flutter_pro_test/features/admin/domain/entities/booking_analytics.dart'
     as _i3;
-import 'package:flutter_pro_test/features/admin/domain/repositories/analytics_repository.dart'
+import 'package:flutter_pro_test/features/admin/domain/entities/partner_analytics.dart'
     as _i4;
+import 'package:flutter_pro_test/features/admin/domain/entities/revenue_analytics.dart'
+    as _i6;
+import 'package:flutter_pro_test/features/admin/domain/entities/user_analytics.dart'
+    as _i5;
+import 'package:flutter_pro_test/features/admin/domain/repositories/analytics_repository.dart'
+    as _i7;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i7;
+import 'package:mockito/src/dummies.dart' as _i10;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -48,18 +54,18 @@ class _FakePartnerAnalytics_2 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
-class _FakeUserAnalytics_3 extends _i1.SmartFake implements _i4.UserAnalytics {
+class _FakeUserAnalytics_3 extends _i1.SmartFake implements _i5.UserAnalytics {
   _FakeUserAnalytics_3(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 class _FakeRevenueAnalytics_4 extends _i1.SmartFake
-    implements _i4.RevenueAnalytics {
+    implements _i6.RevenueAnalytics {
   _FakeRevenueAnalytics_4(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeSystemHealth_5 extends _i1.SmartFake implements _i4.SystemHealth {
+class _FakeSystemHealth_5 extends _i1.SmartFake implements _i7.SystemHealth {
   _FakeSystemHealth_5(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
@@ -68,34 +74,34 @@ class _FakeSystemHealth_5 extends _i1.SmartFake implements _i4.SystemHealth {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockAnalyticsRemoteDataSource extends _i1.Mock
-    implements _i5.AnalyticsRemoteDataSource {
+    implements _i8.AnalyticsRemoteDataSource {
   MockAnalyticsRemoteDataSource() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<_i2.SystemMetricsModel> getSystemMetrics() =>
+  _i9.Future<_i2.SystemMetricsModel> getSystemMetrics() =>
       (super.noSuchMethod(
             Invocation.method(#getSystemMetrics, []),
-            returnValue: _i6.Future<_i2.SystemMetricsModel>.value(
+            returnValue: _i9.Future<_i2.SystemMetricsModel>.value(
               _FakeSystemMetricsModel_0(
                 this,
                 Invocation.method(#getSystemMetrics, []),
               ),
             ),
           )
-          as _i6.Future<_i2.SystemMetricsModel>);
+          as _i9.Future<_i2.SystemMetricsModel>);
 
   @override
-  _i6.Stream<_i2.SystemMetricsModel> watchSystemMetrics() =>
+  _i9.Stream<_i2.SystemMetricsModel> watchSystemMetrics() =>
       (super.noSuchMethod(
             Invocation.method(#watchSystemMetrics, []),
-            returnValue: _i6.Stream<_i2.SystemMetricsModel>.empty(),
+            returnValue: _i9.Stream<_i2.SystemMetricsModel>.empty(),
           )
-          as _i6.Stream<_i2.SystemMetricsModel>);
+          as _i9.Stream<_i2.SystemMetricsModel>);
 
   @override
-  _i6.Future<_i3.BookingAnalytics> getBookingAnalytics({
+  _i9.Future<_i3.BookingAnalytics> getBookingAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
     String? serviceId,
@@ -108,7 +114,7 @@ class MockAnalyticsRemoteDataSource extends _i1.Mock
               #serviceId: serviceId,
               #partnerId: partnerId,
             }),
-            returnValue: _i6.Future<_i3.BookingAnalytics>.value(
+            returnValue: _i9.Future<_i3.BookingAnalytics>.value(
               _FakeBookingAnalytics_1(
                 this,
                 Invocation.method(#getBookingAnalytics, [], {
@@ -120,10 +126,10 @@ class MockAnalyticsRemoteDataSource extends _i1.Mock
               ),
             ),
           )
-          as _i6.Future<_i3.BookingAnalytics>);
+          as _i9.Future<_i3.BookingAnalytics>);
 
   @override
-  _i6.Future<_i4.PartnerAnalytics> getPartnerAnalytics({
+  _i9.Future<_i4.PartnerAnalytics> getPartnerAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
     String? serviceId,
@@ -134,7 +140,7 @@ class MockAnalyticsRemoteDataSource extends _i1.Mock
               #endDate: endDate,
               #serviceId: serviceId,
             }),
-            returnValue: _i6.Future<_i4.PartnerAnalytics>.value(
+            returnValue: _i9.Future<_i4.PartnerAnalytics>.value(
               _FakePartnerAnalytics_2(
                 this,
                 Invocation.method(#getPartnerAnalytics, [], {
@@ -145,10 +151,10 @@ class MockAnalyticsRemoteDataSource extends _i1.Mock
               ),
             ),
           )
-          as _i6.Future<_i4.PartnerAnalytics>);
+          as _i9.Future<_i4.PartnerAnalytics>);
 
   @override
-  _i6.Future<_i4.UserAnalytics> getUserAnalytics({
+  _i9.Future<_i5.UserAnalytics> getUserAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
   }) =>
@@ -157,7 +163,7 @@ class MockAnalyticsRemoteDataSource extends _i1.Mock
               #startDate: startDate,
               #endDate: endDate,
             }),
-            returnValue: _i6.Future<_i4.UserAnalytics>.value(
+            returnValue: _i9.Future<_i5.UserAnalytics>.value(
               _FakeUserAnalytics_3(
                 this,
                 Invocation.method(#getUserAnalytics, [], {
@@ -167,10 +173,10 @@ class MockAnalyticsRemoteDataSource extends _i1.Mock
               ),
             ),
           )
-          as _i6.Future<_i4.UserAnalytics>);
+          as _i9.Future<_i5.UserAnalytics>);
 
   @override
-  _i6.Future<_i4.RevenueAnalytics> getRevenueAnalytics({
+  _i9.Future<_i6.RevenueAnalytics> getRevenueAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
     String? serviceId,
@@ -183,7 +189,7 @@ class MockAnalyticsRemoteDataSource extends _i1.Mock
               #serviceId: serviceId,
               #partnerId: partnerId,
             }),
-            returnValue: _i6.Future<_i4.RevenueAnalytics>.value(
+            returnValue: _i9.Future<_i6.RevenueAnalytics>.value(
               _FakeRevenueAnalytics_4(
                 this,
                 Invocation.method(#getRevenueAnalytics, [], {
@@ -195,35 +201,35 @@ class MockAnalyticsRemoteDataSource extends _i1.Mock
               ),
             ),
           )
-          as _i6.Future<_i4.RevenueAnalytics>);
+          as _i9.Future<_i6.RevenueAnalytics>);
 
   @override
-  _i6.Future<_i4.SystemHealth> getSystemHealth() =>
+  _i9.Future<_i7.SystemHealth> getSystemHealth() =>
       (super.noSuchMethod(
             Invocation.method(#getSystemHealth, []),
-            returnValue: _i6.Future<_i4.SystemHealth>.value(
+            returnValue: _i9.Future<_i7.SystemHealth>.value(
               _FakeSystemHealth_5(
                 this,
                 Invocation.method(#getSystemHealth, []),
               ),
             ),
           )
-          as _i6.Future<_i4.SystemHealth>);
+          as _i9.Future<_i7.SystemHealth>);
 
   @override
-  _i6.Stream<_i4.SystemHealth> watchSystemHealth() =>
+  _i9.Stream<_i7.SystemHealth> watchSystemHealth() =>
       (super.noSuchMethod(
             Invocation.method(#watchSystemHealth, []),
-            returnValue: _i6.Stream<_i4.SystemHealth>.empty(),
+            returnValue: _i9.Stream<_i7.SystemHealth>.empty(),
           )
-          as _i6.Stream<_i4.SystemHealth>);
+          as _i9.Stream<_i7.SystemHealth>);
 
   @override
-  _i6.Future<String> exportAnalyticsData({
-    required _i4.AnalyticsExportType? type,
+  _i9.Future<String> exportAnalyticsData({
+    required _i7.AnalyticsExportType? type,
     required DateTime? startDate,
     required DateTime? endDate,
-    required _i4.AnalyticsExportFormat? format,
+    required _i7.AnalyticsExportFormat? format,
     Map<String, dynamic>? filters,
   }) =>
       (super.noSuchMethod(
@@ -234,8 +240,8 @@ class MockAnalyticsRemoteDataSource extends _i1.Mock
               #format: format,
               #filters: filters,
             }),
-            returnValue: _i6.Future<String>.value(
-              _i7.dummyValue<String>(
+            returnValue: _i9.Future<String>.value(
+              _i10.dummyValue<String>(
                 this,
                 Invocation.method(#exportAnalyticsData, [], {
                   #type: type,
@@ -247,5 +253,5 @@ class MockAnalyticsRemoteDataSource extends _i1.Mock
               ),
             ),
           )
-          as _i6.Future<String>);
+          as _i9.Future<String>);
 }

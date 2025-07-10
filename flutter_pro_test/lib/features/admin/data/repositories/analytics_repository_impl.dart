@@ -3,6 +3,11 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../domain/entities/system_metrics.dart';
 import '../../domain/entities/booking_analytics.dart';
+import '../../domain/entities/partner_analytics.dart';
+import '../../domain/entities/user_analytics.dart';
+import '../../domain/entities/revenue_analytics.dart';
+import '../../domain/entities/report_config.dart';
+
 import '../../domain/repositories/analytics_repository.dart';
 import '../datasources/analytics_remote_data_source.dart';
 
@@ -68,13 +73,13 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   Future<Either<Failure, PartnerAnalytics>> getPartnerAnalytics({
     required DateTime startDate,
     required DateTime endDate,
-    String? serviceId,
+    bool includePerformanceDetails = false,
+    bool includeQualityMetrics = false,
   }) async {
     try {
       final analytics = await remoteDataSource.getPartnerAnalytics(
         startDate: startDate,
         endDate: endDate,
-        serviceId: serviceId,
       );
       return Right(analytics);
     } on ServerException catch (e) {
@@ -88,6 +93,8 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   Future<Either<Failure, UserAnalytics>> getUserAnalytics({
     required DateTime startDate,
     required DateTime endDate,
+    bool includeCohortAnalysis = false,
+    bool includeSegmentation = false,
   }) async {
     try {
       final analytics = await remoteDataSource.getUserAnalytics(
@@ -106,15 +113,13 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   Future<Either<Failure, RevenueAnalytics>> getRevenueAnalytics({
     required DateTime startDate,
     required DateTime endDate,
-    String? serviceId,
-    String? partnerId,
+    bool includeForecasts = false,
+    bool includeComparisons = false,
   }) async {
     try {
       final analytics = await remoteDataSource.getRevenueAnalytics(
         startDate: startDate,
         endDate: endDate,
-        serviceId: serviceId,
-        partnerId: partnerId,
       );
       return Right(analytics);
     } on ServerException catch (e) {
@@ -406,5 +411,71 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
     }
 
     return insights;
+  }
+
+  // Report generation methods
+
+  @override
+  Future<Either<Failure, GeneratedReport>> generateReport({
+    required ReportConfig config,
+    Map<String, dynamic>? customData,
+  }) async {
+    return Left(ServerFailure('Not implemented'));
+  }
+
+  @override
+  Future<Either<Failure, List<ReportConfig>>> getReportConfigs() async {
+    return Left(ServerFailure('Not implemented'));
+  }
+
+  @override
+  Future<Either<Failure, ReportConfig>> createReportConfig({
+    required String name,
+    required String description,
+    required ReportType type,
+    required ReportFormat format,
+    required DateTime startDate,
+    required DateTime endDate,
+    required List<String> metrics,
+    required List<String> dimensions,
+    List<ReportFilter> filters = const [],
+    ReportSchedule? schedule,
+    List<String> recipients = const [],
+    Map<String, dynamic> customSettings = const {},
+  }) async {
+    return Left(ServerFailure('Not implemented'));
+  }
+
+  @override
+  Future<Either<Failure, ReportConfig>> updateReportConfig({
+    required String id,
+    String? name,
+    String? description,
+    ReportType? type,
+    ReportFormat? format,
+    DateTime? startDate,
+    DateTime? endDate,
+    List<String>? metrics,
+    List<String>? dimensions,
+    List<ReportFilter>? filters,
+    ReportSchedule? schedule,
+    List<String>? recipients,
+    Map<String, dynamic>? customSettings,
+  }) async {
+    return Left(ServerFailure('Not implemented'));
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteReportConfig(String id) async {
+    return Left(ServerFailure('Not implemented'));
+  }
+
+  @override
+  Future<Either<Failure, List<GeneratedReport>>> getGeneratedReports({
+    String? configId,
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    return Left(ServerFailure('Not implemented'));
   }
 }

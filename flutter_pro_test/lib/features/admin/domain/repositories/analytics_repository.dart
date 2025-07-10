@@ -2,6 +2,10 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../entities/system_metrics.dart';
 import '../entities/booking_analytics.dart';
+import '../entities/revenue_analytics.dart';
+import '../entities/user_analytics.dart';
+import '../entities/partner_analytics.dart';
+import '../entities/report_config.dart';
 
 /// Abstract repository interface for analytics operations
 abstract class AnalyticsRepository {
@@ -23,21 +27,24 @@ abstract class AnalyticsRepository {
   Future<Either<Failure, PartnerAnalytics>> getPartnerAnalytics({
     required DateTime startDate,
     required DateTime endDate,
-    String? serviceId,
+    bool includePerformanceDetails = false,
+    bool includeQualityMetrics = false,
   });
 
   /// Get user analytics
   Future<Either<Failure, UserAnalytics>> getUserAnalytics({
     required DateTime startDate,
     required DateTime endDate,
+    bool includeCohortAnalysis = false,
+    bool includeSegmentation = false,
   });
 
   /// Get revenue analytics
   Future<Either<Failure, RevenueAnalytics>> getRevenueAnalytics({
     required DateTime startDate,
     required DateTime endDate,
-    String? serviceId,
-    String? partnerId,
+    bool includeForecasts = false,
+    bool includeComparisons = false,
   });
 
   /// Get system health metrics
@@ -91,142 +98,59 @@ abstract class AnalyticsRepository {
     required String query,
     Map<String, dynamic>? parameters,
   });
-}
 
-/// Partner analytics entity
-class PartnerAnalytics {
-  final int totalPartners;
-  final int activePartners;
-  final int verifiedPartners;
-  final double averageRating;
-  final List<PartnerPerformance> topPerformingPartners;
-  final Map<String, int> partnersByService;
-  final List<PartnerEarningData> partnerEarnings;
-  final DateTime periodStart;
-  final DateTime periodEnd;
+  // Report Generation Methods
 
-  const PartnerAnalytics({
-    required this.totalPartners,
-    required this.activePartners,
-    required this.verifiedPartners,
-    required this.averageRating,
-    required this.topPerformingPartners,
-    required this.partnersByService,
-    required this.partnerEarnings,
-    required this.periodStart,
-    required this.periodEnd,
+  /// Generate analytics report
+  Future<Either<Failure, GeneratedReport>> generateReport({
+    required ReportConfig config,
+    Map<String, dynamic>? customData,
   });
-}
 
-/// Partner performance data
-class PartnerPerformance {
-  final String partnerId;
-  final String partnerName;
-  final double rating;
-  final int completedBookings;
-  final double totalEarnings;
-  final double completionRate;
+  /// Get report configurations
+  Future<Either<Failure, List<ReportConfig>>> getReportConfigs();
 
-  const PartnerPerformance({
-    required this.partnerId,
-    required this.partnerName,
-    required this.rating,
-    required this.completedBookings,
-    required this.totalEarnings,
-    required this.completionRate,
+  /// Create report configuration
+  Future<Either<Failure, ReportConfig>> createReportConfig({
+    required String name,
+    required String description,
+    required ReportType type,
+    required ReportFormat format,
+    required DateTime startDate,
+    required DateTime endDate,
+    required List<String> metrics,
+    required List<String> dimensions,
+    List<ReportFilter> filters = const [],
+    ReportSchedule? schedule,
+    List<String> recipients = const [],
+    Map<String, dynamic> customSettings = const {},
   });
-}
 
-/// Partner earning data
-class PartnerEarningData {
-  final String partnerId;
-  final String partnerName;
-  final DateTime date;
-  final double earnings;
-  final int bookingsCompleted;
-
-  const PartnerEarningData({
-    required this.partnerId,
-    required this.partnerName,
-    required this.date,
-    required this.earnings,
-    required this.bookingsCompleted,
+  /// Update report configuration
+  Future<Either<Failure, ReportConfig>> updateReportConfig({
+    required String id,
+    String? name,
+    String? description,
+    ReportType? type,
+    ReportFormat? format,
+    DateTime? startDate,
+    DateTime? endDate,
+    List<String>? metrics,
+    List<String>? dimensions,
+    List<ReportFilter>? filters,
+    ReportSchedule? schedule,
+    List<String>? recipients,
+    Map<String, dynamic>? customSettings,
   });
-}
 
-/// User analytics entity
-class UserAnalytics {
-  final int totalUsers;
-  final int activeUsers;
-  final int newUsersToday;
-  final double userRetentionRate;
-  final Map<String, int> usersByLocation;
-  final UserEngagementData userEngagement;
-  final DateTime periodStart;
-  final DateTime periodEnd;
+  /// Delete report configuration
+  Future<Either<Failure, void>> deleteReportConfig(String id);
 
-  const UserAnalytics({
-    required this.totalUsers,
-    required this.activeUsers,
-    required this.newUsersToday,
-    required this.userRetentionRate,
-    required this.usersByLocation,
-    required this.userEngagement,
-    required this.periodStart,
-    required this.periodEnd,
-  });
-}
-
-/// User engagement data
-class UserEngagementData {
-  final double averageSessionDuration;
-  final int averageBookingsPerUser;
-  final double userSatisfactionScore;
-  final Map<String, int> featureUsage;
-
-  const UserEngagementData({
-    required this.averageSessionDuration,
-    required this.averageBookingsPerUser,
-    required this.userSatisfactionScore,
-    required this.featureUsage,
-  });
-}
-
-/// Revenue analytics entity
-class RevenueAnalytics {
-  final double totalRevenue;
-  final double monthlyRevenue;
-  final double dailyRevenue;
-  final Map<String, double> revenueByService;
-  final List<DailyRevenueData> revenueTrend;
-  final double commissionEarned;
-  final double averageOrderValue;
-  final DateTime periodStart;
-  final DateTime periodEnd;
-
-  const RevenueAnalytics({
-    required this.totalRevenue,
-    required this.monthlyRevenue,
-    required this.dailyRevenue,
-    required this.revenueByService,
-    required this.revenueTrend,
-    required this.commissionEarned,
-    required this.averageOrderValue,
-    required this.periodStart,
-    required this.periodEnd,
-  });
-}
-
-/// Daily revenue data
-class DailyRevenueData {
-  final DateTime date;
-  final double revenue;
-  final int bookingsCount;
-
-  const DailyRevenueData({
-    required this.date,
-    required this.revenue,
-    required this.bookingsCount,
+  /// Get generated reports
+  Future<Either<Failure, List<GeneratedReport>>> getGeneratedReports({
+    String? configId,
+    int limit = 20,
+    int offset = 0,
   });
 }
 
@@ -271,12 +195,7 @@ class SystemAlert {
 }
 
 /// System alert severity
-enum SystemAlertSeverity {
-  info,
-  warning,
-  error,
-  critical;
-}
+enum SystemAlertSeverity { info, warning, error, critical }
 
 /// Analytics export types
 enum AnalyticsExportType {
@@ -285,16 +204,11 @@ enum AnalyticsExportType {
   partnerAnalytics,
   userAnalytics,
   revenueAnalytics,
-  fullReport;
+  fullReport,
 }
 
 /// Analytics export formats
-enum AnalyticsExportFormat {
-  csv,
-  excel,
-  pdf,
-  json;
-}
+enum AnalyticsExportFormat { csv, excel, pdf, json }
 
 /// Analytics summary for dashboard
 class AnalyticsSummary {
@@ -343,6 +257,21 @@ class TopPerformingMetrics {
   });
 }
 
+/// Partner performance entity
+class PartnerPerformance {
+  final String partnerId;
+  final String partnerName;
+  final double performanceScore;
+  final int completedBookings;
+
+  const PartnerPerformance({
+    required this.partnerId,
+    required this.partnerName,
+    required this.performanceScore,
+    required this.completedBookings,
+  });
+}
+
 /// Analytics alert
 class AnalyticsAlert {
   final String id;
@@ -365,9 +294,4 @@ class AnalyticsAlert {
 }
 
 /// Analytics alert severity
-enum AnalyticsAlertSeverity {
-  low,
-  medium,
-  high,
-  critical;
-}
+enum AnalyticsAlertSeverity { low, medium, high, critical }
