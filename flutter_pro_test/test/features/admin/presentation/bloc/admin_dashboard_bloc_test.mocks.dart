@@ -5,20 +5,22 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i6;
 
-import 'package:dartz/dartz.dart' as _i4;
+import 'package:dartz/dartz.dart' as _i2;
 import 'package:flutter_pro_test/core/errors/failures.dart' as _i7;
+import 'package:flutter_pro_test/features/admin/domain/entities/admin_user.dart'
+    as _i3;
 import 'package:flutter_pro_test/features/admin/domain/entities/booking_analytics.dart'
-    as _i10;
+    as _i9;
 import 'package:flutter_pro_test/features/admin/domain/entities/system_metrics.dart'
     as _i8;
 import 'package:flutter_pro_test/features/admin/domain/repositories/admin_repository.dart'
-    as _i3;
-import 'package:flutter_pro_test/features/admin/domain/repositories/analytics_repository.dart'
-    as _i2;
-import 'package:flutter_pro_test/features/admin/domain/usecases/get_booking_analytics.dart'
-    as _i9;
-import 'package:flutter_pro_test/features/admin/domain/usecases/get_system_metrics.dart'
     as _i5;
+import 'package:flutter_pro_test/features/admin/domain/repositories/analytics_repository.dart'
+    as _i4;
+import 'package:flutter_pro_test/features/admin/domain/usecases/get_booking_analytics.dart'
+    as _i11;
+import 'package:flutter_pro_test/features/admin/domain/usecases/get_system_metrics.dart'
+    as _i10;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -35,152 +37,62 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeAnalyticsRepository_0 extends _i1.SmartFake
-    implements _i2.AnalyticsRepository {
-  _FakeAnalyticsRepository_0(Object parent, Invocation parentInvocation)
+class _FakeEither_0<L, R> extends _i1.SmartFake implements _i2.Either<L, R> {
+  _FakeEither_0(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeAdminRepository_1 extends _i1.SmartFake
-    implements _i3.AdminRepository {
-  _FakeAdminRepository_1(Object parent, Invocation parentInvocation)
+class _FakeAdminUser_1 extends _i1.SmartFake implements _i3.AdminUser {
+  _FakeAdminUser_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeEither_2<L, R> extends _i1.SmartFake implements _i4.Either<L, R> {
-  _FakeEither_2(Object parent, Invocation parentInvocation)
+class _FakeAnalyticsRepository_2 extends _i1.SmartFake
+    implements _i4.AnalyticsRepository {
+  _FakeAnalyticsRepository_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-/// A class which mocks [GetSystemMetrics].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockGetSystemMetrics extends _i1.Mock implements _i5.GetSystemMetrics {
-  MockGetSystemMetrics() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i2.AnalyticsRepository get analyticsRepository =>
-      (super.noSuchMethod(
-            Invocation.getter(#analyticsRepository),
-            returnValue: _FakeAnalyticsRepository_0(
-              this,
-              Invocation.getter(#analyticsRepository),
-            ),
-          )
-          as _i2.AnalyticsRepository);
-
-  @override
-  _i3.AdminRepository get adminRepository =>
-      (super.noSuchMethod(
-            Invocation.getter(#adminRepository),
-            returnValue: _FakeAdminRepository_1(
-              this,
-              Invocation.getter(#adminRepository),
-            ),
-          )
-          as _i3.AdminRepository);
-
-  @override
-  _i6.Future<_i4.Either<_i7.Failure, _i8.SystemMetrics>> call() =>
-      (super.noSuchMethod(
-            Invocation.method(#call, []),
-            returnValue:
-                _i6.Future<_i4.Either<_i7.Failure, _i8.SystemMetrics>>.value(
-                  _FakeEither_2<_i7.Failure, _i8.SystemMetrics>(
-                    this,
-                    Invocation.method(#call, []),
-                  ),
-                ),
-          )
-          as _i6.Future<_i4.Either<_i7.Failure, _i8.SystemMetrics>>);
-}
-
-/// A class which mocks [GetBookingAnalytics].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockGetBookingAnalytics extends _i1.Mock
-    implements _i9.GetBookingAnalytics {
-  MockGetBookingAnalytics() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i2.AnalyticsRepository get analyticsRepository =>
-      (super.noSuchMethod(
-            Invocation.getter(#analyticsRepository),
-            returnValue: _FakeAnalyticsRepository_0(
-              this,
-              Invocation.getter(#analyticsRepository),
-            ),
-          )
-          as _i2.AnalyticsRepository);
-
-  @override
-  _i3.AdminRepository get adminRepository =>
-      (super.noSuchMethod(
-            Invocation.getter(#adminRepository),
-            returnValue: _FakeAdminRepository_1(
-              this,
-              Invocation.getter(#adminRepository),
-            ),
-          )
-          as _i3.AdminRepository);
-
-  @override
-  _i6.Future<_i4.Either<_i7.Failure, _i10.BookingAnalytics>> call(
-    _i9.GetBookingAnalyticsParams? params,
-  ) =>
-      (super.noSuchMethod(
-            Invocation.method(#call, [params]),
-            returnValue:
-                _i6.Future<
-                  _i4.Either<_i7.Failure, _i10.BookingAnalytics>
-                >.value(
-                  _FakeEither_2<_i7.Failure, _i10.BookingAnalytics>(
-                    this,
-                    Invocation.method(#call, [params]),
-                  ),
-                ),
-          )
-          as _i6.Future<_i4.Either<_i7.Failure, _i10.BookingAnalytics>>);
+class _FakeAdminRepository_3 extends _i1.SmartFake
+    implements _i5.AdminRepository {
+  _FakeAdminRepository_3(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
 }
 
 /// A class which mocks [AnalyticsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockAnalyticsRepository extends _i1.Mock
-    implements _i2.AnalyticsRepository {
+    implements _i4.AnalyticsRepository {
   MockAnalyticsRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, _i8.SystemMetrics>> getSystemMetrics() =>
+  _i6.Future<_i2.Either<_i7.Failure, _i8.SystemMetrics>> getSystemMetrics() =>
       (super.noSuchMethod(
             Invocation.method(#getSystemMetrics, []),
             returnValue:
-                _i6.Future<_i4.Either<_i7.Failure, _i8.SystemMetrics>>.value(
-                  _FakeEither_2<_i7.Failure, _i8.SystemMetrics>(
+                _i6.Future<_i2.Either<_i7.Failure, _i8.SystemMetrics>>.value(
+                  _FakeEither_0<_i7.Failure, _i8.SystemMetrics>(
                     this,
                     Invocation.method(#getSystemMetrics, []),
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, _i8.SystemMetrics>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i8.SystemMetrics>>);
 
   @override
-  _i6.Stream<_i4.Either<_i7.Failure, _i8.SystemMetrics>> watchSystemMetrics() =>
+  _i6.Stream<_i2.Either<_i7.Failure, _i8.SystemMetrics>> watchSystemMetrics() =>
       (super.noSuchMethod(
             Invocation.method(#watchSystemMetrics, []),
             returnValue:
-                _i6.Stream<_i4.Either<_i7.Failure, _i8.SystemMetrics>>.empty(),
+                _i6.Stream<_i2.Either<_i7.Failure, _i8.SystemMetrics>>.empty(),
           )
-          as _i6.Stream<_i4.Either<_i7.Failure, _i8.SystemMetrics>>);
+          as _i6.Stream<_i2.Either<_i7.Failure, _i8.SystemMetrics>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, _i10.BookingAnalytics>>
+  _i6.Future<_i2.Either<_i7.Failure, _i9.BookingAnalytics>>
   getBookingAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
@@ -195,10 +107,8 @@ class MockAnalyticsRepository extends _i1.Mock
               #partnerId: partnerId,
             }),
             returnValue:
-                _i6.Future<
-                  _i4.Either<_i7.Failure, _i10.BookingAnalytics>
-                >.value(
-                  _FakeEither_2<_i7.Failure, _i10.BookingAnalytics>(
+                _i6.Future<_i2.Either<_i7.Failure, _i9.BookingAnalytics>>.value(
+                  _FakeEither_0<_i7.Failure, _i9.BookingAnalytics>(
                     this,
                     Invocation.method(#getBookingAnalytics, [], {
                       #startDate: startDate,
@@ -209,10 +119,10 @@ class MockAnalyticsRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, _i10.BookingAnalytics>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i9.BookingAnalytics>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, _i2.PartnerAnalytics>>
+  _i6.Future<_i2.Either<_i7.Failure, _i4.PartnerAnalytics>>
   getPartnerAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
@@ -225,8 +135,8 @@ class MockAnalyticsRepository extends _i1.Mock
               #serviceId: serviceId,
             }),
             returnValue:
-                _i6.Future<_i4.Either<_i7.Failure, _i2.PartnerAnalytics>>.value(
-                  _FakeEither_2<_i7.Failure, _i2.PartnerAnalytics>(
+                _i6.Future<_i2.Either<_i7.Failure, _i4.PartnerAnalytics>>.value(
+                  _FakeEither_0<_i7.Failure, _i4.PartnerAnalytics>(
                     this,
                     Invocation.method(#getPartnerAnalytics, [], {
                       #startDate: startDate,
@@ -236,10 +146,10 @@ class MockAnalyticsRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, _i2.PartnerAnalytics>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i4.PartnerAnalytics>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, _i2.UserAnalytics>> getUserAnalytics({
+  _i6.Future<_i2.Either<_i7.Failure, _i4.UserAnalytics>> getUserAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
   }) =>
@@ -249,8 +159,8 @@ class MockAnalyticsRepository extends _i1.Mock
               #endDate: endDate,
             }),
             returnValue:
-                _i6.Future<_i4.Either<_i7.Failure, _i2.UserAnalytics>>.value(
-                  _FakeEither_2<_i7.Failure, _i2.UserAnalytics>(
+                _i6.Future<_i2.Either<_i7.Failure, _i4.UserAnalytics>>.value(
+                  _FakeEither_0<_i7.Failure, _i4.UserAnalytics>(
                     this,
                     Invocation.method(#getUserAnalytics, [], {
                       #startDate: startDate,
@@ -259,10 +169,10 @@ class MockAnalyticsRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, _i2.UserAnalytics>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i4.UserAnalytics>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, _i2.RevenueAnalytics>>
+  _i6.Future<_i2.Either<_i7.Failure, _i4.RevenueAnalytics>>
   getRevenueAnalytics({
     required DateTime? startDate,
     required DateTime? endDate,
@@ -277,8 +187,8 @@ class MockAnalyticsRepository extends _i1.Mock
               #partnerId: partnerId,
             }),
             returnValue:
-                _i6.Future<_i4.Either<_i7.Failure, _i2.RevenueAnalytics>>.value(
-                  _FakeEither_2<_i7.Failure, _i2.RevenueAnalytics>(
+                _i6.Future<_i2.Either<_i7.Failure, _i4.RevenueAnalytics>>.value(
+                  _FakeEither_0<_i7.Failure, _i4.RevenueAnalytics>(
                     this,
                     Invocation.method(#getRevenueAnalytics, [], {
                       #startDate: startDate,
@@ -289,37 +199,37 @@ class MockAnalyticsRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, _i2.RevenueAnalytics>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i4.RevenueAnalytics>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, _i2.SystemHealth>> getSystemHealth() =>
+  _i6.Future<_i2.Either<_i7.Failure, _i4.SystemHealth>> getSystemHealth() =>
       (super.noSuchMethod(
             Invocation.method(#getSystemHealth, []),
             returnValue:
-                _i6.Future<_i4.Either<_i7.Failure, _i2.SystemHealth>>.value(
-                  _FakeEither_2<_i7.Failure, _i2.SystemHealth>(
+                _i6.Future<_i2.Either<_i7.Failure, _i4.SystemHealth>>.value(
+                  _FakeEither_0<_i7.Failure, _i4.SystemHealth>(
                     this,
                     Invocation.method(#getSystemHealth, []),
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, _i2.SystemHealth>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i4.SystemHealth>>);
 
   @override
-  _i6.Stream<_i4.Either<_i7.Failure, _i2.SystemHealth>> watchSystemHealth() =>
+  _i6.Stream<_i2.Either<_i7.Failure, _i4.SystemHealth>> watchSystemHealth() =>
       (super.noSuchMethod(
             Invocation.method(#watchSystemHealth, []),
             returnValue:
-                _i6.Stream<_i4.Either<_i7.Failure, _i2.SystemHealth>>.empty(),
+                _i6.Stream<_i2.Either<_i7.Failure, _i4.SystemHealth>>.empty(),
           )
-          as _i6.Stream<_i4.Either<_i7.Failure, _i2.SystemHealth>>);
+          as _i6.Stream<_i2.Either<_i7.Failure, _i4.SystemHealth>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, String>> exportAnalyticsData({
-    required _i2.AnalyticsExportType? type,
+  _i6.Future<_i2.Either<_i7.Failure, String>> exportAnalyticsData({
+    required _i4.AnalyticsExportType? type,
     required DateTime? startDate,
     required DateTime? endDate,
-    required _i2.AnalyticsExportFormat? format,
+    required _i4.AnalyticsExportFormat? format,
     Map<String, dynamic>? filters,
   }) =>
       (super.noSuchMethod(
@@ -330,8 +240,8 @@ class MockAnalyticsRepository extends _i1.Mock
               #format: format,
               #filters: filters,
             }),
-            returnValue: _i6.Future<_i4.Either<_i7.Failure, String>>.value(
-              _FakeEither_2<_i7.Failure, String>(
+            returnValue: _i6.Future<_i2.Either<_i7.Failure, String>>.value(
+              _FakeEither_0<_i7.Failure, String>(
                 this,
                 Invocation.method(#exportAnalyticsData, [], {
                   #type: type,
@@ -343,10 +253,10 @@ class MockAnalyticsRepository extends _i1.Mock
               ),
             ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, String>>);
+          as _i6.Future<_i2.Either<_i7.Failure, String>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, _i2.AnalyticsSummary>>
+  _i6.Future<_i2.Either<_i7.Failure, _i4.AnalyticsSummary>>
   getAnalyticsSummary({
     required DateTime? startDate,
     required DateTime? endDate,
@@ -357,8 +267,8 @@ class MockAnalyticsRepository extends _i1.Mock
               #endDate: endDate,
             }),
             returnValue:
-                _i6.Future<_i4.Either<_i7.Failure, _i2.AnalyticsSummary>>.value(
-                  _FakeEither_2<_i7.Failure, _i2.AnalyticsSummary>(
+                _i6.Future<_i2.Either<_i7.Failure, _i4.AnalyticsSummary>>.value(
+                  _FakeEither_0<_i7.Failure, _i4.AnalyticsSummary>(
                     this,
                     Invocation.method(#getAnalyticsSummary, [], {
                       #startDate: startDate,
@@ -367,10 +277,10 @@ class MockAnalyticsRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, _i2.AnalyticsSummary>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i4.AnalyticsSummary>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, _i2.ComparativeAnalytics>>
+  _i6.Future<_i2.Either<_i7.Failure, _i4.ComparativeAnalytics>>
   getComparativeAnalytics({
     required DateTime? currentStart,
     required DateTime? currentEnd,
@@ -386,9 +296,9 @@ class MockAnalyticsRepository extends _i1.Mock
             }),
             returnValue:
                 _i6.Future<
-                  _i4.Either<_i7.Failure, _i2.ComparativeAnalytics>
+                  _i2.Either<_i7.Failure, _i4.ComparativeAnalytics>
                 >.value(
-                  _FakeEither_2<_i7.Failure, _i2.ComparativeAnalytics>(
+                  _FakeEither_0<_i7.Failure, _i4.ComparativeAnalytics>(
                     this,
                     Invocation.method(#getComparativeAnalytics, [], {
                       #currentStart: currentStart,
@@ -399,10 +309,10 @@ class MockAnalyticsRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, _i2.ComparativeAnalytics>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i4.ComparativeAnalytics>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, _i2.TopPerformingMetrics>>
+  _i6.Future<_i2.Either<_i7.Failure, _i4.TopPerformingMetrics>>
   getTopPerformingMetrics({
     required DateTime? startDate,
     required DateTime? endDate,
@@ -416,9 +326,9 @@ class MockAnalyticsRepository extends _i1.Mock
             }),
             returnValue:
                 _i6.Future<
-                  _i4.Either<_i7.Failure, _i2.TopPerformingMetrics>
+                  _i2.Either<_i7.Failure, _i4.TopPerformingMetrics>
                 >.value(
-                  _FakeEither_2<_i7.Failure, _i2.TopPerformingMetrics>(
+                  _FakeEither_0<_i7.Failure, _i4.TopPerformingMetrics>(
                     this,
                     Invocation.method(#getTopPerformingMetrics, [], {
                       #startDate: startDate,
@@ -428,12 +338,12 @@ class MockAnalyticsRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, _i2.TopPerformingMetrics>>);
+          as _i6.Future<_i2.Either<_i7.Failure, _i4.TopPerformingMetrics>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, List<_i2.AnalyticsAlert>>>
+  _i6.Future<_i2.Either<_i7.Failure, List<_i4.AnalyticsAlert>>>
   getAnalyticsAlerts({
-    _i2.AnalyticsAlertSeverity? severity,
+    _i4.AnalyticsAlertSeverity? severity,
     bool? unreadOnly = false,
     int? limit = 50,
   }) =>
@@ -445,9 +355,9 @@ class MockAnalyticsRepository extends _i1.Mock
             }),
             returnValue:
                 _i6.Future<
-                  _i4.Either<_i7.Failure, List<_i2.AnalyticsAlert>>
+                  _i2.Either<_i7.Failure, List<_i4.AnalyticsAlert>>
                 >.value(
-                  _FakeEither_2<_i7.Failure, List<_i2.AnalyticsAlert>>(
+                  _FakeEither_0<_i7.Failure, List<_i4.AnalyticsAlert>>(
                     this,
                     Invocation.method(#getAnalyticsAlerts, [], {
                       #severity: severity,
@@ -457,23 +367,23 @@ class MockAnalyticsRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, List<_i2.AnalyticsAlert>>>);
+          as _i6.Future<_i2.Either<_i7.Failure, List<_i4.AnalyticsAlert>>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, void>> markAlertAsRead(String? alertId) =>
+  _i6.Future<_i2.Either<_i7.Failure, void>> markAlertAsRead(String? alertId) =>
       (super.noSuchMethod(
             Invocation.method(#markAlertAsRead, [alertId]),
-            returnValue: _i6.Future<_i4.Either<_i7.Failure, void>>.value(
-              _FakeEither_2<_i7.Failure, void>(
+            returnValue: _i6.Future<_i2.Either<_i7.Failure, void>>.value(
+              _FakeEither_0<_i7.Failure, void>(
                 this,
                 Invocation.method(#markAlertAsRead, [alertId]),
               ),
             ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, void>>);
+          as _i6.Future<_i2.Either<_i7.Failure, void>>);
 
   @override
-  _i6.Future<_i4.Either<_i7.Failure, Map<String, dynamic>>> executeCustomQuery({
+  _i6.Future<_i2.Either<_i7.Failure, Map<String, dynamic>>> executeCustomQuery({
     required String? query,
     Map<String, dynamic>? parameters,
   }) =>
@@ -483,8 +393,8 @@ class MockAnalyticsRepository extends _i1.Mock
               #parameters: parameters,
             }),
             returnValue:
-                _i6.Future<_i4.Either<_i7.Failure, Map<String, dynamic>>>.value(
-                  _FakeEither_2<_i7.Failure, Map<String, dynamic>>(
+                _i6.Future<_i2.Either<_i7.Failure, Map<String, dynamic>>>.value(
+                  _FakeEither_0<_i7.Failure, Map<String, dynamic>>(
                     this,
                     Invocation.method(#executeCustomQuery, [], {
                       #query: query,
@@ -493,5 +403,388 @@ class MockAnalyticsRepository extends _i1.Mock
                   ),
                 ),
           )
-          as _i6.Future<_i4.Either<_i7.Failure, Map<String, dynamic>>>);
+          as _i6.Future<_i2.Either<_i7.Failure, Map<String, dynamic>>>);
+}
+
+/// A class which mocks [AdminRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAdminRepository extends _i1.Mock implements _i5.AdminRepository {
+  MockAdminRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Stream<_i3.AdminUser> get authStateChanges =>
+      (super.noSuchMethod(
+            Invocation.getter(#authStateChanges),
+            returnValue: _i6.Stream<_i3.AdminUser>.empty(),
+          )
+          as _i6.Stream<_i3.AdminUser>);
+
+  @override
+  _i3.AdminUser get currentAdmin =>
+      (super.noSuchMethod(
+            Invocation.getter(#currentAdmin),
+            returnValue: _FakeAdminUser_1(
+              this,
+              Invocation.getter(#currentAdmin),
+            ),
+          )
+          as _i3.AdminUser);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>> authenticateAdmin({
+    required String? email,
+    required String? password,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#authenticateAdmin, [], {
+              #email: email,
+              #password: password,
+            }),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>>.value(
+                  _FakeEither_0<_i7.Failure, _i3.AdminUser>(
+                    this,
+                    Invocation.method(#authenticateAdmin, [], {
+                      #email: email,
+                      #password: password,
+                    }),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, void>> signOut() =>
+      (super.noSuchMethod(
+            Invocation.method(#signOut, []),
+            returnValue: _i6.Future<_i2.Either<_i7.Failure, void>>.value(
+              _FakeEither_0<_i7.Failure, void>(
+                this,
+                Invocation.method(#signOut, []),
+              ),
+            ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, void>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>> getAdminById(
+    String? adminId,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getAdminById, [adminId]),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>>.value(
+                  _FakeEither_0<_i7.Failure, _i3.AdminUser>(
+                    this,
+                    Invocation.method(#getAdminById, [adminId]),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, List<_i3.AdminUser>>> getAllAdmins() =>
+      (super.noSuchMethod(
+            Invocation.method(#getAllAdmins, []),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, List<_i3.AdminUser>>>.value(
+                  _FakeEither_0<_i7.Failure, List<_i3.AdminUser>>(
+                    this,
+                    Invocation.method(#getAllAdmins, []),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, List<_i3.AdminUser>>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>> createAdmin({
+    required String? email,
+    required String? displayName,
+    required _i3.AdminRole? role,
+    List<_i3.AdminPermission>? customPermissions,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#createAdmin, [], {
+              #email: email,
+              #displayName: displayName,
+              #role: role,
+              #customPermissions: customPermissions,
+            }),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>>.value(
+                  _FakeEither_0<_i7.Failure, _i3.AdminUser>(
+                    this,
+                    Invocation.method(#createAdmin, [], {
+                      #email: email,
+                      #displayName: displayName,
+                      #role: role,
+                      #customPermissions: customPermissions,
+                    }),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>> updateAdmin({
+    required String? adminId,
+    String? displayName,
+    _i3.AdminRole? role,
+    List<_i3.AdminPermission>? permissions,
+    bool? isActive,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateAdmin, [], {
+              #adminId: adminId,
+              #displayName: displayName,
+              #role: role,
+              #permissions: permissions,
+              #isActive: isActive,
+            }),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>>.value(
+                  _FakeEither_0<_i7.Failure, _i3.AdminUser>(
+                    this,
+                    Invocation.method(#updateAdmin, [], {
+                      #adminId: adminId,
+                      #displayName: displayName,
+                      #role: role,
+                      #permissions: permissions,
+                      #isActive: isActive,
+                    }),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, void>> deleteAdmin(String? adminId) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteAdmin, [adminId]),
+            returnValue: _i6.Future<_i2.Either<_i7.Failure, void>>.value(
+              _FakeEither_0<_i7.Failure, void>(
+                this,
+                Invocation.method(#deleteAdmin, [adminId]),
+              ),
+            ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, void>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, void>> updateLastLogin(String? adminId) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLastLogin, [adminId]),
+            returnValue: _i6.Future<_i2.Either<_i7.Failure, void>>.value(
+              _FakeEither_0<_i7.Failure, void>(
+                this,
+                Invocation.method(#updateLastLogin, [adminId]),
+              ),
+            ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, void>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, bool>> hasPermission({
+    required String? adminId,
+    required _i3.AdminPermission? permission,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#hasPermission, [], {
+              #adminId: adminId,
+              #permission: permission,
+            }),
+            returnValue: _i6.Future<_i2.Either<_i7.Failure, bool>>.value(
+              _FakeEither_0<_i7.Failure, bool>(
+                this,
+                Invocation.method(#hasPermission, [], {
+                  #adminId: adminId,
+                  #permission: permission,
+                }),
+              ),
+            ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, bool>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, bool>> validateSession() =>
+      (super.noSuchMethod(
+            Invocation.method(#validateSession, []),
+            returnValue: _i6.Future<_i2.Either<_i7.Failure, bool>>.value(
+              _FakeEither_0<_i7.Failure, bool>(
+                this,
+                Invocation.method(#validateSession, []),
+              ),
+            ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, bool>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>> refreshAdmin() =>
+      (super.noSuchMethod(
+            Invocation.method(#refreshAdmin, []),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>>.value(
+                  _FakeEither_0<_i7.Failure, _i3.AdminUser>(
+                    this,
+                    Invocation.method(#refreshAdmin, []),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, _i3.AdminUser>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, List<_i5.AdminActivityLog>>>
+  getAdminActivityLogs({
+    String? adminId,
+    DateTime? startDate,
+    DateTime? endDate,
+    int? limit = 50,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#getAdminActivityLogs, [], {
+              #adminId: adminId,
+              #startDate: startDate,
+              #endDate: endDate,
+              #limit: limit,
+            }),
+            returnValue:
+                _i6.Future<
+                  _i2.Either<_i7.Failure, List<_i5.AdminActivityLog>>
+                >.value(
+                  _FakeEither_0<_i7.Failure, List<_i5.AdminActivityLog>>(
+                    this,
+                    Invocation.method(#getAdminActivityLogs, [], {
+                      #adminId: adminId,
+                      #startDate: startDate,
+                      #endDate: endDate,
+                      #limit: limit,
+                    }),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, List<_i5.AdminActivityLog>>>);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, void>> logAdminActivity({
+    required String? adminId,
+    required _i5.AdminActivityType? activityType,
+    required String? description,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#logAdminActivity, [], {
+              #adminId: adminId,
+              #activityType: activityType,
+              #description: description,
+              #metadata: metadata,
+            }),
+            returnValue: _i6.Future<_i2.Either<_i7.Failure, void>>.value(
+              _FakeEither_0<_i7.Failure, void>(
+                this,
+                Invocation.method(#logAdminActivity, [], {
+                  #adminId: adminId,
+                  #activityType: activityType,
+                  #description: description,
+                  #metadata: metadata,
+                }),
+              ),
+            ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, void>>);
+}
+
+/// A class which mocks [GetSystemMetrics].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGetSystemMetrics extends _i1.Mock implements _i10.GetSystemMetrics {
+  MockGetSystemMetrics() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.AnalyticsRepository get analyticsRepository =>
+      (super.noSuchMethod(
+            Invocation.getter(#analyticsRepository),
+            returnValue: _FakeAnalyticsRepository_2(
+              this,
+              Invocation.getter(#analyticsRepository),
+            ),
+          )
+          as _i4.AnalyticsRepository);
+
+  @override
+  _i5.AdminRepository get adminRepository =>
+      (super.noSuchMethod(
+            Invocation.getter(#adminRepository),
+            returnValue: _FakeAdminRepository_3(
+              this,
+              Invocation.getter(#adminRepository),
+            ),
+          )
+          as _i5.AdminRepository);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i8.SystemMetrics>> call() =>
+      (super.noSuchMethod(
+            Invocation.method(#call, []),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, _i8.SystemMetrics>>.value(
+                  _FakeEither_0<_i7.Failure, _i8.SystemMetrics>(
+                    this,
+                    Invocation.method(#call, []),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, _i8.SystemMetrics>>);
+}
+
+/// A class which mocks [GetBookingAnalytics].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGetBookingAnalytics extends _i1.Mock
+    implements _i11.GetBookingAnalytics {
+  MockGetBookingAnalytics() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i4.AnalyticsRepository get analyticsRepository =>
+      (super.noSuchMethod(
+            Invocation.getter(#analyticsRepository),
+            returnValue: _FakeAnalyticsRepository_2(
+              this,
+              Invocation.getter(#analyticsRepository),
+            ),
+          )
+          as _i4.AnalyticsRepository);
+
+  @override
+  _i5.AdminRepository get adminRepository =>
+      (super.noSuchMethod(
+            Invocation.getter(#adminRepository),
+            returnValue: _FakeAdminRepository_3(
+              this,
+              Invocation.getter(#adminRepository),
+            ),
+          )
+          as _i5.AdminRepository);
+
+  @override
+  _i6.Future<_i2.Either<_i7.Failure, _i9.BookingAnalytics>> call(
+    _i11.GetBookingAnalyticsParams? params,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#call, [params]),
+            returnValue:
+                _i6.Future<_i2.Either<_i7.Failure, _i9.BookingAnalytics>>.value(
+                  _FakeEither_0<_i7.Failure, _i9.BookingAnalytics>(
+                    this,
+                    Invocation.method(#call, [params]),
+                  ),
+                ),
+          )
+          as _i6.Future<_i2.Either<_i7.Failure, _i9.BookingAnalytics>>);
 }
