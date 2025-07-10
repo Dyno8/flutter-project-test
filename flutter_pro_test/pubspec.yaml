@@ -68,6 +68,9 @@ dependencies:
   share_plus: ^10.1.2
   # Date/Time utilities
   jiffy: ^6.3.1
+  web_socket_channel: ^3.0.3
+  crypto: ^3.0.6
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

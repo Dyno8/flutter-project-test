@@ -46,3 +46,8 @@ class ForbiddenException extends AppException {
 class TimeoutException extends AppException {
   const TimeoutException(super.message);
 }
+
+/// Exception thrown when there's a security violation
+class SecurityException extends AppException {
+  const SecurityException(super.message);
+}
