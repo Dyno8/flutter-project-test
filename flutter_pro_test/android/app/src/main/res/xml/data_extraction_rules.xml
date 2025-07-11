@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CareNow MVP - Data Extraction Rules for Android 12+ -->
+<!-- Controls what data can be backed up and transferred -->
+<data-extraction-rules>
+    <!-- Cloud backup rules -->
+    <cloud-backup>
+        <!-- Exclude sensitive data from cloud backup -->
+        <exclude domain="sharedpref" path="FlutterSecureStorage"/>
+        <exclude domain="sharedpref" path="session_token"/>
+        <exclude domain="sharedpref" path="encryption_key"/>
+        <exclude domain="sharedpref" path="security_logs"/>
+        <exclude domain="sharedpref" path="failed_attempts"/>
+        <exclude domain="sharedpref" path="lockout_time"/>
+        <exclude domain="sharedpref" path="certificate_pins"/>
+        <exclude domain="sharedpref" path="security_violations"/>
+        
+        <!-- Exclude cache and temporary files -->
+        <exclude domain="file" path="cache/"/>
+        <exclude domain="file" path="temp/"/>
+        <exclude domain="file" path="logs/"/>
+        
+        <!-- Include user preferences (non-sensitive) -->
+        <include domain="sharedpref" path="user_preferences"/>
+        <include domain="sharedpref" path="app_settings"/>
+    </cloud-backup>
+    
+    <!-- Device transfer rules -->
+    <device-transfer>
+        <!-- More restrictive for device transfers -->
+        <exclude domain="sharedpref" path="FlutterSecureStorage"/>
+        <exclude domain="sharedpref" path="session_token"/>
+        <exclude domain="sharedpref" path="encryption_key"/>
+        <exclude domain="sharedpref" path="security_logs"/>
+        <exclude domain="sharedpref" path="failed_attempts"/>
+        <exclude domain="sharedpref" path="lockout_time"/>
+        <exclude domain="sharedpref" path="certificate_pins"/>
+        <exclude domain="sharedpref" path="security_violations"/>
+        <exclude domain="sharedpref" path="user_credentials"/>
+        <exclude domain="sharedpref" path="payment_data"/>
+        
+        <!-- Exclude all cache and temporary data -->
+        <exclude domain="file" path="cache/"/>
+        <exclude domain="file" path="temp/"/>
+        <exclude domain="file" path="logs/"/>
+        <exclude domain="file" path="downloads/"/>
+        
+        <!-- Only include basic app settings -->
+        <include domain="sharedpref" path="app_settings"/>
+    </device-transfer>
+</data-extraction-rules>

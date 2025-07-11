@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'core/router/app_router.dart';
 import 'core/di/injection_container.dart' as di;
+import 'core/config/environment_config.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/services/firebase_service.dart';
 import 'shared/services/notification_service.dart';
@@ -20,14 +21,27 @@ void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
 
-    print('🚀 Starting CareNow MVP...');
+    // Initialize environment configuration
+    if (EnvironmentConfig.isDebug) {
+      print('🚀 Starting CareNow MVP...');
+      EnvironmentConfig.printEnvironmentInfo();
+    }
+
+    // Validate environment configuration
+    if (!EnvironmentConfig.validateConfiguration()) {
+      throw Exception('Invalid environment configuration');
+    }
 
     // Initialize Firebase
-    print('🔥 Initializing Firebase...');
+    if (EnvironmentConfig.isDebug) {
+      print('🔥 Initializing Firebase...');
+    }
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('✅ Firebase initialized successfully');
+    if (EnvironmentConfig.isDebug) {
+      print('✅ Firebase initialized successfully');
+    }
 
     // Initialize Firebase services
     print('🔧 Initializing Firebase services...');
@@ -103,10 +117,10 @@ class MinimalCareNowApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp.router(
-          title: 'CareNow Admin',
+          title: EnvironmentConfig.appName,
           theme: AppTheme.lightTheme,
           routerConfig: AppRouter.router,
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: EnvironmentConfig.isDebug,
         );
       },
     );

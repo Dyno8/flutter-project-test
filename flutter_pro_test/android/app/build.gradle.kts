@@ -9,8 +9,8 @@ plugins {
 }
 
 android {
-    namespace = "com.example.flutter_pro_test"
-    compileSdk = flutter.compileSdkVersion
+    namespace = "com.carenow.app"
+    compileSdk = 34
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -24,23 +24,102 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.flutter_pro_test"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 23
-        targetSdk = flutter.targetSdkVersion
+        applicationId = "com.carenow.app"
+        minSdk = 21
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // Production optimizations
+        multiDexEnabled = true
+        vectorDrawables.useSupportLibrary = true
+
+        // Performance optimizations
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86_64")
+        }
+    }
+
+    // Signing configurations
+    signingConfigs {
+        create("release") {
+            // Production signing configuration
+            // These should be set via environment variables or gradle.properties
+            storeFile = file(System.getenv("ANDROID_KEYSTORE_PATH") ?: "carenow-release-key.jks")
+            storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: "your-keystore-password"
+            keyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: "carenow"
+            keyPassword = System.getenv("ANDROID_KEY_PASSWORD") ?: "your-key-password"
+        }
     }
 
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+        debug {
+            isDebuggable = true
+            isMinifyEnabled = false
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-DEBUG"
+        }
+
+        create("staging") {
+            initWith(getByName("release"))
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            applicationIdSuffix = ".staging"
+            versionNameSuffix = "-STAGING"
+
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
             signingConfig = signingConfigs.getByName("debug")
         }
+
+        release {
+            isDebuggable = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+
+            // ProGuard/R8 optimization
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
+            // Production signing
+            signingConfig = signingConfigs.getByName("release")
+        }
     }
+
+    // Build optimization
+    buildFeatures {
+        buildConfig = true
+    }
+
+    // Packaging options
+    packagingOptions {
+        resources {
+            excludes += listOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/license.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/notice.txt",
+                "META-INF/ASL2.0",
+                "META-INF/*.kotlin_module"
+            )
+        }
+    }
+
+    // Lint options
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
+    }
+}
 }
 
 flutter {

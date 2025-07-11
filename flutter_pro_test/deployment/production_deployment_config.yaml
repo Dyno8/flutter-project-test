@@ -1,0 +1,260 @@
+# CareNow MVP - Production Deployment Configuration
+# This file defines the production deployment settings and requirements
+
+metadata:
+  name: carenow-mvp-production
+  version: "1.0.0"
+  environment: production
+  build_date: "2025-07-10"
+  maintainer: "CareNow Development Team"
+
+# Application Configuration
+application:
+  name: "CareNow"
+  bundle_id: "com.carenow.app"
+  version: "1.0.0"
+  build_number: 1
+  
+  # Platform-specific configurations
+  platforms:
+    web:
+      enabled: true
+      hosting: firebase
+      domain: "admin.carenow.com"
+      ssl_enabled: true
+      compression: true
+      caching: true
+      
+    android:
+      enabled: true
+      store: google_play
+      min_sdk_version: 21
+      target_sdk_version: 34
+      compile_sdk_version: 34
+      signing:
+        enabled: true
+        key_alias: "carenow"
+        store_file: "carenow-release-key.jks"
+      
+    ios:
+      enabled: true
+      store: app_store
+      min_ios_version: "12.0"
+      target_ios_version: "17.0"
+      team_id: "YOUR_TEAM_ID"
+      bundle_id: "com.carenow.app"
+
+# Firebase Configuration
+firebase:
+  project_id: "carenow-app-prod"
+  hosting:
+    site: "carenow-admin"
+    public_dir: "build/web"
+    ignore:
+      - "firebase.json"
+      - "**/.*"
+      - "**/node_modules/**"
+    rewrites:
+      - source: "**"
+        destination: "/index.html"
+    headers:
+      - source: "**/*.@(js|css)"
+        headers:
+          - key: "Cache-Control"
+            value: "max-age=31536000"
+      - source: "**/*.@(jpg|jpeg|gif|png|svg|webp)"
+        headers:
+          - key: "Cache-Control"
+            value: "max-age=31536000"
+  
+  firestore:
+    rules: "firestore.rules"
+    indexes: "firestore.indexes.json"
+  
+  storage:
+    rules: "storage.rules"
+  
+  functions:
+    source: "functions"
+    runtime: "nodejs18"
+
+# Security Configuration
+security:
+  ssl_pinning: true
+  certificate_transparency: true
+  network_security_config: true
+  obfuscation: true
+  
+  # API Security
+  api_security:
+    rate_limiting: true
+    max_requests_per_minute: 100
+    authentication_required: true
+    cors_enabled: true
+    allowed_origins:
+      - "https://admin.carenow.com"
+      - "https://carenow.com"
+  
+  # Data Protection
+  data_protection:
+    encryption_at_rest: true
+    encryption_in_transit: true
+    data_anonymization: true
+    gdpr_compliance: true
+
+# Performance Configuration
+performance:
+  caching:
+    enabled: true
+    max_size_mb: 50
+    ttl_minutes: 60
+  
+  compression:
+    enabled: true
+    level: 6
+  
+  lazy_loading: true
+  tree_shaking: true
+  code_splitting: true
+  
+  monitoring:
+    enabled: true
+    crash_reporting: true
+    performance_monitoring: true
+    analytics: true
+
+# Monitoring & Logging
+monitoring:
+  crash_reporting:
+    provider: "firebase_crashlytics"
+    enabled: true
+    
+  analytics:
+    provider: "firebase_analytics"
+    enabled: true
+    
+  performance:
+    provider: "firebase_performance"
+    enabled: true
+    
+  logging:
+    level: "ERROR"
+    remote_logging: true
+    log_retention_days: 30
+
+# Backup & Recovery
+backup:
+  firestore:
+    enabled: true
+    schedule: "daily"
+    retention_days: 30
+    
+  storage:
+    enabled: true
+    schedule: "weekly"
+    retention_days: 90
+
+# Scaling Configuration
+scaling:
+  auto_scaling: true
+  min_instances: 1
+  max_instances: 10
+  target_cpu_utilization: 70
+  
+  database:
+    connection_pooling: true
+    max_connections: 100
+    
+  storage:
+    cdn_enabled: true
+    global_distribution: true
+
+# Deployment Pipeline
+deployment:
+  strategy: "blue_green"
+  
+  stages:
+    - name: "build"
+      steps:
+        - "flutter clean"
+        - "flutter pub get"
+        - "flutter test"
+        - "flutter analyze"
+        - "flutter build web --release"
+        - "flutter build apk --release"
+        - "flutter build appbundle --release"
+    
+    - name: "test"
+      steps:
+        - "integration_tests"
+        - "security_scan"
+        - "performance_test"
+    
+    - name: "deploy"
+      steps:
+        - "firebase deploy --only hosting"
+        - "firebase deploy --only firestore:rules"
+        - "firebase deploy --only storage"
+  
+  rollback:
+    enabled: true
+    automatic: false
+    conditions:
+      - "error_rate > 5%"
+      - "response_time > 3s"
+
+# Health Checks
+health_checks:
+  endpoints:
+    - path: "/health"
+      method: "GET"
+      expected_status: 200
+      timeout_seconds: 5
+      
+  monitoring:
+    interval_seconds: 30
+    failure_threshold: 3
+    success_threshold: 2
+
+# Notifications
+notifications:
+  deployment:
+    slack:
+      enabled: true
+      webhook_url: "${SLACK_WEBHOOK_URL}"
+      channels:
+        - "#deployments"
+        - "#alerts"
+    
+    email:
+      enabled: true
+      recipients:
+        - "devops@carenow.com"
+        - "admin@carenow.com"
+
+# Environment Variables
+environment_variables:
+  required:
+    - "FIREBASE_PROJECT_ID_PROD"
+    - "FIREBASE_API_KEY_PROD"
+    - "ENCRYPTION_KEY_PROD"
+    - "STRIPE_PUBLISHABLE_KEY_PROD"
+  
+  optional:
+    - "GOOGLE_MAPS_API_KEY_PROD"
+    - "FCM_SERVER_KEY_PROD"
+
+# Compliance & Governance
+compliance:
+  gdpr: true
+  hipaa: false
+  sox: false
+  
+  data_retention:
+    user_data_days: 2555  # 7 years
+    logs_days: 90
+    analytics_days: 365
+  
+  audit:
+    enabled: true
+    retention_days: 2555  # 7 years

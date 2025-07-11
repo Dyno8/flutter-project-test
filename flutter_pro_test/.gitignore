@@ -44,6 +44,77 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Production Environment & Security Files
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+*.env
+*.env.*
+
+# Firebase Configuration (Real)
+google-services.json.real
+GoogleService-Info.plist.real
+firebase-adminsdk-*.json
+
+# Signing & Certificates
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+*.cer
+*.certSigningRequest
+
+# API Keys & Secrets
+api_keys.dart
+secrets.dart
+config/secrets/
+private_keys/
+
+# Build & Release Artifacts
+/release/
+/dist/
+*.apk
+*.aab
+*.ipa
+*.app
+*.dmg
+*.zip
+
+# Debug Information
+**/debug-info/
+**/*-debug-info/
+*.dSYM/
+*.symbols
+
+# Logs & Reports
+logs/
+*.log
+crash_reports/
+performance_reports/
+build_reports/
+
+# Coverage & Testing
+coverage/
+test_results/
+.coverage
+lcov.info
+
+# IDE & Editor Files
+.vscode/settings.json
+.vscode/launch.json
+*.code-workspace
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
 # ignores all .md files
 .md
 !README.md

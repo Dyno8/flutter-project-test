@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/security/security_manager.dart';
+import '../../../../core/security/advanced_security_manager.dart';
+import '../../../../core/security/security_compliance_manager.dart';
 import '../../../../core/monitoring/monitoring_service.dart';
 import '../../../../core/performance/performance_manager.dart';
 import '../../../../shared/widgets/custom_card.dart';
@@ -15,14 +17,21 @@ class SecurityDashboardPage extends StatefulWidget {
 
 class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
   final SecurityManager _securityManager = SecurityManager();
+  final AdvancedSecurityManager _advancedSecurityManager =
+      AdvancedSecurityManager();
+  final SecurityComplianceManager _complianceManager =
+      SecurityComplianceManager();
   final MonitoringService _monitoringService = MonitoringService();
   final PerformanceManager _performanceManager = PerformanceManager();
-  
+
   bool _isLoading = true;
   Map<String, dynamic> _securityLogs = {};
   Map<String, dynamic> _healthStatus = {};
   Map<String, dynamic> _performanceStats = {};
   Map<String, dynamic> _errorStats = {};
+  SecurityHealthReport? _securityHealthReport;
+  List<Map<String, dynamic>> _securityViolations = [];
+  SecurityAuditReport? _latestAuditReport;
 
   @override
   void initState() {
@@ -32,17 +41,30 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
 
   Future<void> _loadSecurityData() async {
     setState(() => _isLoading = true);
-    
+
     try {
       await _securityManager.initialize();
+      await _advancedSecurityManager.initialize();
+      await _complianceManager.initialize();
       await _monitoringService.initialize();
       await _performanceManager.initialize();
-      
+
       final securityLogs = _securityManager.getSecurityLogs();
       final healthStatus = _monitoringService.getHealthStatus();
       final performanceStats = _performanceManager.getPerformanceStats();
       final errorStats = _monitoringService.getErrorStats();
-      
+
+      // Load advanced security features
+      _securityHealthReport = await _advancedSecurityManager
+          .performSecurityHealthCheck();
+      _securityViolations = _advancedSecurityManager.getSecurityViolations();
+
+      // Load latest compliance audit report
+      final complianceReports = _complianceManager.getComplianceReports();
+      if (complianceReports.isNotEmpty) {
+        _latestAuditReport = complianceReports.last;
+      }
+
       setState(() {
         _securityLogs = {
           'total': securityLogs.length,
@@ -101,10 +123,10 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
   Widget _buildSystemHealthSection() {
     final status = _healthStatus['status'] ?? 'unknown';
     final checks = _healthStatus['checks'] as Map<String, dynamic>? ?? {};
-    
+
     Color statusColor;
     IconData statusIcon;
-    
+
     switch (status) {
       case 'healthy':
         statusColor = Colors.green;
@@ -133,10 +155,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
               SizedBox(width: 8.w),
               Text(
                 'System Health',
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               Container(
@@ -158,7 +177,9 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
             ],
           ),
           SizedBox(height: 16.h),
-          ...checks.entries.map((entry) => _buildHealthCheckItem(entry.key, entry.value)),
+          ...checks.entries.map(
+            (entry) => _buildHealthCheckItem(entry.key, entry.value),
+          ),
         ],
       ),
     );
@@ -168,10 +189,10 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
     final data = checkData as Map<String, dynamic>? ?? {};
     final hasError = data.containsKey('error');
     final hasWarning = data.containsKey('warning');
-    
+
     Color statusColor = Colors.green;
     IconData statusIcon = Icons.check_circle_outline;
-    
+
     if (hasError) {
       statusColor = Colors.red;
       statusIcon = Icons.error_outline;
@@ -195,10 +216,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
           if (data.isNotEmpty)
             Text(
               _formatCheckData(data),
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
             ),
         ],
       ),
@@ -225,10 +243,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
         children: [
           Text(
             'Security Metrics',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16.h),
           Row(
@@ -286,10 +301,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
         children: [
           Text(
             'Performance Metrics',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16.h),
           Row(
@@ -340,7 +352,12 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
     );
   }
 
-  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
+  Widget _buildMetricCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
@@ -358,10 +375,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
               Expanded(
                 child: Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
                 ),
               ),
             ],
@@ -382,7 +396,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
 
   Widget _buildSecurityLogsSection() {
     final recentLogs = _securityLogs['recent'] as List? ?? [];
-    
+
     return CustomCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -391,10 +405,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
             children: [
               Text(
                 'Recent Security Events',
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               TextButton(
@@ -410,10 +421,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
             Center(
               child: Text(
                 'No recent security events',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14.sp,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 14.sp),
               ),
             )
           else
@@ -427,10 +435,10 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
     final type = log['type'] ?? 'unknown';
     final description = log['description'] ?? 'No description';
     final timestamp = log['timestamp'] ?? '';
-    
+
     IconData icon;
     Color color;
-    
+
     switch (type) {
       case 'login_success':
         icon = Icons.login;
@@ -485,10 +493,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
                 SizedBox(height: 4.h),
                 Text(
                   _formatTimestamp(timestamp),
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
                 ),
               ],
             ),
@@ -503,7 +508,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
       final dateTime = DateTime.parse(timestamp);
       final now = DateTime.now();
       final difference = now.difference(dateTime);
-      
+
       if (difference.inMinutes < 1) {
         return 'Just now';
       } else if (difference.inHours < 1) {
@@ -525,10 +530,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
         children: [
           Text(
             'Security Actions',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16.h),
           Row(
@@ -581,7 +583,9 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Clear Security Logs'),
-        content: const Text('Are you sure you want to clear all security logs? This action cannot be undone.'),
+        content: const Text(
+          'Are you sure you want to clear all security logs? This action cannot be undone.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -607,9 +611,9 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
   void _clearCache() {
     _performanceManager.clearAllCache();
     _loadSecurityData();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Cache cleared')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Cache cleared')));
   }
 
   void _runSecurityScan() {
@@ -626,7 +630,7 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
         ],
       ),
     );
-    
+
     // Log security scan event
     _securityManager.logSecurityEvent(
       eventType: 'security_scan',
