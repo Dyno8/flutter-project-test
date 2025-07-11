@@ -1,0 +1,335 @@
+name: 🚀 CareNow MVP - Continuous Integration
+
+on:
+  push:
+    branches: [ main, develop, 'feature/*', 'hotfix/*' ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run tests against'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+        - development
+        - staging
+        - production
+
+env:
+  FLUTTER_VERSION: '3.8.1'
+  JAVA_VERSION: '17'
+  NODE_VERSION: '18'
+
+jobs:
+  # Job 1: Setup and Validation
+  setup:
+    name: 🔧 Setup & Validation
+    runs-on: ubuntu-latest
+    outputs:
+      flutter-version: ${{ steps.flutter-version.outputs.version }}
+      cache-key: ${{ steps.cache-key.outputs.key }}
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: 🔍 Detect Flutter Version
+      id: flutter-version
+      run: |
+        if [ -f "flutter_pro_test/pubspec.yaml" ]; then
+          VERSION=$(grep -E "^\s*sdk:\s*" flutter_pro_test/pubspec.yaml | sed 's/.*\^//' | sed 's/[^0-9.].*//')
+          echo "version=${VERSION:-$FLUTTER_VERSION}" >> $GITHUB_OUTPUT
+        else
+          echo "version=$FLUTTER_VERSION" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: 🔑 Generate Cache Key
+      id: cache-key
+      run: |
+        PUBSPEC_HASH=$(sha256sum flutter_pro_test/pubspec.yaml | cut -d' ' -f1)
+        echo "key=flutter-${{ runner.os }}-${{ steps.flutter-version.outputs.version }}-$PUBSPEC_HASH" >> $GITHUB_OUTPUT
+    
+    - name: ✅ Validation Complete
+      run: |
+        echo "🎯 Setup completed successfully"
+        echo "Flutter Version: ${{ steps.flutter-version.outputs.version }}"
+        echo "Cache Key: ${{ steps.cache-key.outputs.key }}"
+
+  # Job 2: Security Scanning
+  security:
+    name: 🔐 Security Scanning
+    runs-on: ubuntu-latest
+    needs: setup
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: 🔍 Scan for API Keys
+      run: |
+        echo "🔍 Scanning for potential API key leaks..."
+        
+        # Check for common API key patterns
+        if grep -r "AIza[A-Za-z0-9_-]*" flutter_pro_test/lib/ --exclude-dir=.git 2>/dev/null; then
+          echo "❌ Potential Google API key leak detected"
+          exit 1
+        fi
+        
+        if grep -r "sk_live_[A-Za-z0-9]*" flutter_pro_test/lib/ --exclude-dir=.git 2>/dev/null; then
+          echo "❌ Potential Stripe live key leak detected"
+          exit 1
+        fi
+        
+        if grep -r "firebase_[a-z_]*:\s*['\"][^'\"]*['\"]" flutter_pro_test/lib/ --exclude-dir=.git 2>/dev/null; then
+          echo "⚠️ Firebase configuration found - verifying it uses environment variables"
+          
+          # Check if firebase_options.dart uses String.fromEnvironment
+          if ! grep -q "String.fromEnvironment" flutter_pro_test/lib/firebase_options.dart; then
+            echo "❌ Firebase configuration not using environment variables"
+            exit 1
+          fi
+        fi
+        
+        echo "✅ Security scan passed - no API key leaks detected"
+    
+    - name: 🔒 Check Sensitive Files
+      run: |
+        echo "🔒 Checking for sensitive files in repository..."
+        
+        SENSITIVE_FILES=(
+          "flutter_pro_test/.env"
+          "flutter_pro_test/ios/Runner/GoogleService-Info.plist.real"
+          "flutter_pro_test/android/key.properties"
+          "flutter_pro_test/android/app/google-services.json.real"
+        )
+        
+        for file in "${SENSITIVE_FILES[@]}"; do
+          if [ -f "$file" ]; then
+            echo "❌ Sensitive file found in repository: $file"
+            exit 1
+          fi
+        done
+        
+        echo "✅ No sensitive files found in repository"
+    
+    - name: 📋 Security Report
+      run: |
+        echo "## 🔐 Security Scan Results" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ API key leak scan: PASSED" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Sensitive files check: PASSED" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Firebase configuration: SECURE" >> $GITHUB_STEP_SUMMARY
+
+  # Job 3: Code Quality & Analysis
+  analysis:
+    name: 🔍 Code Analysis
+    runs-on: ubuntu-latest
+    needs: [setup, security]
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: 🐦 Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ needs.setup.outputs.flutter-version }}
+        channel: 'stable'
+        cache: true
+        cache-key: ${{ needs.setup.outputs.cache-key }}
+    
+    - name: 📦 Get Dependencies
+      working-directory: flutter_pro_test
+      run: |
+        flutter pub get
+        flutter pub deps
+    
+    - name: 🔍 Flutter Analyze
+      working-directory: flutter_pro_test
+      run: |
+        echo "🔍 Running Flutter analyze..."
+        flutter analyze --no-fatal-infos > analysis_results.txt 2>&1 || true
+        
+        # Display results
+        cat analysis_results.txt
+        
+        # Check for critical issues
+        if grep -q "error •" analysis_results.txt; then
+          echo "❌ Critical analysis errors found"
+          exit 1
+        fi
+        
+        echo "✅ Code analysis completed"
+    
+    - name: 📊 Analysis Report
+      working-directory: flutter_pro_test
+      run: |
+        echo "## 🔍 Code Analysis Results" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        head -20 analysis_results.txt >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  # Job 4: Unit & Integration Tests
+  test:
+    name: 🧪 Testing Suite
+    runs-on: ubuntu-latest
+    needs: [setup, security, analysis]
+    strategy:
+      matrix:
+        test-type: [unit, integration, security]
+
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🐦 Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ needs.setup.outputs.flutter-version }}
+        channel: 'stable'
+        cache: true
+        cache-key: ${{ needs.setup.outputs.cache-key }}
+
+    - name: ☕ Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ env.JAVA_VERSION }}
+
+    - name: 📦 Get Dependencies
+      working-directory: flutter_pro_test
+      run: flutter pub get
+
+    - name: 🧪 Run Unit Tests
+      if: matrix.test-type == 'unit'
+      working-directory: flutter_pro_test
+      run: |
+        echo "🧪 Running unit tests with coverage..."
+        flutter test --coverage --reporter=expanded
+
+        # Generate coverage report
+        if [ -f "coverage/lcov.info" ]; then
+          echo "📊 Coverage report generated"
+
+          # Calculate coverage percentage
+          COVERAGE=$(lcov --summary coverage/lcov.info 2>&1 | grep -o '[0-9.]*%' | tail -1)
+          echo "Coverage: $COVERAGE"
+
+          # Fail if coverage is below threshold
+          COVERAGE_NUM=$(echo $COVERAGE | sed 's/%//')
+          if (( $(echo "$COVERAGE_NUM < 80" | bc -l) )); then
+            echo "❌ Coverage below 80% threshold: $COVERAGE"
+            exit 1
+          fi
+
+          echo "✅ Coverage meets threshold: $COVERAGE"
+        fi
+
+    - name: 🔗 Run Integration Tests
+      if: matrix.test-type == 'integration'
+      working-directory: flutter_pro_test
+      run: |
+        echo "🔗 Running integration tests..."
+
+        # Run integration tests if they exist
+        if [ -d "test/integration" ]; then
+          flutter test test/integration/ --reporter=expanded
+          echo "✅ Integration tests completed"
+        else
+          echo "⚠️ No integration tests found"
+        fi
+
+    - name: 🔐 Run Security Tests
+      if: matrix.test-type == 'security'
+      working-directory: flutter_pro_test
+      run: |
+        echo "🔐 Running security-specific tests..."
+
+        # Run security manager tests
+        if [ -d "test/core/security" ]; then
+          flutter test test/core/security/ --reporter=expanded
+          echo "✅ Security tests completed"
+        else
+          echo "⚠️ No security tests found"
+        fi
+
+        # Test security configuration
+        flutter test --dart-define=FLUTTER_ENV=production --reporter=expanded test/core/security/ || true
+
+    - name: 📊 Upload Coverage
+      if: matrix.test-type == 'unit'
+      uses: codecov/codecov-action@v4
+      with:
+        file: flutter_pro_test/coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+    - name: 📋 Test Report
+      run: |
+        echo "## 🧪 Test Results - ${{ matrix.test-type }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Test Type: ${{ matrix.test-type }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Status: ✅ PASSED" >> $GITHUB_STEP_SUMMARY
+
+  # Job 5: Performance & Build Validation
+  performance:
+    name: ⚡ Performance Validation
+    runs-on: ubuntu-latest
+    needs: [setup, test]
+
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: 🐦 Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ needs.setup.outputs.flutter-version }}
+        channel: 'stable'
+        cache: true
+        cache-key: ${{ needs.setup.outputs.cache-key }}
+
+    - name: 📦 Get Dependencies
+      working-directory: flutter_pro_test
+      run: flutter pub get
+
+    - name: 🏗️ Test Build Performance
+      working-directory: flutter_pro_test
+      run: |
+        echo "🏗️ Testing build performance..."
+
+        # Time the build process
+        START_TIME=$(date +%s)
+
+        # Test web build
+        flutter build web --release --dart-define=FLUTTER_ENV=development
+
+        END_TIME=$(date +%s)
+        BUILD_TIME=$((END_TIME - START_TIME))
+
+        echo "Build completed in ${BUILD_TIME} seconds"
+
+        # Check build size
+        if [ -d "build/web" ]; then
+          BUILD_SIZE=$(du -sh build/web | cut -f1)
+          echo "Build size: $BUILD_SIZE"
+
+          echo "## ⚡ Performance Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Build Time: ${BUILD_TIME}s" >> $GITHUB_STEP_SUMMARY
+          echo "- Build Size: $BUILD_SIZE" >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: 🔍 Bundle Analysis
+      working-directory: flutter_pro_test
+      run: |
+        echo "🔍 Analyzing bundle composition..."
+
+        # Analyze web bundle if available
+        if [ -d "build/web" ]; then
+          echo "Web bundle analysis:"
+          find build/web -name "*.js" -exec wc -c {} + | sort -n
+          find build/web -name "*.css" -exec wc -c {} + | sort -n
+        fi

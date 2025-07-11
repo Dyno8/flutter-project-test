@@ -1,0 +1,77 @@
+# 🔧 Development Environment Configuration
+# This file defines the development environment settings for GitHub Actions
+
+name: development
+description: "Development environment for CareNow MVP"
+
+# Environment variables for development
+environment:
+  FLUTTER_ENV: development
+  APP_VERSION: "1.0.0-dev"
+  BUILD_MODE: debug
+  
+  # Firebase Configuration (Development)
+  FIREBASE_PROJECT_ID: "carenow-dev"
+  FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY_DEV }}
+  FIREBASE_ANDROID_API_KEY: ${{ secrets.FIREBASE_ANDROID_API_KEY_DEV }}
+  FIREBASE_IOS_API_KEY: ${{ secrets.FIREBASE_IOS_API_KEY_DEV }}
+  
+  # Security Configuration
+  SECURITY_LEVEL: "LOW"
+  ENCRYPTION_ENABLED: "false"
+  SESSION_TIMEOUT: "3600"  # 1 hour
+  
+  # Performance Configuration
+  PERFORMANCE_MONITORING: "true"
+  CRASH_REPORTING: "true"
+  ANALYTICS_ENABLED: "true"
+  
+  # API Configuration
+  API_BASE_URL: "https://api-dev.carenow.com"
+  API_TIMEOUT: "30"
+  API_MAX_RETRIES: "3"
+  
+  # Build Configuration
+  TREE_SHAKE_ICONS: "false"
+  OBFUSCATION: "false"
+  SOURCE_MAPS: "true"
+  
+# Deployment settings
+deployment:
+  auto_deploy: true
+  require_approval: false
+  
+  # Web deployment
+  web:
+    hosting_target: "dev"
+    custom_domain: "dev.carenow.com"
+    
+  # Android deployment
+  android:
+    signing_required: false
+    distribution: "internal"
+    
+  # iOS deployment
+  ios:
+    signing_required: false
+    distribution: "internal"
+
+# Testing configuration
+testing:
+  run_unit_tests: true
+  run_integration_tests: true
+  run_security_tests: false
+  coverage_threshold: 70
+  
+# Monitoring and alerts
+monitoring:
+  error_reporting: true
+  performance_monitoring: true
+  uptime_monitoring: false
+  
+# Security settings
+security:
+  vulnerability_scanning: false
+  dependency_scanning: true
+  secret_scanning: true
+  code_scanning: false

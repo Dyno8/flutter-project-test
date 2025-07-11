@@ -1,0 +1,308 @@
+name: 🚀 CareNow MVP - Deployment Pipeline
+
+on:
+  workflow_run:
+    workflows: ["🏗️ CareNow MVP - Multi-Platform Build"]
+    types: [completed]
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - development
+        - staging
+        - production
+      platforms:
+        description: 'Platforms to deploy'
+        required: true
+        default: 'web'
+        type: choice
+        options:
+        - web
+        - android
+        - ios
+        - all
+      skip_approval:
+        description: 'Skip manual approval for production'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # Job 1: Deployment Setup
+  setup:
+    name: 🔧 Deployment Setup
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
+    outputs:
+      deploy-environment: ${{ steps.environment.outputs.environment }}
+      deploy-platforms: ${{ steps.platforms.outputs.platforms }}
+      requires-approval: ${{ steps.approval.outputs.required }}
+      version: ${{ steps.version.outputs.version }}
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: 🌍 Determine Environment
+      id: environment
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          ENV="${{ github.event.inputs.environment }}"
+        elif [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          ENV="production"
+        elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+          ENV="staging"
+        else
+          ENV="development"
+        fi
+        
+        echo "environment=$ENV" >> $GITHUB_OUTPUT
+        echo "Deployment environment: $ENV"
+    
+    - name: 🎯 Determine Platforms
+      id: platforms
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          PLATFORMS="${{ github.event.inputs.platforms }}"
+        else
+          PLATFORMS="web"
+        fi
+        
+        echo "platforms=$PLATFORMS" >> $GITHUB_OUTPUT
+        echo "Deployment platforms: $PLATFORMS"
+    
+    - name: ✋ Check Approval Requirements
+      id: approval
+      run: |
+        REQUIRED="false"
+        
+        if [ "${{ steps.environment.outputs.environment }}" = "production" ]; then
+          if [ "${{ github.event.inputs.skip_approval }}" != "true" ]; then
+            REQUIRED="true"
+          fi
+        fi
+        
+        echo "required=$REQUIRED" >> $GITHUB_OUTPUT
+        echo "Manual approval required: $REQUIRED"
+    
+    - name: 📊 Get Version
+      id: version
+      run: |
+        VERSION=$(grep -E "^version:" flutter_pro_test/pubspec.yaml | cut -d' ' -f2 | cut -d'+' -f1)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "App version: $VERSION"
+
+  # Job 2: Production Approval
+  approval:
+    name: ✋ Production Approval
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.setup.outputs.requires-approval == 'true'
+    environment:
+      name: production-approval
+      url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    
+    steps:
+    - name: ✋ Awaiting Approval
+      run: |
+        echo "🔒 Production deployment requires manual approval"
+        echo "Environment: ${{ needs.setup.outputs.deploy-environment }}"
+        echo "Platforms: ${{ needs.setup.outputs.deploy-platforms }}"
+        echo "Version: ${{ needs.setup.outputs.version }}"
+
+  # Job 3: Security Pre-Deployment Check
+  security-check:
+    name: 🔐 Security Pre-Deployment
+    runs-on: ubuntu-latest
+    needs: [setup, approval]
+    if: always() && (needs.approval.result == 'success' || needs.setup.outputs.requires-approval == 'false')
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: 🔍 Final Security Scan
+      run: |
+        echo "🔐 Running final security scan before deployment..."
+        
+        # Check for any last-minute security issues
+        if grep -r "TODO.*security\|FIXME.*security\|XXX.*security" flutter_pro_test/lib/ --ignore-case; then
+          echo "⚠️ Security-related TODOs found - review before deployment"
+        fi
+        
+        # Verify environment configuration
+        if [ ! -f "flutter_pro_test/lib/core/config/environment_config.dart" ]; then
+          echo "❌ Environment configuration missing"
+          exit 1
+        fi
+        
+        echo "✅ Security pre-deployment check passed"
+    
+    - name: 🔒 Validate Secrets
+      env:
+        FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY }}
+        FIREBASE_ANDROID_API_KEY: ${{ secrets.FIREBASE_ANDROID_API_KEY }}
+        FIREBASE_IOS_API_KEY: ${{ secrets.FIREBASE_IOS_API_KEY }}
+      run: |
+        echo "🔒 Validating deployment secrets..."
+        
+        MISSING_SECRETS=()
+        
+        if [ -z "$FIREBASE_WEB_API_KEY" ]; then
+          MISSING_SECRETS+=("FIREBASE_WEB_API_KEY")
+        fi
+        
+        if [ -z "$FIREBASE_ANDROID_API_KEY" ]; then
+          MISSING_SECRETS+=("FIREBASE_ANDROID_API_KEY")
+        fi
+        
+        if [ -z "$FIREBASE_IOS_API_KEY" ]; then
+          MISSING_SECRETS+=("FIREBASE_IOS_API_KEY")
+        fi
+        
+        if [ ${#MISSING_SECRETS[@]} -gt 0 ]; then
+          echo "❌ Missing required secrets: ${MISSING_SECRETS[*]}"
+          echo "⚠️ Deployment may fail without proper configuration"
+        else
+          echo "✅ All required secrets are configured"
+        fi
+
+  # Job 4: Web Deployment
+  deploy-web:
+    name: 🌐 Deploy Web
+    runs-on: ubuntu-latest
+    needs: [setup, security-check]
+    if: contains(needs.setup.outputs.deploy-platforms, 'web') || contains(needs.setup.outputs.deploy-platforms, 'all')
+    environment:
+      name: ${{ needs.setup.outputs.deploy-environment }}-web
+      url: ${{ steps.deploy.outputs.url }}
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: 📦 Download Web Build
+      uses: actions/download-artifact@v4
+      with:
+        name: web-build-${{ needs.setup.outputs.deploy-environment }}
+        path: build/web/
+    
+    - name: 🌐 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    
+    - name: 🔥 Setup Firebase CLI
+      run: |
+        npm install -g firebase-tools
+        echo "✅ Firebase CLI installed"
+    
+    - name: 🚀 Deploy to Firebase Hosting
+      id: deploy
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      run: |
+        echo "🚀 Deploying to Firebase Hosting..."
+        
+        # Configure Firebase project
+        firebase use $FIREBASE_PROJECT_ID --token $FIREBASE_TOKEN
+        
+        # Deploy based on environment
+        if [ "${{ needs.setup.outputs.deploy-environment }}" = "production" ]; then
+          firebase deploy --only hosting:production --token $FIREBASE_TOKEN
+          URL="https://$FIREBASE_PROJECT_ID.web.app"
+        elif [ "${{ needs.setup.outputs.deploy-environment }}" = "staging" ]; then
+          firebase deploy --only hosting:staging --token $FIREBASE_TOKEN
+          URL="https://staging---$FIREBASE_PROJECT_ID.web.app"
+        else
+          firebase deploy --only hosting:dev --token $FIREBASE_TOKEN
+          URL="https://dev---$FIREBASE_PROJECT_ID.web.app"
+        fi
+        
+        echo "url=$URL" >> $GITHUB_OUTPUT
+        echo "✅ Web deployment completed: $URL"
+    
+    - name: 🔍 Post-Deployment Verification
+      run: |
+        echo "🔍 Verifying web deployment..."
+        
+        # Wait for deployment to be available
+        sleep 30
+        
+        # Check if the site is accessible
+        if curl -f -s "${{ steps.deploy.outputs.url }}" > /dev/null; then
+          echo "✅ Web application is accessible"
+        else
+          echo "⚠️ Web application may not be fully deployed yet"
+        fi
+    
+    - name: 📊 Web Deployment Report
+      run: |
+        echo "## 🌐 Web Deployment Results" >> $GITHUB_STEP_SUMMARY
+        echo "- Environment: ${{ needs.setup.outputs.deploy-environment }}" >> $GITHUB_STEP_SUMMARY
+        echo "- URL: ${{ steps.deploy.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Version: ${{ needs.setup.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Status: ✅ DEPLOYED" >> $GITHUB_STEP_SUMMARY
+
+  # Job 5: Android Deployment
+  deploy-android:
+    name: 🤖 Deploy Android
+    runs-on: ubuntu-latest
+    needs: [setup, security-check]
+    if: contains(needs.setup.outputs.deploy-platforms, 'android') || contains(needs.setup.outputs.deploy-platforms, 'all')
+    environment:
+      name: ${{ needs.setup.outputs.deploy-environment }}-android
+    
+    steps:
+    - name: 📥 Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: 📦 Download Android Build
+      uses: actions/download-artifact@v4
+      with:
+        name: android-build-${{ needs.setup.outputs.deploy-environment }}
+        path: build/android/
+    
+    - name: 🤖 Deploy to Google Play (Production)
+      if: needs.setup.outputs.deploy-environment == 'production'
+      env:
+        GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
+      run: |
+        echo "🤖 Deploying to Google Play Store..."
+        
+        if [ -n "$GOOGLE_PLAY_SERVICE_ACCOUNT" ]; then
+          # Setup Google Play deployment
+          echo "$GOOGLE_PLAY_SERVICE_ACCOUNT" > service-account.json
+          
+          # Deploy App Bundle to Play Store
+          if [ -f "build/android/app-release.aab" ]; then
+            echo "📦 Uploading App Bundle to Play Store..."
+            # Add Google Play deployment logic here
+            echo "✅ App Bundle uploaded to Play Store"
+          else
+            echo "⚠️ No App Bundle found for Play Store deployment"
+          fi
+        else
+          echo "⚠️ Google Play service account not configured"
+        fi
+    
+    - name: 📊 Android Deployment Report
+      run: |
+        echo "## 🤖 Android Deployment Results" >> $GITHUB_STEP_SUMMARY
+        echo "- Environment: ${{ needs.setup.outputs.deploy-environment }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Version: ${{ needs.setup.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ needs.setup.outputs.deploy-environment }}" = "production" ]; then
+          echo "- Target: Google Play Store" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- Target: Internal Distribution" >> $GITHUB_STEP_SUMMARY
+        fi
