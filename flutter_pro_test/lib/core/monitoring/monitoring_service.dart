@@ -4,8 +4,11 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../errors/exceptions.dart';
+import '../analytics/firebase_analytics_service.dart';
+import '../analytics/analytics_events.dart';
+import '../config/environment_config.dart';
 
-/// Comprehensive monitoring and logging service
+/// Comprehensive monitoring and logging service with Firebase integration
 class MonitoringService {
   static final MonitoringService _instance = MonitoringService._internal();
   factory MonitoringService() => _instance;
@@ -18,20 +21,45 @@ class MonitoringService {
   Timer? _healthCheckTimer;
   Timer? _logFlushTimer;
 
+  // Firebase Analytics integration
+  FirebaseAnalyticsService? _analyticsService;
+  bool _analyticsEnabled = false;
+
   // Configuration
   static const int maxLogBufferSize = 500;
   static const int healthCheckIntervalSeconds = 30;
   static const int logFlushIntervalSeconds = 60;
   static const int maxErrorsPerMinute = 10;
 
-  /// Initialize monitoring service
-  Future<void> initialize() async {
+  /// Initialize monitoring service with Firebase Analytics integration
+  Future<void> initialize({FirebaseAnalyticsService? analyticsService}) async {
     _prefs = await SharedPreferences.getInstance();
+
+    // Initialize Firebase Analytics integration
+    if (analyticsService != null) {
+      _analyticsService = analyticsService;
+      _analyticsEnabled = EnvironmentConfig.analyticsConfig.analyticsEnabled;
+
+      if (_analyticsEnabled) {
+        await _setupAnalyticsIntegration();
+      }
+    }
+
     _startHealthChecks();
     _startLogFlushing();
-    
+
     // Log service initialization
-    logInfo('MonitoringService initialized');
+    logInfo(
+      'MonitoringService initialized with Firebase Analytics integration',
+    );
+
+    // Track initialization event
+    if (_analyticsEnabled) {
+      await _trackAnalyticsEvent(AnalyticsEvents.appOpened, {
+        AnalyticsParameters.timestamp: DateTime.now().toIso8601String(),
+        AnalyticsParameters.environment: EnvironmentConfig.environment,
+      });
+    }
   }
 
   /// Start periodic health checks
@@ -55,7 +83,7 @@ class MonitoringService {
   /// Perform system health check
   void _performHealthCheck() {
     final healthStatus = _checkSystemHealth();
-    
+
     if (healthStatus['status'] == 'healthy') {
       logDebug('System health check passed', metadata: healthStatus);
     } else {
@@ -75,8 +103,9 @@ class MonitoringService {
     try {
       final memoryInfo = _getMemoryInfo();
       status['checks']['memory'] = memoryInfo;
-      
-      if (memoryInfo['usage_mb'] > 500) { // 500MB threshold
+
+      if (memoryInfo['usage_mb'] > 500) {
+        // 500MB threshold
         status['status'] = 'warning';
         status['checks']['memory']['warning'] = 'High memory usage detected';
       }
@@ -89,7 +118,7 @@ class MonitoringService {
     try {
       final errorRate = _getRecentErrorRate();
       status['checks']['error_rate'] = {'errors_per_minute': errorRate};
-      
+
       if (errorRate > maxErrorsPerMinute) {
         status['status'] = 'error';
         status['checks']['error_rate']['error'] = 'High error rate detected';
@@ -124,14 +153,14 @@ class MonitoringService {
   double _getRecentErrorRate() {
     final now = DateTime.now();
     final oneMinuteAgo = now.subtract(const Duration(minutes: 1));
-    
+
     int recentErrors = 0;
     for (final entry in _lastErrorTimes.entries) {
       if (entry.value.isAfter(oneMinuteAgo)) {
         recentErrors += _errorCounts[entry.key] ?? 0;
       }
     }
-    
+
     return recentErrors.toDouble();
   }
 
@@ -160,7 +189,8 @@ class MonitoringService {
   }
 
   /// Log error message
-  void logError(String message, {
+  void logError(
+    String message, {
     Object? error,
     StackTrace? stackTrace,
     Map<String, dynamic>? metadata,
@@ -170,13 +200,14 @@ class MonitoringService {
       if (error != null) 'error': error.toString(),
       if (stackTrace != null) 'stack_trace': stackTrace.toString(),
     };
-    
+
     _addLogEntry(LogLevel.error, message, metadata: errorMetadata);
     _recordError(message);
   }
 
   /// Log critical error
-  void logCritical(String message, {
+  void logCritical(
+    String message, {
     Object? error,
     StackTrace? stackTrace,
     Map<String, dynamic>? metadata,
@@ -186,16 +217,20 @@ class MonitoringService {
       if (error != null) 'error': error.toString(),
       if (stackTrace != null) 'stack_trace': stackTrace.toString(),
     };
-    
+
     _addLogEntry(LogLevel.critical, message, metadata: errorMetadata);
     _recordError(message);
-    
+
     // Critical errors should be handled immediately
     _flushLogs();
   }
 
   /// Add log entry to buffer
-  void _addLogEntry(LogLevel level, String message, {Map<String, dynamic>? metadata}) {
+  void _addLogEntry(
+    LogLevel level,
+    String message, {
+    Map<String, dynamic>? metadata,
+  }) {
     final entry = LogEntry(
       level: level,
       message: message,
@@ -250,7 +285,7 @@ class MonitoringService {
     try {
       final logsJson = _logBuffer.map((entry) => entry.toJson()).toList();
       final existingLogsJson = _prefs?.getString('monitoring_logs');
-      
+
       List<dynamic> allLogs = [];
       if (existingLogsJson != null) {
         try {
@@ -259,17 +294,17 @@ class MonitoringService {
           logWarning('Failed to parse existing logs: $e');
         }
       }
-      
+
       allLogs.addAll(logsJson);
-      
+
       // Keep only recent logs (last 1000)
       if (allLogs.length > 1000) {
         allLogs = allLogs.sublist(allLogs.length - 1000);
       }
-      
+
       _prefs?.setString('monitoring_logs', jsonEncode(allLogs));
       _logBuffer.clear();
-      
+
       if (kDebugMode) {
         print('📝 Flushed ${logsJson.length} log entries');
       }
@@ -283,11 +318,11 @@ class MonitoringService {
   /// Get recent logs
   List<LogEntry> getRecentLogs({int limit = 100, LogLevel? minLevel}) {
     var logs = _logBuffer.toList();
-    
+
     if (minLevel != null) {
       logs = logs.where((log) => log.level.index >= minLevel.index).toList();
     }
-    
+
     logs.sort((a, b) => b.timestamp.compareTo(a.timestamp));
     return logs.take(limit).toList();
   }
@@ -296,14 +331,14 @@ class MonitoringService {
   Map<String, dynamic> getErrorStats() {
     final now = DateTime.now();
     final oneHourAgo = now.subtract(const Duration(hours: 1));
-    
+
     int recentErrors = 0;
     for (final entry in _lastErrorTimes.entries) {
       if (entry.value.isAfter(oneHourAgo)) {
         recentErrors += _errorCounts[entry.key] ?? 0;
       }
     }
-    
+
     return {
       'total_errors': _errorCounts.values.fold(0, (sum, count) => sum + count),
       'recent_errors_1h': recentErrors,
@@ -326,6 +361,169 @@ class MonitoringService {
     logInfo('All logs cleared');
   }
 
+  /// Setup Firebase Analytics integration
+  Future<void> _setupAnalyticsIntegration() async {
+    try {
+      if (_analyticsService != null && !_analyticsService!.isInitialized) {
+        await _analyticsService!.initialize();
+      }
+
+      // Set up custom error tracking
+      _setupCustomErrorTracking();
+
+      if (kDebugMode) {
+        print('📊 Firebase Analytics integration setup completed');
+      }
+    } catch (e) {
+      logError('Failed to setup Firebase Analytics integration', error: e);
+    }
+  }
+
+  /// Setup custom error tracking with Firebase
+  void _setupCustomErrorTracking() {
+    // This method can be extended to set up custom error tracking patterns
+    if (kDebugMode) {
+      print('🔍 Custom error tracking setup completed');
+    }
+  }
+
+  /// Track analytics event
+  Future<void> _trackAnalyticsEvent(
+    String eventName,
+    Map<String, Object?> parameters,
+  ) async {
+    if (!_analyticsEnabled || _analyticsService == null) return;
+
+    try {
+      await _analyticsService!.logEvent(eventName, parameters: parameters);
+    } catch (e) {
+      logError('Failed to track analytics event: $eventName', error: e);
+    }
+  }
+
+  /// Track performance metrics to Firebase
+  Future<void> trackPerformanceMetric({
+    required String metricName,
+    required Duration duration,
+    Map<String, Object?>? additionalData,
+  }) async {
+    if (!_analyticsEnabled || _analyticsService == null) return;
+
+    try {
+      final parameters = <String, Object?>{
+        AnalyticsParameters.loadTime: duration.inMilliseconds,
+        AnalyticsParameters.timestamp: DateTime.now().toIso8601String(),
+        ...?additionalData,
+      };
+
+      await _analyticsService!.logEvent(
+        AnalyticsEvents.screenLoadTime,
+        parameters: parameters,
+      );
+
+      logInfo(
+        'Performance metric tracked: $metricName (${duration.inMilliseconds}ms)',
+      );
+    } catch (e) {
+      logError('Failed to track performance metric: $metricName', error: e);
+    }
+  }
+
+  /// Track error to Firebase Crashlytics
+  Future<void> trackError({
+    required String errorType,
+    required dynamic error,
+    StackTrace? stackTrace,
+    Map<String, dynamic>? metadata,
+    bool fatal = false,
+  }) async {
+    if (!_analyticsEnabled || _analyticsService == null) return;
+
+    try {
+      // Record error to Crashlytics
+      await _analyticsService!.recordError(
+        error,
+        stackTrace,
+        metadata: metadata,
+        fatal: fatal,
+      );
+
+      // Track error event to Analytics
+      await _analyticsService!.logEvent(
+        AnalyticsEvents.errorOccurred,
+        parameters: {
+          AnalyticsParameters.errorType: errorType,
+          AnalyticsParameters.errorMessage: error.toString(),
+          AnalyticsParameters.timestamp: DateTime.now().toIso8601String(),
+          if (metadata != null)
+            ...metadata.map((k, v) => MapEntry(k, v.toString())),
+        },
+      );
+
+      logError(
+        'Error tracked to Firebase: $errorType',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    } catch (e) {
+      logError('Failed to track error to Firebase: $errorType', error: e);
+    }
+  }
+
+  /// Track user action
+  Future<void> trackUserAction({
+    required String actionName,
+    String? screenName,
+    Map<String, Object?>? parameters,
+  }) async {
+    if (!_analyticsEnabled || _analyticsService == null) return;
+
+    try {
+      final eventParameters = <String, Object?>{
+        AnalyticsParameters.actionType: actionName,
+        AnalyticsParameters.timestamp: DateTime.now().toIso8601String(),
+        if (screenName != null) AnalyticsParameters.screenName: screenName,
+        ...?parameters,
+      };
+
+      await _analyticsService!.logEvent(
+        AnalyticsEvents.featureUsed,
+        parameters: eventParameters,
+      );
+
+      logInfo('User action tracked: $actionName');
+    } catch (e) {
+      logError('Failed to track user action: $actionName', error: e);
+    }
+  }
+
+  /// Track screen view
+  Future<void> trackScreenView({
+    required String screenName,
+    String? screenClass,
+    Map<String, Object?>? parameters,
+  }) async {
+    if (!_analyticsEnabled || _analyticsService == null) return;
+
+    try {
+      await _analyticsService!.logScreenView(
+        screenName: screenName,
+        screenClass: screenClass,
+        parameters: parameters,
+      );
+
+      logInfo('Screen view tracked: $screenName');
+    } catch (e) {
+      logError('Failed to track screen view: $screenName', error: e);
+    }
+  }
+
+  /// Get analytics service instance
+  FirebaseAnalyticsService? get analyticsService => _analyticsService;
+
+  /// Check if analytics is enabled
+  bool get isAnalyticsEnabled => _analyticsEnabled;
+
   /// Dispose resources
   void dispose() {
     _healthCheckTimer?.cancel();
@@ -335,13 +533,7 @@ class MonitoringService {
 }
 
 /// Log levels
-enum LogLevel {
-  debug,
-  info,
-  warning,
-  error,
-  critical,
-}
+enum LogLevel { debug, info, warning, error, critical }
 
 /// Log entry data class
 class LogEntry {

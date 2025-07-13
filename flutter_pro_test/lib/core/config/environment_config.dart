@@ -72,6 +72,18 @@ class EnvironmentConfig {
     }
   }
 
+  /// Analytics configuration based on environment
+  static AnalyticsEnvironmentConfig get analyticsConfig {
+    switch (environment) {
+      case 'production':
+        return AnalyticsEnvironmentConfig.production();
+      case 'staging':
+        return AnalyticsEnvironmentConfig.staging();
+      default:
+        return AnalyticsEnvironmentConfig.development();
+    }
+  }
+
   /// Logging configuration based on environment
   static LoggingEnvironmentConfig get loggingConfig {
     switch (environment) {
@@ -412,6 +424,8 @@ class PerformanceEnvironmentConfig {
   final int cacheSize;
   final Duration cacheExpiration;
   final bool analyticsEnabled;
+  final bool crashReportingEnabled;
+  final bool performanceMonitoringEnabled;
 
   const PerformanceEnvironmentConfig({
     required this.monitoringEnabled,
@@ -419,6 +433,8 @@ class PerformanceEnvironmentConfig {
     required this.cacheSize,
     required this.cacheExpiration,
     required this.analyticsEnabled,
+    required this.crashReportingEnabled,
+    required this.performanceMonitoringEnabled,
   });
 
   factory PerformanceEnvironmentConfig.production() {
@@ -428,6 +444,8 @@ class PerformanceEnvironmentConfig {
       cacheSize: 200,
       cacheExpiration: Duration(minutes: 60),
       analyticsEnabled: true,
+      crashReportingEnabled: true,
+      performanceMonitoringEnabled: true,
     );
   }
 
@@ -438,6 +456,8 @@ class PerformanceEnvironmentConfig {
       cacheSize: 100,
       cacheExpiration: Duration(minutes: 30),
       analyticsEnabled: true,
+      crashReportingEnabled: true,
+      performanceMonitoringEnabled: true,
     );
   }
 
@@ -448,6 +468,8 @@ class PerformanceEnvironmentConfig {
       cacheSize: 50,
       cacheExpiration: Duration(minutes: 15),
       analyticsEnabled: false,
+      crashReportingEnabled: false,
+      performanceMonitoringEnabled: false,
     );
   }
 }
@@ -500,6 +522,68 @@ class LoggingEnvironmentConfig {
       enableRemoteLogging: false,
       maxLogFiles: 3,
       maxLogFileSize: 1 * 1024 * 1024, // 1MB
+    );
+  }
+}
+
+/// Analytics environment-specific configuration
+class AnalyticsEnvironmentConfig {
+  final bool analyticsEnabled;
+  final bool crashReportingEnabled;
+  final bool performanceMonitoringEnabled;
+  final bool userTrackingEnabled;
+  final bool customEventTrackingEnabled;
+  final Duration sessionTimeout;
+  final int maxEventsPerSession;
+  final bool debugLoggingEnabled;
+
+  const AnalyticsEnvironmentConfig({
+    required this.analyticsEnabled,
+    required this.crashReportingEnabled,
+    required this.performanceMonitoringEnabled,
+    required this.userTrackingEnabled,
+    required this.customEventTrackingEnabled,
+    required this.sessionTimeout,
+    required this.maxEventsPerSession,
+    required this.debugLoggingEnabled,
+  });
+
+  factory AnalyticsEnvironmentConfig.production() {
+    return const AnalyticsEnvironmentConfig(
+      analyticsEnabled: true,
+      crashReportingEnabled: true,
+      performanceMonitoringEnabled: true,
+      userTrackingEnabled: true,
+      customEventTrackingEnabled: true,
+      sessionTimeout: Duration(minutes: 30),
+      maxEventsPerSession: 500,
+      debugLoggingEnabled: false,
+    );
+  }
+
+  factory AnalyticsEnvironmentConfig.staging() {
+    return const AnalyticsEnvironmentConfig(
+      analyticsEnabled: true,
+      crashReportingEnabled: true,
+      performanceMonitoringEnabled: true,
+      userTrackingEnabled: true,
+      customEventTrackingEnabled: true,
+      sessionTimeout: Duration(minutes: 60),
+      maxEventsPerSession: 1000,
+      debugLoggingEnabled: true,
+    );
+  }
+
+  factory AnalyticsEnvironmentConfig.development() {
+    return const AnalyticsEnvironmentConfig(
+      analyticsEnabled: false,
+      crashReportingEnabled: false,
+      performanceMonitoringEnabled: false,
+      userTrackingEnabled: false,
+      customEventTrackingEnabled: true,
+      sessionTimeout: Duration(hours: 2),
+      maxEventsPerSession: 100,
+      debugLoggingEnabled: true,
     );
   }
 }

@@ -2,6 +2,15 @@ import 'package:get_it/get_it.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+
+import '../analytics/firebase_analytics_service.dart';
+import '../analytics/business_analytics_service.dart';
+import '../monitoring/monitoring_service.dart';
+import '../error_tracking/error_tracking_service.dart';
+import '../performance/performance_analytics_service.dart';
+import '../../features/admin/data/services/analytics_dashboard_service.dart';
+import '../../features/admin/presentation/bloc/analytics_dashboard_bloc.dart';
 
 import '../../features/auth/data/datasources/firebase_auth_datasource.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
@@ -100,6 +109,9 @@ Future<void> init() async {
       getCurrentUser: sl(),
     ),
   );
+
+  // Analytics Dashboard Bloc
+  sl.registerFactory(() => AnalyticsDashboardBloc(analyticsService: sl()));
 
   //! Features - Profile
   // Bloc
@@ -310,6 +322,22 @@ Future<void> init() async {
   );
 
   //! Services
+  sl.registerLazySingleton(() => FirebaseAnalyticsService());
+  sl.registerLazySingleton(() => BusinessAnalyticsService());
+  sl.registerLazySingleton(() => UserBehaviorTrackingService());
+  sl.registerLazySingleton(() => MonitoringService());
+  sl.registerLazySingleton(() => ErrorTrackingService());
+  sl.registerLazySingleton(() => IncidentManagementService());
+  sl.registerLazySingleton(() => PerformanceAnalyticsService());
+  sl.registerLazySingleton(
+    () => AnalyticsDashboardService(
+      analytics: FirebaseAnalytics.instance,
+      firestore: FirebaseFirestore.instance,
+      analyticsService: sl(),
+      businessAnalytics: sl(),
+      monitoringService: sl(),
+    ),
+  );
   sl.registerLazySingleton(() => NotificationService());
   sl.registerLazySingleton(() => RealtimeBookingService(sl(), sl()));
   sl.registerLazySingleton(

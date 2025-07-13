@@ -3,11 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'core/monitoring/monitoring_service.dart';
 import 'core/router/app_router.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/config/environment_config.dart';
 import 'shared/theme/app_theme.dart';
 import 'shared/services/firebase_service.dart';
+import 'core/analytics/firebase_analytics_service.dart';
+import 'core/analytics/business_analytics_service.dart';
+import 'core/error_tracking/error_tracking_service.dart';
+import 'core/performance/performance_analytics_service.dart';
 import 'shared/services/notification_service.dart';
 import 'shared/services/notification_action_handler.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
@@ -48,17 +53,69 @@ void main() async {
     await FirebaseService().initialize();
     print('✅ Firebase services initialized');
 
-    // Initialize dependency injection
+    // Initialize dependency injection first
     print('💉 Initializing dependency injection...');
     await di.init();
     print('✅ Dependency injection initialized');
 
-    // Initialize and configure notification service
-    print('🔔 Initializing notification service...');
-    final notificationService = di.sl<NotificationService>();
-    await notificationService.initialize();
+    // Initialize Firebase Analytics service
+    print('📊 Initializing Firebase Analytics...');
+    final analyticsService = di.sl<FirebaseAnalyticsService>();
+    await analyticsService.initialize();
+    print('✅ Firebase Analytics initialized');
 
-    // Set up notification service with repository and action handler
+    // Initialize monitoring service with analytics integration
+    print('🔍 Initializing monitoring service...');
+    final monitoringService = di.sl<MonitoringService>();
+    await monitoringService.initialize(analyticsService: analyticsService);
+    print('✅ Monitoring service initialized');
+
+    // Initialize business analytics service
+    print('📊 Initializing business analytics...');
+    final businessAnalytics = di.sl<BusinessAnalyticsService>();
+    await businessAnalytics.initialize(
+      analyticsService: analyticsService,
+      monitoringService: monitoringService,
+    );
+
+    // Initialize user behavior tracking
+    final behaviorTracking = di.sl<UserBehaviorTrackingService>();
+    behaviorTracking.initialize(
+      businessAnalytics: businessAnalytics,
+      monitoringService: monitoringService,
+    );
+    print('✅ Business analytics initialized');
+
+    // Initialize error tracking and incident management
+    print('🚨 Initializing error tracking...');
+    final errorTracking = di.sl<ErrorTrackingService>();
+    final notificationService = di.sl<NotificationService>();
+    await errorTracking.initialize(
+      analyticsService: analyticsService,
+      monitoringService: monitoringService,
+      notificationService: notificationService,
+    );
+
+    final incidentManagement = di.sl<IncidentManagementService>();
+    await incidentManagement.initialize(
+      errorTrackingService: errorTracking,
+      notificationService: notificationService,
+      monitoringService: monitoringService,
+    );
+    print('✅ Error tracking initialized');
+
+    // Initialize performance analytics
+    print('📈 Initializing performance analytics...');
+    final performanceAnalytics = di.sl<PerformanceAnalyticsService>();
+    await performanceAnalytics.initialize(
+      analyticsService: analyticsService,
+      monitoringService: monitoringService,
+      errorTrackingService: errorTracking,
+    );
+    print('✅ Performance analytics initialized');
+
+    // Configure notification service with repository and action handler
+    print('🔔 Configuring notification service...');
     notificationService.setRepository(di.sl<NotificationRepository>());
     notificationService.setActionHandler(di.sl<NotificationActionHandler>());
     print('✅ Notification service configured');
