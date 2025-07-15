@@ -3,7 +3,6 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
-import 'core/config/environment_config.dart';
 
 /// Production-ready [FirebaseOptions] with environment-based configuration
 ///
@@ -42,19 +41,15 @@ class DefaultFirebaseOptions {
   }
 
   static FirebaseOptions get web {
-    final config = EnvironmentConfig.firebaseConfig;
-    return FirebaseOptions(
-      apiKey: config.apiKey,
-      appId: config.appId,
-      messagingSenderId: config.messagingSenderId,
-      projectId: config.projectId,
-      authDomain: config.authDomain,
-      storageBucket: config.storageBucket,
-      measurementId: config.measurementId,
-      databaseURL: const String.fromEnvironment(
-        'FIREBASE_DATABASE_URL',
-        defaultValue: 'https://carenow-app-2024-default-rtdb.firebaseio.com/',
-      ),
+    // Use actual carenow-app-2024 Firebase project configuration
+    return const FirebaseOptions(
+      apiKey: 'AIzaSyCHjFdprKiFYY9DkKV0tkRPYyrjQfpSQu0',
+      appId: '1:133710469637:web:03e765bcb9d10180d09a6c',
+      messagingSenderId: '133710469637',
+      projectId: 'carenow-app-2024',
+      authDomain: 'carenow-app-2024.firebaseapp.com',
+      storageBucket: 'carenow-app-2024.firebasestorage.app',
+      databaseURL: 'https://carenow-app-2024-default-rtdb.firebaseio.com/',
     );
   }
 

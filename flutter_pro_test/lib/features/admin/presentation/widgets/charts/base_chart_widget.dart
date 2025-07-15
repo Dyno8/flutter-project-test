@@ -48,9 +48,7 @@ abstract class BaseChartWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(),
-          Expanded(
-            child: _buildContent(context),
-          ),
+          Expanded(child: _buildContent(context)),
           if (showLegend && legendItems != null && legendItems!.isNotEmpty)
             _buildLegend(),
         ],
@@ -68,16 +66,10 @@ abstract class BaseChartWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: ChartTheme.chartTitleStyle,
-                ),
+                Text(title, style: ChartTheme.chartTitleStyle),
                 if (subtitle != null) ...[
                   SizedBox(height: 4.h),
-                  Text(
-                    subtitle!,
-                    style: ChartTheme.chartSubtitleStyle,
-                  ),
+                  Text(subtitle!, style: ChartTheme.chartSubtitleStyle),
                 ],
               ],
             ),
@@ -99,9 +91,11 @@ abstract class BaseChartWidget extends StatelessWidget {
     }
 
     return Padding(
-      padding: padding ?? ChartTheme.getResponsivePadding(
-        Size(width ?? double.infinity, height ?? 300),
-      ),
+      padding:
+          padding ??
+          ChartTheme.getResponsivePadding(
+            Size(width ?? double.infinity, height ?? 300),
+          ),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return buildChart(context, constraints.biggest);
@@ -120,10 +114,7 @@ abstract class BaseChartWidget extends StatelessWidget {
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           ),
           SizedBox(height: 16.h),
-          Text(
-            'Loading chart data...',
-            style: ChartTheme.chartSubtitleStyle,
-          ),
+          Text('Loading chart data...', style: ChartTheme.chartSubtitleStyle),
         ],
       ),
     );
@@ -135,17 +126,11 @@ abstract class BaseChartWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 48.r,
-            color: AppColors.error,
-          ),
+          Icon(Icons.error_outline, size: 48.r, color: AppColors.error),
           SizedBox(height: 16.h),
           Text(
             'Failed to load chart',
-            style: ChartTheme.chartTitleStyle.copyWith(
-              color: AppColors.error,
-            ),
+            style: ChartTheme.chartTitleStyle.copyWith(color: AppColors.error),
           ),
           if (errorMessage != null) ...[
             SizedBox(height: 8.h),
@@ -178,10 +163,7 @@ abstract class BaseChartWidget extends StatelessWidget {
       padding: EdgeInsets.all(ChartTheme.defaultPadding),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(
-            color: AppColors.border.withOpacity(0.3),
-            width: 1,
-          ),
+          top: BorderSide(color: AppColors.border.withOpacity(0.3), width: 1),
         ),
       ),
       child: Wrap(
@@ -194,32 +176,38 @@ abstract class BaseChartWidget extends StatelessWidget {
 
   /// Build individual legend item
   Widget _buildLegendItem(LegendItem item) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: ChartTheme.legendIndicatorSize,
-          height: ChartTheme.legendIndicatorSize,
-          decoration: BoxDecoration(
-            color: item.color,
-            shape: BoxShape.circle,
-          ),
-        ),
-        SizedBox(width: 8.w),
-        Text(
-          item.label,
-          style: ChartTheme.legendTextStyle,
-        ),
-        if (item.value != null) ...[
-          SizedBox(width: 4.w),
-          Text(
-            '(${item.value})',
-            style: ChartTheme.legendTextStyle.copyWith(
-              color: AppColors.textSecondary,
+    return IntrinsicWidth(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: ChartTheme.legendIndicatorSize,
+            height: ChartTheme.legendIndicatorSize,
+            decoration: BoxDecoration(
+              color: item.color,
+              shape: BoxShape.circle,
             ),
           ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Text(
+              item.label,
+              style: ChartTheme.legendTextStyle,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+          if (item.value != null) ...[
+            SizedBox(width: 4.w),
+            Text(
+              '(${item.value})',
+              style: ChartTheme.legendTextStyle.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -230,11 +218,7 @@ class LegendItem {
   final Color color;
   final String? value;
 
-  const LegendItem({
-    required this.label,
-    required this.color,
-    this.value,
-  });
+  const LegendItem({required this.label, required this.color, this.value});
 }
 
 /// Chart data point for line and area charts

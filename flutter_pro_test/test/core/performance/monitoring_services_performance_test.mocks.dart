@@ -3,27 +3,26 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i7;
+import 'dart:async' as _i6;
 
-import 'package:dartz/dartz.dart' as _i5;
+import 'package:dartz/dartz.dart' as _i4;
 import 'package:firebase_analytics/firebase_analytics.dart' as _i2;
-import 'package:firebase_crashlytics/firebase_crashlytics.dart' as _i3;
-import 'package:firebase_performance/firebase_performance.dart' as _i4;
+import 'package:firebase_performance/firebase_performance.dart' as _i3;
 import 'package:flutter_pro_test/core/analytics/firebase_analytics_service.dart'
-    as _i8;
-import 'package:flutter_pro_test/core/errors/failures.dart' as _i13;
+    as _i7;
+import 'package:flutter_pro_test/core/errors/failures.dart' as _i12;
 import 'package:flutter_pro_test/features/notifications/domain/entities/notification.dart'
-    as _i14;
+    as _i13;
 import 'package:flutter_pro_test/features/notifications/domain/entities/notification_preferences.dart'
-    as _i11;
-import 'package:flutter_pro_test/features/notifications/domain/repositories/notification_repository.dart'
     as _i10;
-import 'package:flutter_pro_test/shared/services/notification_action_handler.dart'
-    as _i12;
-import 'package:flutter_pro_test/shared/services/notification_service.dart'
+import 'package:flutter_pro_test/features/notifications/domain/repositories/notification_repository.dart'
     as _i9;
+import 'package:flutter_pro_test/shared/services/notification_action_handler.dart'
+    as _i11;
+import 'package:flutter_pro_test/shared/services/notification_service.dart'
+    as _i8;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:shared_preferences/src/shared_preferences_legacy.dart' as _i6;
+import 'package:shared_preferences/src/shared_preferences_legacy.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -45,27 +44,21 @@ class _FakeFirebaseAnalytics_0 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
-class _FakeFirebaseCrashlytics_1 extends _i1.SmartFake
-    implements _i3.FirebaseCrashlytics {
-  _FakeFirebaseCrashlytics_1(Object parent, Invocation parentInvocation)
+class _FakeFirebasePerformance_1 extends _i1.SmartFake
+    implements _i3.FirebasePerformance {
+  _FakeFirebasePerformance_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeFirebasePerformance_2 extends _i1.SmartFake
-    implements _i4.FirebasePerformance {
-  _FakeFirebasePerformance_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeEither_3<L, R> extends _i1.SmartFake implements _i5.Either<L, R> {
-  _FakeEither_3(Object parent, Invocation parentInvocation)
+class _FakeEither_2<L, R> extends _i1.SmartFake implements _i4.Either<L, R> {
+  _FakeEither_2(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 /// A class which mocks [SharedPreferences].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSharedPreferences extends _i1.Mock implements _i6.SharedPreferences {
+class MockSharedPreferences extends _i1.Mock implements _i5.SharedPreferences {
   MockSharedPreferences() {
     _i1.throwOnMissingStub(this);
   }
@@ -112,84 +105,84 @@ class MockSharedPreferences extends _i1.Mock implements _i6.SharedPreferences {
           as List<String>?);
 
   @override
-  _i7.Future<bool> setBool(String? key, bool? value) =>
+  _i6.Future<bool> setBool(String? key, bool? value) =>
       (super.noSuchMethod(
             Invocation.method(#setBool, [key, value]),
-            returnValue: _i7.Future<bool>.value(false),
+            returnValue: _i6.Future<bool>.value(false),
           )
-          as _i7.Future<bool>);
+          as _i6.Future<bool>);
 
   @override
-  _i7.Future<bool> setInt(String? key, int? value) =>
+  _i6.Future<bool> setInt(String? key, int? value) =>
       (super.noSuchMethod(
             Invocation.method(#setInt, [key, value]),
-            returnValue: _i7.Future<bool>.value(false),
+            returnValue: _i6.Future<bool>.value(false),
           )
-          as _i7.Future<bool>);
+          as _i6.Future<bool>);
 
   @override
-  _i7.Future<bool> setDouble(String? key, double? value) =>
+  _i6.Future<bool> setDouble(String? key, double? value) =>
       (super.noSuchMethod(
             Invocation.method(#setDouble, [key, value]),
-            returnValue: _i7.Future<bool>.value(false),
+            returnValue: _i6.Future<bool>.value(false),
           )
-          as _i7.Future<bool>);
+          as _i6.Future<bool>);
 
   @override
-  _i7.Future<bool> setString(String? key, String? value) =>
+  _i6.Future<bool> setString(String? key, String? value) =>
       (super.noSuchMethod(
             Invocation.method(#setString, [key, value]),
-            returnValue: _i7.Future<bool>.value(false),
+            returnValue: _i6.Future<bool>.value(false),
           )
-          as _i7.Future<bool>);
+          as _i6.Future<bool>);
 
   @override
-  _i7.Future<bool> setStringList(String? key, List<String>? value) =>
+  _i6.Future<bool> setStringList(String? key, List<String>? value) =>
       (super.noSuchMethod(
             Invocation.method(#setStringList, [key, value]),
-            returnValue: _i7.Future<bool>.value(false),
+            returnValue: _i6.Future<bool>.value(false),
           )
-          as _i7.Future<bool>);
+          as _i6.Future<bool>);
 
   @override
-  _i7.Future<bool> remove(String? key) =>
+  _i6.Future<bool> remove(String? key) =>
       (super.noSuchMethod(
             Invocation.method(#remove, [key]),
-            returnValue: _i7.Future<bool>.value(false),
+            returnValue: _i6.Future<bool>.value(false),
           )
-          as _i7.Future<bool>);
+          as _i6.Future<bool>);
 
   @override
-  _i7.Future<bool> commit() =>
+  _i6.Future<bool> commit() =>
       (super.noSuchMethod(
             Invocation.method(#commit, []),
-            returnValue: _i7.Future<bool>.value(false),
+            returnValue: _i6.Future<bool>.value(false),
           )
-          as _i7.Future<bool>);
+          as _i6.Future<bool>);
 
   @override
-  _i7.Future<bool> clear() =>
+  _i6.Future<bool> clear() =>
       (super.noSuchMethod(
             Invocation.method(#clear, []),
-            returnValue: _i7.Future<bool>.value(false),
+            returnValue: _i6.Future<bool>.value(false),
           )
-          as _i7.Future<bool>);
+          as _i6.Future<bool>);
 
   @override
-  _i7.Future<void> reload() =>
+  _i6.Future<void> reload() =>
       (super.noSuchMethod(
             Invocation.method(#reload, []),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 }
 
 /// A class which mocks [FirebaseAnalyticsService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockFirebaseAnalyticsService extends _i1.Mock
-    implements _i8.FirebaseAnalyticsService {
+    implements _i7.FirebaseAnalyticsService {
   MockFirebaseAnalyticsService() {
     _i1.throwOnMissingStub(this);
   }
@@ -206,26 +199,15 @@ class MockFirebaseAnalyticsService extends _i1.Mock
           as _i2.FirebaseAnalytics);
 
   @override
-  _i3.FirebaseCrashlytics get crashlytics =>
-      (super.noSuchMethod(
-            Invocation.getter(#crashlytics),
-            returnValue: _FakeFirebaseCrashlytics_1(
-              this,
-              Invocation.getter(#crashlytics),
-            ),
-          )
-          as _i3.FirebaseCrashlytics);
-
-  @override
-  _i4.FirebasePerformance get performance =>
+  _i3.FirebasePerformance get performance =>
       (super.noSuchMethod(
             Invocation.getter(#performance),
-            returnValue: _FakeFirebasePerformance_2(
+            returnValue: _FakeFirebasePerformance_1(
               this,
               Invocation.getter(#performance),
             ),
           )
-          as _i4.FirebasePerformance);
+          as _i3.FirebasePerformance);
 
   @override
   bool get isInitialized =>
@@ -233,34 +215,34 @@ class MockFirebaseAnalyticsService extends _i1.Mock
           as bool);
 
   @override
-  _i7.Future<void> initialize() =>
+  _i6.Future<void> initialize() =>
       (super.noSuchMethod(
             Invocation.method(#initialize, []),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> setUserId(String? userId) =>
+  _i6.Future<void> setUserId(String? userId) =>
       (super.noSuchMethod(
             Invocation.method(#setUserId, [userId]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> setUserType(String? userType) =>
+  _i6.Future<void> setUserType(String? userType) =>
       (super.noSuchMethod(
             Invocation.method(#setUserType, [userType]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> logEvent(
+  _i6.Future<void> logEvent(
     String? eventName, {
     Map<String, Object?>? parameters,
   }) =>
@@ -270,13 +252,13 @@ class MockFirebaseAnalyticsService extends _i1.Mock
               [eventName],
               {#parameters: parameters},
             ),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> logScreenView({
+  _i6.Future<void> logScreenView({
     required String? screenName,
     String? screenClass,
     Map<String, Object?>? parameters,
@@ -287,13 +269,13 @@ class MockFirebaseAnalyticsService extends _i1.Mock
               #screenClass: screenClass,
               #parameters: parameters,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> recordError(
+  _i6.Future<void> recordError(
     dynamic error,
     StackTrace? stackTrace, {
     Map<String, dynamic>? metadata,
@@ -305,30 +287,30 @@ class MockFirebaseAnalyticsService extends _i1.Mock
               [error, stackTrace],
               {#metadata: metadata, #fatal: fatal},
             ),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<_i4.Trace?> startTrace(String? traceName) =>
+  _i6.Future<_i3.Trace?> startTrace(String? traceName) =>
       (super.noSuchMethod(
             Invocation.method(#startTrace, [traceName]),
-            returnValue: _i7.Future<_i4.Trace?>.value(),
+            returnValue: _i6.Future<_i3.Trace?>.value(),
           )
-          as _i7.Future<_i4.Trace?>);
+          as _i6.Future<_i3.Trace?>);
 
   @override
-  _i7.Future<void> stopTrace(String? traceName) =>
+  _i6.Future<void> stopTrace(String? traceName) =>
       (super.noSuchMethod(
             Invocation.method(#stopTrace, [traceName]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> setTraceAttribute(
+  _i6.Future<void> setTraceAttribute(
     String? traceName,
     String? attribute,
     String? value,
@@ -339,24 +321,24 @@ class MockFirebaseAnalyticsService extends _i1.Mock
               attribute,
               value,
             ]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<_i4.HttpMetric?> startHttpMetric(
+  _i6.Future<_i3.HttpMetric?> startHttpMetric(
     String? url,
-    _i4.HttpMethod? httpMethod,
+    _i3.HttpMethod? httpMethod,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#startHttpMetric, [url, httpMethod]),
-            returnValue: _i7.Future<_i4.HttpMetric?>.value(),
+            returnValue: _i6.Future<_i3.HttpMetric?>.value(),
           )
-          as _i7.Future<_i4.HttpMetric?>);
+          as _i6.Future<_i3.HttpMetric?>);
 
   @override
-  _i7.Future<void> stopHttpMetric(
+  _i6.Future<void> stopHttpMetric(
     String? url, {
     int? responseCode,
     int? requestPayloadSize,
@@ -372,62 +354,62 @@ class MockFirebaseAnalyticsService extends _i1.Mock
                 #responsePayloadSize: responsePayloadSize,
               },
             ),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> dispose() =>
+  _i6.Future<void> dispose() =>
       (super.noSuchMethod(
             Invocation.method(#dispose, []),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 }
 
 /// A class which mocks [NotificationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockNotificationService extends _i1.Mock
-    implements _i9.NotificationService {
+    implements _i8.NotificationService {
   MockNotificationService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  void setRepository(_i10.NotificationRepository? repository) =>
+  void setRepository(_i9.NotificationRepository? repository) =>
       super.noSuchMethod(
         Invocation.method(#setRepository, [repository]),
         returnValueForMissingStub: null,
       );
 
   @override
-  void setUserPreferences(_i11.NotificationPreferences? preferences) =>
+  void setUserPreferences(_i10.NotificationPreferences? preferences) =>
       super.noSuchMethod(
         Invocation.method(#setUserPreferences, [preferences]),
         returnValueForMissingStub: null,
       );
 
   @override
-  void setActionHandler(_i12.NotificationActionHandler? actionHandler) =>
+  void setActionHandler(_i11.NotificationActionHandler? actionHandler) =>
       super.noSuchMethod(
         Invocation.method(#setActionHandler, [actionHandler]),
         returnValueForMissingStub: null,
       );
 
   @override
-  _i7.Future<void> initialize() =>
+  _i6.Future<void> initialize() =>
       (super.noSuchMethod(
             Invocation.method(#initialize, []),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<_i5.Either<_i13.Failure, void>> sendBookingNotification(
+  _i6.Future<_i4.Either<_i12.Failure, void>> sendBookingNotification(
     String? fcmToken,
     String? title,
     String? body,
@@ -440,8 +422,8 @@ class MockNotificationService extends _i1.Mock
               body,
               data,
             ]),
-            returnValue: _i7.Future<_i5.Either<_i13.Failure, void>>.value(
-              _FakeEither_3<_i13.Failure, void>(
+            returnValue: _i6.Future<_i4.Either<_i12.Failure, void>>.value(
+              _FakeEither_2<_i12.Failure, void>(
                 this,
                 Invocation.method(#sendBookingNotification, [
                   fcmToken,
@@ -452,56 +434,56 @@ class MockNotificationService extends _i1.Mock
               ),
             ),
           )
-          as _i7.Future<_i5.Either<_i13.Failure, void>>);
+          as _i6.Future<_i4.Either<_i12.Failure, void>>);
 
   @override
-  _i7.Future<String?> getFCMToken() =>
+  _i6.Future<String?> getFCMToken() =>
       (super.noSuchMethod(
             Invocation.method(#getFCMToken, []),
-            returnValue: _i7.Future<String?>.value(),
+            returnValue: _i6.Future<String?>.value(),
           )
-          as _i7.Future<String?>);
+          as _i6.Future<String?>);
 
   @override
-  _i7.Future<void> subscribeToTopic(String? topic) =>
+  _i6.Future<void> subscribeToTopic(String? topic) =>
       (super.noSuchMethod(
             Invocation.method(#subscribeToTopic, [topic]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> unsubscribeFromTopic(String? topic) =>
+  _i6.Future<void> unsubscribeFromTopic(String? topic) =>
       (super.noSuchMethod(
             Invocation.method(#unsubscribeFromTopic, [topic]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> subscribeToPartnerNotifications(String? partnerId) =>
+  _i6.Future<void> subscribeToPartnerNotifications(String? partnerId) =>
       (super.noSuchMethod(
             Invocation.method(#subscribeToPartnerNotifications, [partnerId]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> unsubscribeFromPartnerNotifications(String? partnerId) =>
+  _i6.Future<void> unsubscribeFromPartnerNotifications(String? partnerId) =>
       (super.noSuchMethod(
             Invocation.method(#unsubscribeFromPartnerNotifications, [
               partnerId,
             ]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> sendNewJobNotification({
+  _i6.Future<void> sendNewJobNotification({
     required String? partnerId,
     required String? jobId,
     required String? serviceName,
@@ -516,13 +498,13 @@ class MockNotificationService extends _i1.Mock
               #clientName: clientName,
               #earnings: earnings,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> sendJobStatusNotification({
+  _i6.Future<void> sendJobStatusNotification({
     required String? partnerId,
     required String? jobId,
     required String? status,
@@ -535,13 +517,13 @@ class MockNotificationService extends _i1.Mock
               #status: status,
               #serviceName: serviceName,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> sendEarningsNotification({
+  _i6.Future<void> sendEarningsNotification({
     required String? partnerId,
     required String? amount,
     required String? period,
@@ -552,13 +534,13 @@ class MockNotificationService extends _i1.Mock
               #amount: amount,
               #period: period,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> sendRatingNotification({
+  _i6.Future<void> sendRatingNotification({
     required String? partnerId,
     required String? jobId,
     required double? rating,
@@ -571,13 +553,13 @@ class MockNotificationService extends _i1.Mock
               #rating: rating,
               #review: review,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> scheduleNotification({
+  _i6.Future<void> scheduleNotification({
     required int? id,
     required String? title,
     required String? body,
@@ -592,31 +574,31 @@ class MockNotificationService extends _i1.Mock
               #scheduledDate: scheduledDate,
               #data: data,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> cancelScheduledNotification(int? id) =>
+  _i6.Future<void> cancelScheduledNotification(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#cancelScheduledNotification, [id]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> cancelAllNotifications() =>
+  _i6.Future<void> cancelAllNotifications() =>
       (super.noSuchMethod(
             Invocation.method(#cancelAllNotifications, []),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> scheduleBookingReminder({
+  _i6.Future<void> scheduleBookingReminder({
     required String? bookingId,
     required String? serviceName,
     required DateTime? scheduledDate,
@@ -627,18 +609,18 @@ class MockNotificationService extends _i1.Mock
               #serviceName: serviceName,
               #scheduledDate: scheduledDate,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> sendEnhancedBookingNotification({
+  _i6.Future<void> sendEnhancedBookingNotification({
     required String? userId,
     required String? title,
     required String? body,
     required Map<String, dynamic>? data,
-    _i14.NotificationPriority? priority = _i14.NotificationPriority.high,
+    _i13.NotificationPriority? priority = _i13.NotificationPriority.high,
     String? imageUrl,
   }) =>
       (super.noSuchMethod(
@@ -650,18 +632,18 @@ class MockNotificationService extends _i1.Mock
               #priority: priority,
               #imageUrl: imageUrl,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> sendEnhancedJobNotification({
+  _i6.Future<void> sendEnhancedJobNotification({
     required String? userId,
     required String? title,
     required String? body,
     required Map<String, dynamic>? data,
-    _i14.NotificationPriority? priority = _i14.NotificationPriority.high,
+    _i13.NotificationPriority? priority = _i13.NotificationPriority.high,
     String? imageUrl,
   }) =>
       (super.noSuchMethod(
@@ -673,18 +655,18 @@ class MockNotificationService extends _i1.Mock
               #priority: priority,
               #imageUrl: imageUrl,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> sendEnhancedPaymentNotification({
+  _i6.Future<void> sendEnhancedPaymentNotification({
     required String? userId,
     required String? title,
     required String? body,
     required Map<String, dynamic>? data,
-    _i14.NotificationPriority? priority = _i14.NotificationPriority.high,
+    _i13.NotificationPriority? priority = _i13.NotificationPriority.high,
     String? imageUrl,
   }) =>
       (super.noSuchMethod(
@@ -696,18 +678,18 @@ class MockNotificationService extends _i1.Mock
               #priority: priority,
               #imageUrl: imageUrl,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 
   @override
-  _i7.Future<void> sendSystemNotification({
+  _i6.Future<void> sendSystemNotification({
     required String? userId,
     required String? title,
     required String? body,
     required Map<String, dynamic>? data,
-    _i14.NotificationPriority? priority = _i14.NotificationPriority.normal,
+    _i13.NotificationPriority? priority = _i13.NotificationPriority.normal,
     String? imageUrl,
   }) =>
       (super.noSuchMethod(
@@ -719,8 +701,8 @@ class MockNotificationService extends _i1.Mock
               #priority: priority,
               #imageUrl: imageUrl,
             }),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i6.Future<void>);
 }

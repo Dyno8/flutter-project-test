@@ -3,17 +3,16 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
+import 'dart:async' as _i5;
 
 import 'package:firebase_analytics/firebase_analytics.dart' as _i2;
-import 'package:firebase_crashlytics/firebase_crashlytics.dart' as _i3;
-import 'package:firebase_performance/firebase_performance.dart' as _i4;
+import 'package:firebase_performance/firebase_performance.dart' as _i3;
 import 'package:flutter_pro_test/core/analytics/business_analytics_service.dart'
-    as _i5;
+    as _i4;
 import 'package:flutter_pro_test/core/analytics/firebase_analytics_service.dart'
-    as _i7;
+    as _i6;
 import 'package:flutter_pro_test/core/monitoring/monitoring_service.dart'
-    as _i8;
+    as _i7;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -36,15 +35,9 @@ class _FakeFirebaseAnalytics_0 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
-class _FakeFirebaseCrashlytics_1 extends _i1.SmartFake
-    implements _i3.FirebaseCrashlytics {
-  _FakeFirebaseCrashlytics_1(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeFirebasePerformance_2 extends _i1.SmartFake
-    implements _i4.FirebasePerformance {
-  _FakeFirebasePerformance_2(Object parent, Invocation parentInvocation)
+class _FakeFirebasePerformance_1 extends _i1.SmartFake
+    implements _i3.FirebasePerformance {
+  _FakeFirebasePerformance_1(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -52,7 +45,7 @@ class _FakeFirebasePerformance_2 extends _i1.SmartFake
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockBusinessAnalyticsService extends _i1.Mock
-    implements _i5.BusinessAnalyticsService {
+    implements _i4.BusinessAnalyticsService {
   MockBusinessAnalyticsService() {
     _i1.throwOnMissingStub(this);
   }
@@ -63,22 +56,22 @@ class MockBusinessAnalyticsService extends _i1.Mock
           as bool);
 
   @override
-  _i6.Future<void> initialize({
-    required _i7.FirebaseAnalyticsService? analyticsService,
-    required _i8.MonitoringService? monitoringService,
+  _i5.Future<void> initialize({
+    required _i6.FirebaseAnalyticsService? analyticsService,
+    required _i7.MonitoringService? monitoringService,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#initialize, [], {
               #analyticsService: analyticsService,
               #monitoringService: monitoringService,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> setUser({
+  _i5.Future<void> setUser({
     required String? userId,
     required String? userType,
     Map<String, String>? userProperties,
@@ -89,13 +82,13 @@ class MockBusinessAnalyticsService extends _i1.Mock
               #userType: userType,
               #userProperties: userProperties,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackScreenView({
+  _i5.Future<void> trackScreenView({
     required String? screenName,
     String? screenClass,
     Map<String, Object?>? parameters,
@@ -106,13 +99,13 @@ class MockBusinessAnalyticsService extends _i1.Mock
               #screenClass: screenClass,
               #parameters: parameters,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackUserAction({
+  _i5.Future<void> trackUserAction({
     required String? actionName,
     String? category,
     String? screenName,
@@ -125,13 +118,13 @@ class MockBusinessAnalyticsService extends _i1.Mock
               #screenName: screenName,
               #parameters: parameters,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackFunnelStage({
+  _i5.Future<void> trackFunnelStage({
     required String? funnelName,
     required String? stageName,
     Map<String, Object?>? parameters,
@@ -142,13 +135,13 @@ class MockBusinessAnalyticsService extends _i1.Mock
               #stageName: stageName,
               #parameters: parameters,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackBusinessEvent({
+  _i5.Future<void> trackBusinessEvent({
     required String? eventName,
     double? revenue,
     String? currency,
@@ -161,13 +154,13 @@ class MockBusinessAnalyticsService extends _i1.Mock
               #currency: currency,
               #parameters: parameters,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackEngagement({
+  _i5.Future<void> trackEngagement({
     required String? engagementType,
     Duration? duration,
     int? count,
@@ -180,13 +173,13 @@ class MockBusinessAnalyticsService extends _i1.Mock
               #count: count,
               #parameters: parameters,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackError({
+  _i5.Future<void> trackError({
     required String? errorType,
     required dynamic error,
     StackTrace? stackTrace,
@@ -203,10 +196,10 @@ class MockBusinessAnalyticsService extends _i1.Mock
               #userAction: userAction,
               #metadata: metadata,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
   List<String> getUserJourney() =>
@@ -233,20 +226,20 @@ class MockBusinessAnalyticsService extends _i1.Mock
           as Map<String, dynamic>);
 
   @override
-  _i6.Future<void> dispose() =>
+  _i5.Future<void> dispose() =>
       (super.noSuchMethod(
             Invocation.method(#dispose, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 }
 
 /// A class which mocks [FirebaseAnalyticsService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockFirebaseAnalyticsService extends _i1.Mock
-    implements _i7.FirebaseAnalyticsService {
+    implements _i6.FirebaseAnalyticsService {
   MockFirebaseAnalyticsService() {
     _i1.throwOnMissingStub(this);
   }
@@ -263,26 +256,15 @@ class MockFirebaseAnalyticsService extends _i1.Mock
           as _i2.FirebaseAnalytics);
 
   @override
-  _i3.FirebaseCrashlytics get crashlytics =>
-      (super.noSuchMethod(
-            Invocation.getter(#crashlytics),
-            returnValue: _FakeFirebaseCrashlytics_1(
-              this,
-              Invocation.getter(#crashlytics),
-            ),
-          )
-          as _i3.FirebaseCrashlytics);
-
-  @override
-  _i4.FirebasePerformance get performance =>
+  _i3.FirebasePerformance get performance =>
       (super.noSuchMethod(
             Invocation.getter(#performance),
-            returnValue: _FakeFirebasePerformance_2(
+            returnValue: _FakeFirebasePerformance_1(
               this,
               Invocation.getter(#performance),
             ),
           )
-          as _i4.FirebasePerformance);
+          as _i3.FirebasePerformance);
 
   @override
   bool get isInitialized =>
@@ -290,34 +272,34 @@ class MockFirebaseAnalyticsService extends _i1.Mock
           as bool);
 
   @override
-  _i6.Future<void> initialize() =>
+  _i5.Future<void> initialize() =>
       (super.noSuchMethod(
             Invocation.method(#initialize, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> setUserId(String? userId) =>
+  _i5.Future<void> setUserId(String? userId) =>
       (super.noSuchMethod(
             Invocation.method(#setUserId, [userId]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> setUserType(String? userType) =>
+  _i5.Future<void> setUserType(String? userType) =>
       (super.noSuchMethod(
             Invocation.method(#setUserType, [userType]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> logEvent(
+  _i5.Future<void> logEvent(
     String? eventName, {
     Map<String, Object?>? parameters,
   }) =>
@@ -327,13 +309,13 @@ class MockFirebaseAnalyticsService extends _i1.Mock
               [eventName],
               {#parameters: parameters},
             ),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> logScreenView({
+  _i5.Future<void> logScreenView({
     required String? screenName,
     String? screenClass,
     Map<String, Object?>? parameters,
@@ -344,13 +326,13 @@ class MockFirebaseAnalyticsService extends _i1.Mock
               #screenClass: screenClass,
               #parameters: parameters,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> recordError(
+  _i5.Future<void> recordError(
     dynamic error,
     StackTrace? stackTrace, {
     Map<String, dynamic>? metadata,
@@ -362,30 +344,30 @@ class MockFirebaseAnalyticsService extends _i1.Mock
               [error, stackTrace],
               {#metadata: metadata, #fatal: fatal},
             ),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<_i4.Trace?> startTrace(String? traceName) =>
+  _i5.Future<_i3.Trace?> startTrace(String? traceName) =>
       (super.noSuchMethod(
             Invocation.method(#startTrace, [traceName]),
-            returnValue: _i6.Future<_i4.Trace?>.value(),
+            returnValue: _i5.Future<_i3.Trace?>.value(),
           )
-          as _i6.Future<_i4.Trace?>);
+          as _i5.Future<_i3.Trace?>);
 
   @override
-  _i6.Future<void> stopTrace(String? traceName) =>
+  _i5.Future<void> stopTrace(String? traceName) =>
       (super.noSuchMethod(
             Invocation.method(#stopTrace, [traceName]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> setTraceAttribute(
+  _i5.Future<void> setTraceAttribute(
     String? traceName,
     String? attribute,
     String? value,
@@ -396,24 +378,24 @@ class MockFirebaseAnalyticsService extends _i1.Mock
               attribute,
               value,
             ]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<_i4.HttpMetric?> startHttpMetric(
+  _i5.Future<_i3.HttpMetric?> startHttpMetric(
     String? url,
-    _i4.HttpMethod? httpMethod,
+    _i3.HttpMethod? httpMethod,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#startHttpMetric, [url, httpMethod]),
-            returnValue: _i6.Future<_i4.HttpMetric?>.value(),
+            returnValue: _i5.Future<_i3.HttpMetric?>.value(),
           )
-          as _i6.Future<_i4.HttpMetric?>);
+          as _i5.Future<_i3.HttpMetric?>);
 
   @override
-  _i6.Future<void> stopHttpMetric(
+  _i5.Future<void> stopHttpMetric(
     String? url, {
     int? responseCode,
     int? requestPayloadSize,
@@ -429,25 +411,25 @@ class MockFirebaseAnalyticsService extends _i1.Mock
                 #responsePayloadSize: responsePayloadSize,
               },
             ),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> dispose() =>
+  _i5.Future<void> dispose() =>
       (super.noSuchMethod(
             Invocation.method(#dispose, []),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 }
 
 /// A class which mocks [MonitoringService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMonitoringService extends _i1.Mock implements _i8.MonitoringService {
+class MockMonitoringService extends _i1.Mock implements _i7.MonitoringService {
   MockMonitoringService() {
     _i1.throwOnMissingStub(this);
   }
@@ -461,17 +443,17 @@ class MockMonitoringService extends _i1.Mock implements _i8.MonitoringService {
           as bool);
 
   @override
-  _i6.Future<void> initialize({
-    _i7.FirebaseAnalyticsService? analyticsService,
+  _i5.Future<void> initialize({
+    _i6.FirebaseAnalyticsService? analyticsService,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#initialize, [], {
               #analyticsService: analyticsService,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
   void logDebug(String? message, {Map<String, dynamic>? metadata}) =>
@@ -525,18 +507,18 @@ class MockMonitoringService extends _i1.Mock implements _i8.MonitoringService {
   );
 
   @override
-  List<_i8.LogEntry> getRecentLogs({
+  List<_i7.LogEntry> getRecentLogs({
     int? limit = 100,
-    _i8.LogLevel? minLevel,
+    _i7.LogLevel? minLevel,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#getRecentLogs, [], {
               #limit: limit,
               #minLevel: minLevel,
             }),
-            returnValue: <_i8.LogEntry>[],
+            returnValue: <_i7.LogEntry>[],
           )
-          as List<_i8.LogEntry>);
+          as List<_i7.LogEntry>);
 
   @override
   Map<String, dynamic> getErrorStats() =>
@@ -561,7 +543,7 @@ class MockMonitoringService extends _i1.Mock implements _i8.MonitoringService {
   );
 
   @override
-  _i6.Future<void> trackPerformanceMetric({
+  _i5.Future<void> trackPerformanceMetric({
     required String? metricName,
     required Duration? duration,
     Map<String, Object?>? additionalData,
@@ -572,13 +554,13 @@ class MockMonitoringService extends _i1.Mock implements _i8.MonitoringService {
               #duration: duration,
               #additionalData: additionalData,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackError({
+  _i5.Future<void> trackError({
     required String? errorType,
     required dynamic error,
     StackTrace? stackTrace,
@@ -593,13 +575,13 @@ class MockMonitoringService extends _i1.Mock implements _i8.MonitoringService {
               #metadata: metadata,
               #fatal: fatal,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackUserAction({
+  _i5.Future<void> trackUserAction({
     required String? actionName,
     String? screenName,
     Map<String, Object?>? parameters,
@@ -610,13 +592,13 @@ class MockMonitoringService extends _i1.Mock implements _i8.MonitoringService {
               #screenName: screenName,
               #parameters: parameters,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackScreenView({
+  _i5.Future<void> trackScreenView({
     required String? screenName,
     String? screenClass,
     Map<String, Object?>? parameters,
@@ -627,10 +609,10 @@ class MockMonitoringService extends _i1.Mock implements _i8.MonitoringService {
               #screenClass: screenClass,
               #parameters: parameters,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
   void dispose() => super.noSuchMethod(
@@ -643,15 +625,15 @@ class MockMonitoringService extends _i1.Mock implements _i8.MonitoringService {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockUserBehaviorTrackingService extends _i1.Mock
-    implements _i5.UserBehaviorTrackingService {
+    implements _i4.UserBehaviorTrackingService {
   MockUserBehaviorTrackingService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
   void initialize({
-    required _i5.BusinessAnalyticsService? businessAnalytics,
-    required _i8.MonitoringService? monitoringService,
+    required _i4.BusinessAnalyticsService? businessAnalytics,
+    required _i7.MonitoringService? monitoringService,
   }) => super.noSuchMethod(
     Invocation.method(#initialize, [], {
       #businessAnalytics: businessAnalytics,
@@ -661,7 +643,7 @@ class MockUserBehaviorTrackingService extends _i1.Mock
   );
 
   @override
-  _i6.Future<void> trackClickPattern({
+  _i5.Future<void> trackClickPattern({
     required String? elementId,
     required String? screenName,
     Map<String, Object?>? metadata,
@@ -672,31 +654,31 @@ class MockUserBehaviorTrackingService extends _i1.Mock
               #screenName: screenName,
               #metadata: metadata,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> startScreenTimeTracking(String? screenName) =>
+  _i5.Future<void> startScreenTimeTracking(String? screenName) =>
       (super.noSuchMethod(
             Invocation.method(#startScreenTimeTracking, [screenName]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> endScreenTimeTracking(String? screenName) =>
+  _i5.Future<void> endScreenTimeTracking(String? screenName) =>
       (super.noSuchMethod(
             Invocation.method(#endScreenTimeTracking, [screenName]),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackSearchBehavior({
+  _i5.Future<void> trackSearchBehavior({
     required String? query,
     required String? searchType,
     int? resultsCount,
@@ -709,13 +691,13 @@ class MockUserBehaviorTrackingService extends _i1.Mock
               #resultsCount: resultsCount,
               #selectedResult: selectedResult,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i6.Future<void> trackUserErrorEncounter({
+  _i5.Future<void> trackUserErrorEncounter({
     required String? errorType,
     required String? screenName,
     String? userAction,
@@ -728,10 +710,10 @@ class MockUserBehaviorTrackingService extends _i1.Mock
               #userAction: userAction,
               #context: context,
             }),
-            returnValue: _i6.Future<void>.value(),
-            returnValueForMissingStub: _i6.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i6.Future<void>);
+          as _i5.Future<void>);
 
   @override
   Map<String, dynamic> getBehaviorSummary() =>

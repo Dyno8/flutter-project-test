@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/analytics/business_analytics_service.dart';
 import '../../../../core/analytics/firebase_analytics_service.dart';
 import '../../../../core/monitoring/monitoring_service.dart';
+import '../../../../core/performance/performance_manager.dart';
 import '../../../../core/di/injection_container.dart' as di;
-import '../widgets/charts/chart_theme.dart';
 
 /// Comprehensive real-time analytics dashboard for admin users
 class AnalyticsDashboardPage extends StatefulWidget {
@@ -21,6 +20,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
   late BusinessAnalyticsService _businessAnalytics;
   late FirebaseAnalyticsService _firebaseAnalytics;
   late MonitoringService _monitoringService;
+  late PerformanceManager _performanceManager;
 
   // Real-time data
   Map<String, dynamic> _realtimeMetrics = {};
@@ -42,6 +42,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
     _businessAnalytics = di.sl<BusinessAnalyticsService>();
     _firebaseAnalytics = di.sl<FirebaseAnalyticsService>();
     _monitoringService = di.sl<MonitoringService>();
+    _performanceManager = di.sl<PerformanceManager>();
   }
 
   Future<void> _loadAnalyticsData() async {
@@ -50,7 +51,9 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
     try {
       // Load business analytics data
       _businessMetrics = _businessAnalytics.getSessionInfo();
-      _userBehaviorData = di.sl<UserBehaviorTrackingService>().getBehaviorSummary();
+      _userBehaviorData = di
+          .sl<UserBehaviorTrackingService>()
+          .getBehaviorSummary();
 
       // Load performance data
       _performanceStats = _monitoringService.getHealthStatus();
@@ -185,14 +188,16 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
       ),
       MetricCard(
         title: 'Revenue Today',
-        value: '\$${_realtimeMetrics['revenue_today']?.toStringAsFixed(2) ?? '0.00'}',
+        value:
+            '\$${_realtimeMetrics['revenue_today']?.toStringAsFixed(2) ?? '0.00'}',
         icon: Icons.attach_money,
         color: Colors.orange,
         trend: '+15.7%',
       ),
       MetricCard(
         title: 'Error Rate',
-        value: '${((_realtimeMetrics['error_rate'] ?? 0) * 100).toStringAsFixed(2)}%',
+        value:
+            '${((_realtimeMetrics['error_rate'] ?? 0) * 100).toStringAsFixed(2)}%',
         icon: Icons.error_outline,
         color: Colors.red,
         trend: '-2.1%',
@@ -253,10 +258,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
   List<FlSpot> _generateChartData() {
     // Generate sample real-time data points
     return List.generate(24, (index) {
-      return FlSpot(
-        index.toDouble(),
-        50 + (index * 2) + (index % 3 * 10),
-      );
+      return FlSpot(index.toDouble(), 50 + (index * 2) + (index % 3 * 10));
     });
   }
 
@@ -296,7 +298,12 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
     );
   }
 
-  Widget _buildInsightItem(String title, String description, IconData icon, Color color) {
+  Widget _buildInsightItem(
+    String title,
+    String description,
+    IconData icon,
+    Color color,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -320,10 +327,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
                 ),
                 Text(
                   description,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
               ],
             ),
@@ -407,7 +411,12 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
     );
   }
 
-  Widget _buildStatItem(String title, String value, IconData icon, Color color) {
+  Widget _buildStatItem(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.all(4),
@@ -523,10 +532,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(label),
-              Text('${(percentage * 100).toInt()}%'),
-            ],
+            children: [Text(label), Text('${(percentage * 100).toInt()}%')],
           ),
           const SizedBox(height: 4),
           LinearProgressIndicator(
@@ -576,7 +582,12 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
     );
   }
 
-  Widget _buildPerformanceItem(String label, String value, double progress, Color color) {
+  Widget _buildPerformanceItem(
+    String label,
+    String value,
+    double progress,
+    Color color,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
@@ -586,7 +597,10 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(label),
-              Text(value, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+              Text(
+                value,
+                style: TextStyle(color: color, fontWeight: FontWeight.bold),
+              ),
             ],
           ),
           const SizedBox(height: 4),
@@ -663,7 +677,10 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: healthColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
@@ -723,7 +740,11 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
                   child: _buildRevenueItem('Today', '\$12,450', Colors.green),
                 ),
                 Expanded(
-                  child: _buildRevenueItem('This Week', '\$87,320', Colors.blue),
+                  child: _buildRevenueItem(
+                    'This Week',
+                    '\$87,320',
+                    Colors.blue,
+                  ),
                 ),
               ],
             ),
@@ -731,10 +752,18 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
             Row(
               children: [
                 Expanded(
-                  child: _buildRevenueItem('This Month', '\$345,670', Colors.orange),
+                  child: _buildRevenueItem(
+                    'This Month',
+                    '\$345,670',
+                    Colors.orange,
+                  ),
                 ),
                 Expanded(
-                  child: _buildRevenueItem('This Year', '\$2,456,890', Colors.purple),
+                  child: _buildRevenueItem(
+                    'This Year',
+                    '\$2,456,890',
+                    Colors.purple,
+                  ),
                 ),
               ],
             ),
@@ -762,10 +791,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
               color: color,
             ),
           ),
-          Text(
-            period,
-            style: const TextStyle(fontSize: 12),
-          ),
+          Text(period, style: const TextStyle(fontSize: 12)),
         ],
       ),
     );
@@ -801,10 +827,7 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
           Icon(icon, size: 20, color: Colors.grey[600]),
           const SizedBox(width: 12),
           Expanded(child: Text(label)),
-          Text(
-            count,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          Text(count, style: const TextStyle(fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -892,16 +915,16 @@ class _AnalyticsDashboardPageState extends State<AnalyticsDashboardPage>
 
   Future<void> _exportToPDF() async {
     // Implementation for PDF export
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Exporting to PDF...')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Exporting to PDF...')));
   }
 
   Future<void> _exportToCSV() async {
     // Implementation for CSV export
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Exporting to CSV...')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Exporting to CSV...')));
   }
 }
 
@@ -947,17 +970,11 @@ class MetricCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(
               title,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 12,
-              ),
+              style: TextStyle(color: Colors.grey[600], fontSize: 12),
             ),
           ],
         ),

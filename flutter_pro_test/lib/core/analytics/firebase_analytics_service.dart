@@ -17,8 +17,11 @@ class FirebaseAnalyticsService {
 
   // Firebase services
   late final FirebaseAnalytics _analytics;
-  late final FirebaseCrashlytics _crashlytics;
+  FirebaseCrashlytics? _crashlytics; // Nullable for web compatibility
   late final FirebasePerformance _performance;
+
+  // Platform support flags
+  bool get _isCrashlyticsSupported => !kIsWeb;
 
   // Integration services
   final MonitoringService _monitoringService = MonitoringService();
@@ -41,7 +44,20 @@ class FirebaseAnalyticsService {
     try {
       // Initialize Firebase services
       _analytics = FirebaseAnalytics.instance;
-      _crashlytics = FirebaseCrashlytics.instance;
+
+      // Initialize Crashlytics only on supported platforms (iOS/Android)
+      if (_isCrashlyticsSupported) {
+        _crashlytics = FirebaseCrashlytics.instance;
+        if (EnvironmentConfig.isDebug) {
+          print('📊 Firebase Crashlytics initialized for mobile platform');
+        }
+      } else {
+        _crashlytics = null;
+        if (EnvironmentConfig.isDebug) {
+          print('📊 Firebase Crashlytics skipped for web platform');
+        }
+      }
+
       _performance = FirebasePerformance.instance;
 
       // Configure based on environment
@@ -89,10 +105,14 @@ class FirebaseAnalyticsService {
       EnvironmentConfig.performanceConfig.analyticsEnabled,
     );
 
-    // Configure crashlytics collection
-    await _crashlytics.setCrashlyticsCollectionEnabled(
-      EnvironmentConfig.performanceConfig.crashReportingEnabled,
-    );
+    // Configure crashlytics collection (only if supported)
+    if (_crashlytics != null) {
+      await _crashlytics!.setCrashlyticsCollectionEnabled(
+        EnvironmentConfig.performanceConfig.crashReportingEnabled,
+      );
+    } else if (EnvironmentConfig.isDebug) {
+      print('📊 Crashlytics configuration skipped (web platform)');
+    }
 
     // Configure performance monitoring
     await _performance.setPerformanceCollectionEnabled(
@@ -100,16 +120,36 @@ class FirebaseAnalyticsService {
     );
 
     // Set debug mode for non-production environments
-    if (!isProduction) {
-      await _analytics.setSessionTimeoutDuration(const Duration(minutes: 30));
+    // Note: setSessionTimeoutDuration is not supported on web platform
+    if (!isProduction && !kIsWeb) {
+      try {
+        await _analytics.setSessionTimeoutDuration(const Duration(minutes: 30));
+      } catch (e) {
+        if (EnvironmentConfig.isDebug) {
+          print('📊 Session timeout configuration skipped: $e');
+        }
+      }
+    } else if (!isProduction && kIsWeb) {
+      // Web-compatible session timeout handling
+      if (EnvironmentConfig.isDebug) {
+        print('📊 Session timeout configuration skipped (web platform)');
+      }
     }
   }
 
   /// Setup crash reporting with custom handlers
   Future<void> _setupCrashReporting() async {
+    // Only set up crash reporting if Crashlytics is available
+    if (_crashlytics == null) {
+      if (EnvironmentConfig.isDebug) {
+        print('📊 Crash reporting setup skipped (web platform)');
+      }
+      return;
+    }
+
     // Set up Flutter error handling
     FlutterError.onError = (FlutterErrorDetails details) {
-      _crashlytics.recordFlutterFatalError(details);
+      _crashlytics?.recordFlutterFatalError(details);
       _monitoringService.logError(
         'Flutter Fatal Error',
         error: details.exception,
@@ -123,7 +163,7 @@ class FirebaseAnalyticsService {
 
     // Set up platform error handling
     PlatformDispatcher.instance.onError = (error, stack) {
-      _crashlytics.recordError(error, stack, fatal: true);
+      _crashlytics?.recordError(error, stack, fatal: true);
       _monitoringService.logError(
         'Platform Error',
         error: error,
@@ -133,15 +173,19 @@ class FirebaseAnalyticsService {
     };
 
     // Set custom keys for better crash analysis
-    await _crashlytics.setCustomKey(
+    await _crashlytics!.setCustomKey(
       'environment',
       EnvironmentConfig.environment,
     );
-    await _crashlytics.setCustomKey(
+    await _crashlytics!.setCustomKey(
       'app_version',
       EnvironmentConfig.appVersion,
     );
-    await _crashlytics.setCustomKey('platform', Platform.operatingSystem);
+
+    // Platform detection for custom key
+    if (!kIsWeb) {
+      await _crashlytics!.setCustomKey('platform', Platform.operatingSystem);
+    }
   }
 
   /// Setup performance monitoring
@@ -173,7 +217,7 @@ class FirebaseAnalyticsService {
 
     try {
       await _analytics.setUserId(id: userId);
-      await _crashlytics.setUserIdentifier(userId);
+      await _crashlytics?.setUserIdentifier(userId);
 
       await _analytics.setUserProperty(name: _userIdKey, value: userId);
     } catch (e, stackTrace) {
@@ -192,7 +236,7 @@ class FirebaseAnalyticsService {
     try {
       await _analytics.setUserProperty(name: _userTypeKey, value: userType);
 
-      await _crashlytics.setCustomKey('user_type', userType);
+      await _crashlytics?.setCustomKey('user_type', userType);
     } catch (e, stackTrace) {
       _monitoringService.logError(
         'Failed to set user type',
@@ -282,13 +326,25 @@ class FirebaseAnalyticsService {
     if (!_isInitialized) await initialize();
 
     try {
-      await _crashlytics.recordError(
-        error,
-        stackTrace,
-        fatal: fatal,
-        information:
-            metadata?.entries.map((e) => '${e.key}: ${e.value}').toList() ?? [],
-      );
+      // Only record to Crashlytics if available (mobile platforms)
+      if (_crashlytics != null) {
+        await _crashlytics!.recordError(
+          error,
+          stackTrace,
+          fatal: fatal,
+          information:
+              metadata?.entries.map((e) => '${e.key}: ${e.value}').toList() ??
+              [],
+        );
+      } else {
+        // For web platform, log to monitoring service only
+        _monitoringService.logError(
+          'Error recorded (web platform)',
+          error: error,
+          stackTrace: stackTrace,
+          metadata: metadata,
+        );
+      }
     } catch (e, stackTrace) {
       _monitoringService.logError(
         'Failed to record error to Crashlytics',
@@ -405,8 +461,8 @@ class FirebaseAnalyticsService {
   /// Get Firebase Analytics instance for advanced usage
   FirebaseAnalytics get analytics => _analytics;
 
-  /// Get Firebase Crashlytics instance for advanced usage
-  FirebaseCrashlytics get crashlytics => _crashlytics;
+  /// Get Firebase Crashlytics instance for advanced usage (null on web)
+  FirebaseCrashlytics? get crashlytics => _crashlytics;
 
   /// Get Firebase Performance instance for advanced usage
   FirebasePerformance get performance => _performance;

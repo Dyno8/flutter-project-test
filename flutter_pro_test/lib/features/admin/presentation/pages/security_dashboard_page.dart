@@ -3,8 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/security/security_manager.dart';
 import '../../../../core/security/advanced_security_manager.dart';
 import '../../../../core/security/security_compliance_manager.dart';
+import '../../../../core/security/security_monitoring_service.dart';
 import '../../../../core/monitoring/monitoring_service.dart';
 import '../../../../core/performance/performance_manager.dart';
+import '../../../../core/analytics/firebase_analytics_service.dart';
 import '../../../../shared/widgets/custom_card.dart';
 import '../../../../shared/widgets/loading_widget.dart';
 
@@ -21,8 +23,11 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
       AdvancedSecurityManager();
   final SecurityComplianceManager _complianceManager =
       SecurityComplianceManager();
+  final SecurityMonitoringService _securityMonitoringService =
+      SecurityMonitoringService();
   final MonitoringService _monitoringService = MonitoringService();
   final PerformanceManager _performanceManager = PerformanceManager();
+  final FirebaseAnalyticsService _analyticsService = FirebaseAnalyticsService();
 
   bool _isLoading = true;
   Map<String, dynamic> _securityLogs = {};
@@ -32,6 +37,9 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
   SecurityHealthReport? _securityHealthReport;
   List<Map<String, dynamic>> _securityViolations = [];
   SecurityAuditReport? _latestAuditReport;
+  List<Map<String, dynamic>> _securityAlerts = [];
+  List<Map<String, dynamic>> _securityIncidents = [];
+  Map<String, dynamic>? _complianceStatus;
 
   @override
   void initState() {
@@ -46,6 +54,10 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
       await _securityManager.initialize();
       await _advancedSecurityManager.initialize();
       await _complianceManager.initialize();
+      await _analyticsService.initialize();
+      await _securityMonitoringService.initialize(
+        analyticsService: _analyticsService,
+      );
       await _monitoringService.initialize();
       await _performanceManager.initialize();
 
@@ -64,6 +76,13 @@ class _SecurityDashboardPageState extends State<SecurityDashboardPage> {
       if (complianceReports.isNotEmpty) {
         _latestAuditReport = complianceReports.last;
       }
+
+      // Load security monitoring data
+      _securityAlerts = await _securityMonitoringService.getSecurityAlerts();
+      _securityIncidents = await _securityMonitoringService
+          .getSecurityIncidents();
+      _complianceStatus = await _securityMonitoringService
+          .getComplianceStatus();
 
       setState(() {
         _securityLogs = {

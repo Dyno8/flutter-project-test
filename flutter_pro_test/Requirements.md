@@ -146,7 +146,7 @@ Xây dựng MVP ứng dụng **đặt lịch dịch vụ chăm sóc theo giờ t
 
 ## 🔁 5. Luồng người dùng (User Flow)
 
-### 5.1. Clients
+### 5.1. Client
 
 1. Mở app → Đăng ký / Đăng nhập
 2. Chọn dịch vụ
@@ -229,5 +229,4 @@ reviews
   "comment": "Rất hài lòng!",
   "createdAt": "timestamp"
 }
-
 ```
