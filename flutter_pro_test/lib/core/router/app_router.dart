@@ -48,7 +48,8 @@ class AppRouter {
   static const String adminAnalytics = '/admin/analytics';
 
   static final GoRouter router = GoRouter(
-    initialLocation: adminDashboard, // Temporarily bypass splash for testing
+    initialLocation:
+        splash, // Start with splash screen for proper authentication flow
     routes: [
       // Splash Screen
       GoRoute(path: splash, builder: (context, state) => const SplashScreen()),
@@ -205,17 +206,63 @@ class AppRouter {
         ],
       ),
 
-      // Admin Routes
+      // Admin Routes (Protected)
       GoRoute(
         path: adminDashboard,
-        builder: (context, state) => const SimpleAdminDashboardScreen(),
+        builder: (context, state) =>
+            const AdminAuthGuard(child: SimpleAdminDashboardScreen()),
       ),
       GoRoute(
         path: adminAnalytics,
-        builder: (context, state) => const AnalyticsDashboardPage(),
+        builder: (context, state) =>
+            const AdminAuthGuard(child: AnalyticsDashboardPage()),
       ),
     ],
   );
+}
+
+// Admin Authentication Guard
+class AdminAuthGuard extends StatelessWidget {
+  final Widget child;
+
+  const AdminAuthGuard({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    // For now, show a simple admin login screen
+    // In a real implementation, this would check admin authentication status
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.admin_panel_settings,
+              size: 64,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Admin Access Required',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Please contact system administrator for access',
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () => context.go(AppRouter.login),
+              child: const Text('Back to Login'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // Splash screen with authentication state handling

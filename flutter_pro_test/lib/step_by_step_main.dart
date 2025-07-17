@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'firebase_options.dart';
+import 'core/utils/firebase_initializer.dart';
 import 'shared/services/firebase_service.dart';
 import 'core/di/injection_container.dart' as di;
 
@@ -70,9 +70,7 @@ class _StepByStepScreenState extends State<StepByStepScreen> {
       // Step 2: Firebase initialization
       setState(() => currentStep = 'Firebase initialization');
       addLog('🔥 Step 2: Initializing Firebase...');
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+      await FirebaseInitializer.initializeSafely();
       addLog('✅ Firebase initialized successfully');
 
       final app = Firebase.app();

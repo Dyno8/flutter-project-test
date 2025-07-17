@@ -126,18 +126,99 @@ Thumbs.db
 .env.local
 .env.production
 .env.staging
+.env.development
 
 # Firebase configuration files with real API keys
 # Keep the template files but ignore the real ones
 ios/Runner/GoogleService-Info.plist.real
+ios/Runner/GoogleService-Info.plist.dev
 android/app/google-services.json.real
+android/app/google-services.json.dev
+android/app/google-services.json.backup
+android/app/google-services.json.tmp
 macos/Runner/GoogleService-Info.plist.real
+macos/Runner/GoogleService-Info.plist.dev
+
+# Security Cleanup & Shell Script Protection
+# Temporary files created during Git cleanup operations
+exposed_keys.txt
+api_key_replacements.txt
+/tmp/api_key_replacements.txt
+.bfg-report/
+*.bfg-report
+
+# Shell scripts that might contain sensitive data during execution
+# (The actual script files are safe to commit as they use placeholders)
+scripts/*.tmp
+scripts/*.temp
+scripts/*_with_keys.sh
+scripts/*_real_keys.sh
+scripts/setup_*_real.sh
+
+# Backup directories created during security cleanup
+../flutter_pro_test_backup_*
+*_backup_*
+backup-before-cleanup*
+
+# Git filter operations temporary files
+.git-rewrite/
+refs/original/
 
 # Backup files that might contain sensitive data
 *.backup
 *.bak
+*.orig
 firebase_options.dart.backup
+firebase_options.dart.bak
+firebase_options.dart.orig
 
 # IDE and editor files that might contain sensitive data
 .vscode/settings.json
 .idea/workspace.xml
+
+# Security incident response files with potential sensitive content
+SECURITY_INCIDENT_*.md
+security_response_*.txt
+incident_*.log
+
+# Additional Security Patterns for Shell Scripts & Cleanup
+# Files that might be created during emergency security responses
+emergency_*.log
+cleanup_*.log
+git_cleanup_*.log
+security_audit_*.txt
+
+# Temporary environment files that might be created during builds
+.env.tmp
+.env.build
+.env.deploy
+firebase_env_*
+api_keys_*.txt
+
+# Shell script execution artifacts
+scripts/*.log
+scripts/output_*
+scripts/result_*
+scripts/debug_*
+
+# macOS and Linux temporary files from sed operations
+*.sed_backup
+*~
+
+# Files that might contain API keys during development/debugging
+debug_firebase_*.txt
+test_api_keys_*.txt
+firebase_debug_*.json
+api_test_*.log
+
+# Prevent accidental commit of files with "secret" or "key" in name
+*secret*
+*_secret_*
+*_key_*
+*_keys_*
+!*_key_example*
+!*_keys_example*
+
+# Git operation temporary files
+.git/COMMIT_EDITMSG.backup
+.git/index.backup

@@ -1,92 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- CareNow MVP - Network Security Configuration for Android -->
-<!-- This configuration enforces secure network communication -->
+<!-- CareNow MVP - Simplified Network Security Configuration for Debugging -->
 <network-security-config>
-    <!-- Production configuration -->
-    <domain-config cleartextTrafficPermitted="false">
-        <!-- CareNow API domains -->
-        <domain includeSubdomains="true">api.carenow.com</domain>
-        <domain includeSubdomains="true">staging-api.carenow.com</domain>
-        
-        <!-- Firebase domains -->
-        <domain includeSubdomains="true">firebaseapp.com</domain>
-        <domain includeSubdomains="true">googleapis.com</domain>
-        <domain includeSubdomains="true">google.com</domain>
-        <domain includeSubdomains="true">gstatic.com</domain>
-        
-        <!-- Certificate pinning for production -->
-        <pin-set expiration="2026-01-01">
-            <!-- CareNow API certificate pins (SHA-256) -->
-            <pin digest="SHA-256">AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</pin>
-            <pin digest="SHA-256">BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=</pin>
-        </pin-set>
-        
-        <!-- Trust anchors -->
+    <!-- Simplified base configuration for debugging -->
+    <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
-            <!-- Trust system CAs -->
+            <!-- Trust system and user CAs -->
             <certificates src="system"/>
-            <!-- Custom CA if needed -->
-            <!-- <certificates src="@raw/custom_ca"/> -->
-        </trust-anchors>
-    </domain-config>
-    
-    <!-- Firebase specific configuration -->
-    <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">firebaseapp.com</domain>
-        <domain includeSubdomains="true">firebaseio.com</domain>
-        <domain includeSubdomains="true">googleapis.com</domain>
-        
-        <!-- Firebase certificate pins -->
-        <pin-set expiration="2026-01-01">
-            <pin digest="SHA-256">CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC=</pin>
-            <pin digest="SHA-256">DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD=</pin>
-        </pin-set>
-        
-        <trust-anchors>
-            <certificates src="system"/>
-        </trust-anchors>
-    </domain-config>
-    
-    <!-- Stripe payment processing -->
-    <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">api.stripe.com</domain>
-        <domain includeSubdomains="true">js.stripe.com</domain>
-        
-        <!-- Stripe certificate pins -->
-        <pin-set expiration="2026-01-01">
-            <pin digest="SHA-256">EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE=</pin>
-            <pin digest="SHA-256">FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF=</pin>
-        </pin-set>
-        
-        <trust-anchors>
-            <certificates src="system"/>
-        </trust-anchors>
-    </domain-config>
-    
-    <!-- Development and testing domains (less restrictive) -->
-    <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">dev-api.carenow.com</domain>
-        <domain includeSubdomains="true">localhost</domain>
-        <domain includeSubdomains="true">10.0.2.2</domain> <!-- Android emulator -->
-        <domain includeSubdomains="true">127.0.0.1</domain>
-        
-        <!-- No certificate pinning for development -->
-        <trust-anchors>
-            <certificates src="system"/>
-            <!-- Allow user-added CAs for development -->
             <certificates src="user"/>
         </trust-anchors>
-    </domain-config>
-    
-    <!-- Base configuration - most restrictive -->
-    <base-config cleartextTrafficPermitted="false">
-        <trust-anchors>
-            <!-- Only trust system CAs -->
-            <certificates src="system"/>
-        </trust-anchors>
     </base-config>
-    
-    <!-- Debug overrides (only active in debug builds) -->
+
+    <!-- Debug overrides (active in debug builds) -->
     <debug-overrides>
         <trust-anchors>
             <!-- Trust system and user CAs in debug -->

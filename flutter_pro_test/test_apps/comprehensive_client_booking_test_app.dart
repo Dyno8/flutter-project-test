@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_pro_test/core/utils/firebase_initializer.dart';
 
 import 'package:flutter_pro_test/core/di/injection_container.dart' as di;
-import 'package:flutter_pro_test/firebase_options.dart';
+
 import 'package:flutter_pro_test/shared/theme/app_theme.dart';
 import 'package:flutter_pro_test/features/client/presentation/bloc/client_booking_bloc.dart';
 import 'package:flutter_pro_test/features/client/presentation/bloc/client_booking_event.dart';
@@ -720,8 +720,8 @@ class TestResultsScreen extends StatelessWidget {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // Initialize Firebase safely
+  await FirebaseInitializer.initializeSafely();
 
   // Initialize dependencies
   await di.init();

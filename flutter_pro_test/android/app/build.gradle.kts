@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.carenow.app"
-    compileSdk = 34
+    compileSdk = 35
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -25,8 +25,8 @@ android {
 
     defaultConfig {
         applicationId = "com.carenow.app"
-        minSdk = 21
-        targetSdk = 34
+        minSdk = 23
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
@@ -56,39 +56,25 @@ android {
         debug {
             isDebuggable = true
             isMinifyEnabled = false
-            applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
         }
 
         create("staging") {
-            initWith(getByName("release"))
+            initWith(getByName("debug"))
             isDebuggable = false
-            isMinifyEnabled = true
-            isShrinkResources = true
-            applicationIdSuffix = ".staging"
+            isMinifyEnabled = false
+            isShrinkResources = false
             versionNameSuffix = "-STAGING"
-
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
 
             signingConfig = signingConfigs.getByName("debug")
         }
 
         release {
             isDebuggable = false
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
 
-            // ProGuard/R8 optimization
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-
-            // Production signing
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -119,7 +105,6 @@ android {
         checkReleaseBuilds = false
         abortOnError = false
     }
-}
 }
 
 flutter {

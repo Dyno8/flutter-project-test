@@ -1,0 +1,134 @@
+# Root-level .gitignore for flutter-project repository
+# This file covers security patterns for the entire repository
+
+# Environment Files - CRITICAL SECURITY
+.env
+.env.*
+*.env
+*.env.*
+!.env.example
+
+# Firebase Configuration Files with Real API Keys
+**/google-services.json.real
+**/GoogleService-Info.plist.real
+**/firebase-adminsdk-*.json
+firebase_options.dart.real
+
+# Security Cleanup & Emergency Response Files
+exposed_keys.txt
+api_key_replacements.txt
+**/exposed_keys.txt
+**/api_key_replacements.txt
+.bfg-report/
+**/.bfg-report/
+
+# Backup Files Created During Security Operations
+*.backup
+*.bak
+*.orig
+*_backup_*
+backup-before-cleanup*
+../flutter_pro_test_backup_*
+
+# Shell Scripts with Potential Sensitive Content
+**/*_with_keys.sh
+**/*_real_keys.sh
+**/setup_*_real.sh
+
+# Temporary Files from Security Scripts
+**/scripts/*.tmp
+**/scripts/*.temp
+**/scripts/output_*
+**/scripts/result_*
+**/scripts/debug_*
+
+# Git Filter Operations
+.git-rewrite/
+**/refs/original/
+
+# Security Incident Files
+SECURITY_INCIDENT_*.md
+security_response_*.txt
+incident_*.log
+emergency_*.log
+cleanup_*.log
+
+# API Keys and Secrets
+api_keys.dart
+secrets.dart
+**/config/secrets/
+**/private_keys/
+*secret*
+*_secret_*
+*_key_*
+*_keys_*
+!*_key_example*
+!*_keys_example*
+!setup-secrets.sh
+!**/setup-secrets.sh
+!github-secrets.sh
+!**/github-secrets.sh
+
+# Development Environment Files
+.env.tmp
+.env.build
+.env.deploy
+firebase_env_*
+api_keys_*.txt
+debug_firebase_*.txt
+test_api_keys_*.txt
+firebase_debug_*.json
+
+# macOS and Linux sed backup files
+*.sed_backup
+*~
+
+# Build and Release Artifacts
+**/build/
+**/dist/
+**/release/
+*.apk
+*.aab
+*.ipa
+*.app
+*.dmg
+
+# IDE and Editor Files
+.vscode/settings.json
+.idea/workspace.xml
+*.code-workspace
+
+# OS Generated Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# Logs
+*.log
+logs/
+crash_reports/
+performance_reports/
+
+# Coverage and Testing
+coverage/
+test_results/
+.coverage
+lcov.info
+
+# Flutter/Dart specific (for any Flutter projects in subdirectories)
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
+
+# Certificates and Signing
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+*.cer
+*.certSigningRequest

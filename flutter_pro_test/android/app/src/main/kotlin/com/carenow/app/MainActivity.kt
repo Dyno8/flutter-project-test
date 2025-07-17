@@ -1,4 +1,4 @@
-package com.example.flutter_pro_test
+package com.carenow.app
 
 import io.flutter.embedding.android.FlutterActivity
 

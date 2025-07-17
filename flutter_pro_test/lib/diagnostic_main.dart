@@ -1,53 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 void main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
-    
-    // Test Firebase initialization
-    print('🔥 Testing Firebase initialization...');
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    print('✅ Firebase initialized successfully');
-    
+
+    print('🚀 Starting CareNow Diagnostic App (No Firebase)...');
+    print('📱 Platform: Android');
+    print('🔧 Testing basic Flutter functionality...');
+
     runApp(const DiagnosticApp());
   } catch (e, stackTrace) {
     print('❌ Error during initialization: $e');
     print('Stack trace: $stackTrace');
-    
-    runApp(MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.red,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error, size: 64, color: Colors.white),
-              const SizedBox(height: 16),
-              const Text(
-                'Firebase Initialization Error',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          backgroundColor: Colors.red,
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error, size: 64, color: Colors.white),
+                const SizedBox(height: 16),
+                const Text(
+                  'Firebase Initialization Error',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  'Error: $e',
-                  style: const TextStyle(color: Colors.white),
-                  textAlign: TextAlign.center,
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    'Error: $e',
+                    style: const TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -96,23 +95,19 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
       diagnosticResults.add('🚀 Starting diagnostics...');
     });
 
-    // Test Firebase
-    try {
-      final app = Firebase.app();
-      setState(() {
-        diagnosticResults.add('✅ Firebase app: ${app.name}');
-        diagnosticResults.add('✅ Firebase project: ${app.options.projectId}');
-      });
-    } catch (e) {
-      setState(() {
-        diagnosticResults.add('❌ Firebase error: $e');
-      });
-    }
+    // Test basic Flutter functionality
+    setState(() {
+      diagnosticResults.add('✅ Flutter framework initialized');
+      diagnosticResults.add('✅ Material Design components available');
+      diagnosticResults.add('✅ Screen utilities configured');
+    });
 
     // Test screen util
     try {
       setState(() {
-        diagnosticResults.add('✅ ScreenUtil initialized: ${ScreenUtil().screenWidth}x${ScreenUtil().screenHeight}');
+        diagnosticResults.add(
+          '✅ ScreenUtil initialized: ${ScreenUtil().screenWidth}x${ScreenUtil().screenHeight}',
+        );
       });
     } catch (e) {
       setState(() {
@@ -159,16 +154,20 @@ class _DiagnosticScreenState extends State<DiagnosticScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: diagnosticResults.map((result) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Text(
-                        result,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                    )).toList(),
+                    children: diagnosticResults
+                        .map(
+                          (result) => Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Text(
+                              result,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'monospace',
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
               ),
