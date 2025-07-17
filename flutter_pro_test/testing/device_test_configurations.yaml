@@ -1,0 +1,393 @@
+# CareNow MVP - Android Device Test Configurations
+# This file defines test configurations for different Android devices and API levels
+
+test_configurations:
+  
+  # Critical Priority Devices (Must Pass)
+  critical_devices:
+    
+    - name: "Samsung Galaxy A52"
+      api_level: 30
+      android_version: "11"
+      screen_size: "6.5 inch"
+      resolution: "1080x2400"
+      density: "xhdpi"
+      ram: "6GB"
+      manufacturer: "Samsung"
+      market_share: "High in Vietnam"
+      test_priority: "Critical"
+      test_scenarios:
+        - client_booking_flow
+        - partner_job_management
+        - real_time_notifications
+        - payment_integration
+        - offline_functionality
+      
+    - name: "Xiaomi Redmi Note 10"
+      api_level: 30
+      android_version: "11"
+      screen_size: "6.43 inch"
+      resolution: "1080x2400"
+      density: "xhdpi"
+      ram: "4GB"
+      manufacturer: "Xiaomi"
+      market_share: "Very High in Vietnam"
+      test_priority: "Critical"
+      test_scenarios:
+        - complete_user_workflows
+        - performance_benchmarks
+        - memory_optimization
+        - firebase_integration
+        - vietnamese_localization
+
+    - name: "Oppo A74"
+      api_level: 30
+      android_version: "11"
+      screen_size: "6.43 inch"
+      resolution: "1080x2400"
+      density: "xhdpi"
+      ram: "6GB"
+      manufacturer: "Oppo"
+      market_share: "High in Vietnam"
+      test_priority: "Critical"
+      test_scenarios:
+        - end_to_end_workflows
+        - notification_handling
+        - background_processing
+        - security_validation
+
+  # High Priority Devices
+  high_priority_devices:
+    
+    - name: "Samsung Galaxy S21"
+      api_level: 31
+      android_version: "12"
+      screen_size: "6.2 inch"
+      resolution: "1080x2400"
+      density: "xxhdpi"
+      ram: "8GB"
+      manufacturer: "Samsung"
+      market_share: "Medium"
+      test_priority: "High"
+      test_scenarios:
+        - advanced_features
+        - performance_optimization
+        - latest_android_compatibility
+        
+    - name: "Vivo Y33s"
+      api_level: 30
+      android_version: "11"
+      screen_size: "6.58 inch"
+      resolution: "1080x2408"
+      density: "xhdpi"
+      ram: "8GB"
+      manufacturer: "Vivo"
+      market_share: "Medium in Vietnam"
+      test_priority: "High"
+      test_scenarios:
+        - user_experience_validation
+        - battery_optimization
+        - network_efficiency
+
+    - name: "Google Pixel 5"
+      api_level: 31
+      android_version: "12"
+      screen_size: "6.0 inch"
+      resolution: "1080x2340"
+      density: "xxhdpi"
+      ram: "8GB"
+      manufacturer: "Google"
+      market_share: "Low (Reference Device)"
+      test_priority: "High"
+      test_scenarios:
+        - reference_implementation
+        - pure_android_testing
+        - firebase_optimization
+
+  # Medium Priority Devices
+  medium_priority_devices:
+    
+    - name: "Samsung Galaxy A32"
+      api_level: 30
+      android_version: "11"
+      screen_size: "6.4 inch"
+      resolution: "720x1600"
+      density: "hdpi"
+      ram: "4GB"
+      manufacturer: "Samsung"
+      market_share: "Medium"
+      test_priority: "Medium"
+      test_scenarios:
+        - lower_resolution_testing
+        - performance_constraints
+        - memory_limitations
+
+    - name: "Xiaomi Redmi 9A"
+      api_level: 29
+      android_version: "10"
+      screen_size: "6.53 inch"
+      resolution: "720x1600"
+      density: "hdpi"
+      ram: "2GB"
+      manufacturer: "Xiaomi"
+      market_share: "High in Budget Segment"
+      test_priority: "Medium"
+      test_scenarios:
+        - budget_device_compatibility
+        - low_memory_handling
+        - basic_functionality
+
+  # Legacy Device Testing
+  legacy_devices:
+    
+    - name: "Samsung Galaxy J7"
+      api_level: 24
+      android_version: "7.0"
+      screen_size: "5.5 inch"
+      resolution: "720x1280"
+      density: "hdpi"
+      ram: "3GB"
+      manufacturer: "Samsung"
+      market_share: "Legacy Users"
+      test_priority: "Low"
+      test_scenarios:
+        - backward_compatibility
+        - basic_functionality_only
+        - performance_degradation_acceptable
+
+# Test Environment Configurations
+test_environments:
+  
+  development:
+    firebase_project: "carenow-app-2024-dev"
+    api_endpoints:
+      base_url: "https://carenow-app-2024-dev.web.app"
+      api_url: "https://carenow-app-2024-dev.firebaseapp.com"
+    test_data:
+      use_mock_data: true
+      reset_between_tests: true
+    logging:
+      level: "debug"
+      firebase_analytics: false
+      crashlytics: false
+
+  staging:
+    firebase_project: "carenow-app-2024-staging"
+    api_endpoints:
+      base_url: "https://carenow-app-2024-staging.web.app"
+      api_url: "https://carenow-app-2024-staging.firebaseapp.com"
+    test_data:
+      use_mock_data: false
+      reset_between_tests: false
+    logging:
+      level: "info"
+      firebase_analytics: true
+      crashlytics: true
+
+  production:
+    firebase_project: "carenow-app-2024"
+    api_endpoints:
+      base_url: "https://carenow-app-2024.web.app"
+      api_url: "https://carenow-app-2024.firebaseapp.com"
+    test_data:
+      use_mock_data: false
+      reset_between_tests: false
+    logging:
+      level: "error"
+      firebase_analytics: true
+      crashlytics: true
+
+# Test Scenarios Configuration
+test_scenarios:
+  
+  client_booking_flow:
+    description: "Complete client booking workflow"
+    duration_estimate: "15 minutes"
+    prerequisites:
+      - valid_client_account
+      - available_partners
+      - payment_method_configured
+    steps:
+      - launch_app
+      - authenticate_client
+      - browse_services
+      - select_elder_care
+      - choose_date_time
+      - select_partner
+      - enter_address
+      - confirm_booking
+      - process_payment
+      - verify_confirmation
+    success_criteria:
+      - booking_created_successfully
+      - payment_processed
+      - notifications_sent
+      - data_persisted
+
+  partner_job_management:
+    description: "Partner job acceptance and management"
+    duration_estimate: "12 minutes"
+    prerequisites:
+      - verified_partner_account
+      - available_jobs
+      - notification_permissions
+    steps:
+      - launch_partner_app
+      - authenticate_partner
+      - view_job_queue
+      - accept_job
+      - start_service
+      - update_status
+      - complete_job
+      - submit_report
+    success_criteria:
+      - job_accepted_successfully
+      - status_updates_real_time
+      - earnings_calculated
+      - client_notified
+
+  real_time_notifications:
+    description: "Real-time notification system testing"
+    duration_estimate: "10 minutes"
+    prerequisites:
+      - notification_permissions_granted
+      - fcm_token_registered
+      - background_app_refresh_enabled
+    steps:
+      - setup_notification_listeners
+      - trigger_booking_event
+      - verify_notification_received
+      - test_notification_actions
+      - verify_deep_linking
+    success_criteria:
+      - notifications_received_instantly
+      - actions_work_correctly
+      - deep_linking_functional
+      - background_processing_works
+
+  payment_integration:
+    description: "Stripe payment integration testing"
+    duration_estimate: "8 minutes"
+    prerequisites:
+      - stripe_test_keys_configured
+      - test_payment_methods
+      - booking_ready_for_payment
+    steps:
+      - initiate_payment_flow
+      - enter_payment_details
+      - process_payment
+      - handle_payment_success
+      - handle_payment_failure
+      - verify_transaction_record
+    success_criteria:
+      - payment_processed_successfully
+      - error_handling_works
+      - transaction_recorded
+      - user_feedback_appropriate
+
+  offline_functionality:
+    description: "Offline mode and sync testing"
+    duration_estimate: "10 minutes"
+    prerequisites:
+      - cached_data_available
+      - network_simulation_tools
+    steps:
+      - disconnect_network
+      - test_cached_data_access
+      - attempt_offline_operations
+      - reconnect_network
+      - verify_data_sync
+    success_criteria:
+      - cached_data_accessible
+      - offline_operations_queued
+      - sync_successful_on_reconnection
+      - no_data_loss
+
+# Performance Benchmarks
+performance_benchmarks:
+  
+  app_launch_time:
+    target: "< 3 seconds"
+    measurement: "cold_start_to_first_screen"
+    acceptable: "< 5 seconds"
+    
+  screen_transition_time:
+    target: "< 500ms"
+    measurement: "tap_to_screen_render"
+    acceptable: "< 1 second"
+    
+  memory_usage:
+    target: "< 150MB"
+    measurement: "peak_memory_during_operation"
+    acceptable: "< 200MB"
+    
+  battery_consumption:
+    target: "< 5% per hour background"
+    measurement: "battery_drain_rate"
+    acceptable: "< 10% per hour"
+    
+  network_efficiency:
+    target: "< 1MB per booking"
+    measurement: "data_usage_per_operation"
+    acceptable: "< 2MB per booking"
+
+# Test Data Configuration
+test_data:
+  
+  client_accounts:
+    - email: "client.test1@carenow.vn"
+      phone: "+84901234567"
+      name: "Nguyễn Văn A"
+      address: "123 Lê Lợi, Q1, TP.HCM"
+      
+    - email: "client.test2@carenow.vn"
+      phone: "+84901234568"
+      name: "Trần Thị B"
+      address: "456 Nguyễn Huệ, Q1, TP.HCM"
+
+  partner_accounts:
+    - email: "partner.test1@carenow.vn"
+      phone: "+84901234569"
+      name: "Lê Văn C"
+      services: ["elder_care", "child_care"]
+      rating: 4.8
+      
+    - email: "partner.test2@carenow.vn"
+      phone: "+84901234570"
+      name: "Phạm Thị D"
+      services: ["elder_care", "pet_care"]
+      rating: 4.9
+
+  admin_accounts:
+    - email: "admin.test@carenow.vn"
+      role: "super_admin"
+      permissions: ["all"]
+
+  test_services:
+    - id: "elder_care"
+      name: "Chăm sóc người già"
+      price_per_hour: 100000
+      duration_options: [2, 4, 8, 12]
+      
+    - id: "child_care"
+      name: "Chăm sóc trẻ em"
+      price_per_hour: 80000
+      duration_options: [2, 4, 6, 8]
+
+# Reporting Configuration
+reporting:
+  
+  test_results_format: "junit_xml"
+  screenshot_on_failure: true
+  video_recording: true
+  performance_metrics: true
+  
+  output_directory: "test_results/android_devices"
+  
+  notifications:
+    slack_webhook: "${SLACK_WEBHOOK_URL}"
+    email_recipients:
+      - "dev-team@carenow.vn"
+      - "qa-team@carenow.vn"
+  
+  dashboard_url: "https://carenow-testing-dashboard.web.app"
